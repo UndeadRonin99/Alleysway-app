@@ -23,4 +23,5 @@ class Register_page : AppCompatActivity() {
             startActivity(Intent(this, MainActivity::class.java))
         }
 //showng matt how to do commits here
+    //changing
 }
