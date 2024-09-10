@@ -92,45 +92,40 @@
         android:id="@+id/home_rectangle3"
         android:layout_width="390dp"
         android:layout_height="110dp"
+        android:layout_gravity="top|left"
         android:layout_marginTop="734dp"
-        android:layout_gravity="top|left"
         android:background="@drawable/home_rectangle3"
-        android:scaleType="centerInside" />
-
-    <ImageView
-        android:id="@+id/home_rectangle4"
-        android:layout_width="390dp"
-        android:layout_height="17dp"
-        android:layout_marginTop="827dp"
-        android:layout_gravity="top|left"
-        android:background="@drawable/home_rectangle4"
-        android:scaleType="centerInside" />
+        android:scaleType="centerInside"
+        android:translationY="-10dp" />
 
     <LinearLayout
         android:id="@+id/container_frame"
         android:layout_width="390dp"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="14dp"
+        android:layout_height="78dp"
         android:layout_gravity="bottom|left"
+        android:layout_marginBottom="14dp"
         android:background="@drawable/container_frame"
         android:gravity="center_horizontal|bottom"
         android:orientation="horizontal"
         android:paddingLeft="12dp"
-        android:paddingRight="12dp">
+        android:paddingRight="12dp"
+        android:translationY="-10dp">
 
         <LinearLayout
             android:id="@+id/container_menu1"
             android:layout_width="73.8dp"
             android:layout_height="wrap_content"
             android:gravity="center_horizontal|top"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:translationY="-10dp">
 
             <ImageView
                 android:id="@+id/image_home_icon"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:scaleType="centerInside"
-                android:src="@drawable/image_home_icon" />
+                android:src="@drawable/image_home_icon"
+                android:translationY="-10dp" />
 
             <TextView
                 android:id="@+id/text_home"
@@ -143,7 +138,8 @@
                 android:singleLine="true"
                 android:text="Home"
                 android:textColor="#FFFC670B"
-                android:textSize="12dp" />
+                android:textSize="12dp"
+                android:translationY="-10dp" />
         </LinearLayout>
 
         <LinearLayout
@@ -152,14 +148,16 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center_horizontal|top"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:translationY="-10dp">
 
             <ImageView
                 android:id="@+id/image_bookings_icon"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:scaleType="centerInside"
-                android:src="@drawable/image_bookings_icon" />
+                android:src="@drawable/image_bookings_icon"
+                android:translationY="-10dp" />
 
             <TextView
                 android:id="@+id/text_bookings"
@@ -172,7 +170,8 @@
                 android:singleLine="true"
                 android:text="Bookings"
                 android:textColor="#FF676D75"
-                android:textSize="12dp" />
+                android:textSize="12dp"
+                android:translationY="-10dp" />
         </LinearLayout>
 
         <LinearLayout
@@ -182,8 +181,9 @@
             android:layout_weight="1"
             android:gravity="center_horizontal|top"
             android:orientation="vertical"
+            android:paddingTop="8dp"
             android:paddingBottom="12dp"
-            android:paddingTop="8dp">
+            android:translationY="-10dp">
 
             <ImageView
                 android:id="@+id/image_container"
@@ -193,34 +193,51 @@
                 android:src="@drawable/image_container" />
         </LinearLayout>
 
-        <LinearLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/container_menu4"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="60dp"
             android:layout_weight="1"
+            android:baselineAligned="false"
             android:gravity="center_horizontal|top"
-            android:orientation="vertical">
+            android:translationY="-10dp">
 
             <ImageView
                 android:id="@+id/image_workouts_icon"
-                android:layout_width="24dp"
+                android:layout_width="25dp"
                 android:layout_height="24dp"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="24dp"
                 android:scaleType="centerInside"
-                android:src="@drawable/image_workouts_icon" />
+                android:src="@drawable/image_workouts_icon"
+                android:translationY="-10dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:id="@+id/text_workouts"
                 android:layout_width="wrap_content"
-                android:layout_height="16dp"
-                android:layout_marginTop="6dp"
+                android:layout_height="14dp"
+                android:layout_marginStart="11dp"
+                android:layout_marginEnd="11dp"
+                android:layout_marginBottom="2dp"
                 android:gravity="left|center_vertical"
                 android:includeFontPadding="false"
                 android:maxLines="1"
                 android:singleLine="true"
                 android:text="Workouts"
                 android:textColor="#FF676D75"
-                android:textSize="12dp" />
-        </LinearLayout>
+                android:textSize="12dp"
+                android:translationY="-10dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <LinearLayout
             android:id="@+id/container_menu5"
@@ -228,14 +245,16 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center_horizontal|top"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:translationY="-10dp">
 
             <ImageView
                 android:id="@+id/image_tracker_icon"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:scaleType="centerInside"
-                android:src="@drawable/image_tracker_icon" />
+                android:src="@drawable/image_tracker_icon"
+                android:translationY="-10dp" />
 
             <TextView
                 android:id="@+id/text_tracker"
@@ -248,7 +267,8 @@
                 android:singleLine="true"
                 android:text="Tracker"
                 android:textColor="#FF676D75"
-                android:textSize="12dp" />
+                android:textSize="12dp"
+                android:translationY="-10dp" />
         </LinearLayout>
     </LinearLayout>
 

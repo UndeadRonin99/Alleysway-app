@@ -31,6 +31,6 @@ class MainActivity : AppCompatActivity() {
         }
 
         private fun login() {
-        startActivity(Intent(this, HomePage::class.java))
+            startActivity(Intent(this, HomePage::class.java))
         }
     }
