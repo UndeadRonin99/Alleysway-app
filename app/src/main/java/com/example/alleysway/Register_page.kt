@@ -22,5 +22,5 @@ class Register_page : AppCompatActivity() {
         private fun navigateToLoginPage() {
             startActivity(Intent(this, MainActivity::class.java))
         }
-
+//showng matt how to do commits here
 }
