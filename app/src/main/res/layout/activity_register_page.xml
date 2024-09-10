@@ -1,0 +1,274 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container_app_register_page"
+    android:layout_width="match_parent"
+    android:layout_height="844dp"
+    android:background="@drawable/container_app_login_page">
+
+    <ImageView
+        android:id="@+id/image_login"
+        android:layout_width="match_parent"
+        android:layout_height="844dp"
+        android:layout_gravity="top|left"
+        android:scaleType="centerInside"
+        android:src="@drawable/image_login" />
+
+    <ImageView
+        android:id="@+id/image_rectangle"
+        android:layout_width="345dp"
+        android:layout_height="488dp"
+        android:layout_marginLeft="0.5dp"
+        android:layout_marginTop="204dp"
+        android:layout_gravity="top|center_horizontal"
+        android:scaleType="centerInside"
+        android:src="@drawable/image_rectangle" />
+
+    <ImageView
+        android:id="@+id/image_alleysway_logo"
+        android:layout_width="123dp"
+        android:layout_height="68dp"
+        android:layout_marginLeft="260dp"
+        android:layout_marginTop="19dp"
+        android:layout_gravity="top|left"
+        android:scaleType="centerInside"
+        android:src="@drawable/image_logo" />
+
+    <FrameLayout
+        android:id="@+id/container_group"
+        android:layout_width="285dp"
+        android:layout_height="319dp"
+        android:layout_marginLeft="50dp"
+        android:layout_marginTop="272dp"
+        android:layout_gravity="top|left"
+        android:background="@drawable/container_group">
+
+        <FrameLayout
+            android:id="@+id/container_group1"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/container_group1">
+
+            <TextView
+                android:id="@+id/container_pass"
+                android:layout_width="wrap_content"
+                android:layout_height="20dp"
+                android:layout_marginLeft="22dp"
+                android:layout_marginTop="131dp"
+                android:layout_marginBottom="-1dp"
+                android:layout_gravity="top|left"
+                android:gravity="center_horizontal|center_vertical"
+                android:includeFontPadding="false"
+                android:maxLines="1"
+                android:singleLine="true"
+                android:text="Username"
+                android:textColor="#FFEAEAEA"
+                android:textSize="15dp" />
+
+            <ImageView
+                android:id="@+id/image_email"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="2dp"
+                android:layout_marginTop="142dp"
+                android:layout_marginBottom="132dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/image_rectangle2" />
+
+            <TextView
+                android:id="@+id/container_pass1"
+                android:layout_width="wrap_content"
+                android:layout_height="20dp"
+                android:layout_marginLeft="18dp"
+                android:layout_marginTop="-1dp"
+                android:layout_marginBottom="-1dp"
+                android:layout_gravity="top|left"
+                android:gravity="center_horizontal|center_vertical"
+                android:includeFontPadding="false"
+                android:maxLines="1"
+                android:singleLine="true"
+                android:text="First Name"
+                android:textColor="#FFEAEAEA"
+                android:textSize="15dp" />
+
+            <ImageView
+                android:id="@+id/image_rectangle1"
+                android:layout_width="283dp"
+                android:layout_height="45dp"
+                android:layout_marginTop="10dp"
+                android:layout_gravity="top|left"
+                android:scaleType="centerInside"
+                android:src="@drawable/image_rectangle1" />
+
+            <TextView
+                android:id="@+id/container_pass2"
+                android:layout_width="wrap_content"
+                android:layout_height="20dp"
+                android:layout_marginLeft="25dp"
+                android:layout_marginTop="65dp"
+                android:layout_marginBottom="-1dp"
+                android:layout_gravity="top|left"
+                android:gravity="center_horizontal|center_vertical"
+                android:includeFontPadding="false"
+                android:maxLines="1"
+                android:singleLine="true"
+                android:text="Surname"
+                android:textColor="#FFEAEAEA"
+                android:textSize="15dp" />
+
+            <ImageView
+                android:id="@+id/image_rectangle2"
+                android:layout_width="283dp"
+                android:layout_height="45dp"
+                android:layout_marginTop="76dp"
+                android:layout_gravity="top|left"
+                android:scaleType="centerInside"
+                android:src="@drawable/image_rectangle2" />
+
+            <TextView
+                android:id="@+id/container_pass3"
+                android:layout_width="wrap_content"
+                android:layout_height="20dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="264dp"
+                android:layout_marginBottom="35dp"
+                android:layout_gravity="left"
+                android:gravity="center_horizontal|center_vertical"
+                android:includeFontPadding="false"
+                android:maxLines="1"
+                android:singleLine="true"
+                android:text="Confirm Password"
+                android:textColor="#FFEAEAEA"
+                android:textSize="15dp" />
+
+            <ImageView
+                android:id="@+id/image_email1"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="2dp"
+                android:layout_marginTop="274dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/image_rectangle2" />
+
+            <TextView
+                android:id="@+id/container_pass4"
+                android:layout_width="wrap_content"
+                android:layout_height="20dp"
+                android:layout_marginLeft="21dp"
+                android:layout_marginTop="197dp"
+                android:layout_marginBottom="102dp"
+                android:layout_gravity="left"
+                android:gravity="center_horizontal|center_vertical"
+                android:includeFontPadding="false"
+                android:maxLines="1"
+                android:singleLine="true"
+                android:text="Password"
+                android:textColor="#FFEAEAEA"
+                android:textSize="15dp" />
+
+            <ImageView
+                android:id="@+id/image_rectangle3"
+                android:layout_width="283dp"
+                android:layout_height="match_parent"
+                android:layout_marginTop="208dp"
+                android:layout_marginBottom="66dp"
+                android:layout_gravity="left"
+                android:scaleType="centerCrop"
+                android:src="@drawable/image_rectangle2" />
+        </FrameLayout>
+    </FrameLayout>
+
+    <ImageView
+        android:id="@+id/image_rectangle4"
+        android:layout_width="290dp"
+        android:layout_height="55dp"
+        android:layout_marginLeft="50dp"
+        android:layout_marginTop="618dp"
+        android:layout_gravity="top|left"
+        android:scaleType="centerInside"
+        android:src="@drawable/image_rectangle3" />
+
+    <FrameLayout
+        android:id="@+id/container_button"
+        android:layout_width="250dp"
+        android:layout_height="50dp"
+        android:layout_marginLeft="70dp"
+        android:layout_marginRight="70dp"
+        android:layout_marginTop="619dp"
+        android:layout_marginBottom="175dp">
+
+        <TextView
+            android:id="@+id/text_create_account"
+            android:layout_width="match_parent"
+            android:layout_height="23dp"
+            android:layout_marginLeft="57dp"
+            android:layout_marginRight="56dp"
+            android:layout_marginTop="13.5dp"
+            android:layout_marginBottom="13.5dp"
+            android:gravity="center_horizontal|center_vertical"
+            android:includeFontPadding="false"
+            android:maxLines="1"
+            android:singleLine="true"
+            android:text="Create Account"
+            android:textColor="#FF000000"
+            android:textSize="18dp" />
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/container_group2"
+        android:layout_width="185dp"
+        android:layout_height="27dp"
+        android:layout_gravity="top|left"
+        android:layout_marginLeft="104dp"
+        android:layout_marginTop="231dp">
+
+        <TextView
+            android:id="@+id/text_login"
+            android:layout_width="wrap_content"
+            android:layout_height="28dp"
+            android:layout_gravity="left"
+            android:layout_marginTop="-5dp"
+            android:layout_marginBottom="-5dp"
+            android:gravity="left|center_vertical"
+            android:includeFontPadding="false"
+            android:maxLines="1"
+            android:singleLine="true"
+            android:text="Login"
+            android:textColor="#FFC4C4C4"
+            android:textSize="22dp" />
+
+        <TextView
+            android:id="@+id/text_pipe"
+            android:layout_width="wrap_content"
+            android:layout_height="28dp"
+            android:layout_gravity="left"
+            android:layout_marginLeft="80dp"
+            android:layout_marginTop="-5dp"
+            android:layout_marginBottom="-5dp"
+            android:gravity="left|center_vertical"
+            android:includeFontPadding="false"
+            android:maxLines="1"
+            android:singleLine="true"
+            android:text="|"
+            android:textColor="#FFFFFFFF"
+            android:textSize="22dp" />
+
+        <TextView
+            android:id="@+id/text_signup"
+            android:layout_width="match_parent"
+            android:layout_height="28dp"
+            android:layout_marginLeft="109dp"
+            android:layout_marginTop="-5dp"
+            android:layout_marginBottom="-5dp"
+            android:gravity="left|center_vertical"
+            android:includeFontPadding="false"
+            android:maxLines="1"
+            android:singleLine="true"
+            android:text="Signup"
+            android:textColor="#FFED8240"
+            android:textSize="22dp" />
+    </FrameLayout>
+</FrameLayout>

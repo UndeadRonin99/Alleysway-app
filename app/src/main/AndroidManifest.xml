@@ -12,6 +12,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.CodiaDemo">
         <activity
+            android:name=".Register_page"
+            android:exported="false" />
+        <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>

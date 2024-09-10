@@ -8,20 +8,19 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 
-class MainActivity : AppCompatActivity() {
+class Register_page : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        setContentView(R.layout.activity_main)
+        setContentView(R.layout.activity_register_page)
 
-        val createAccountTextView = findViewById<TextView>(R.id.text_signup)
-
-        createAccountTextView.setOnClickListener {
-            navigateToRegisterPage()
+        val loginTextView = findViewById<TextView>(R.id.text_login)
+        loginTextView.setOnClickListener {
+            navigateToLoginPage()
         }
     }
-
-        private fun navigateToRegisterPage() {
-            startActivity(Intent(this, Register_page::class.java))
+        private fun navigateToLoginPage() {
+            startActivity(Intent(this, MainActivity::class.java))
         }
-    }
+
+}
