@@ -10,10 +10,17 @@ class LoginPage : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login_page)
 
-        // Find the Sign Up button by its ID
-        val signUpButton: Button = findViewById(R.id.btnSignUpPage)
+        // Find the Login button by its ID
+        val loginButton: Button = findViewById(R.id.btnLogin)
 
-        // Set a click listener on the button to navigate to the Register Page
+        // Set a click listener to navigate to HomePage
+        loginButton.setOnClickListener {
+            val intent = Intent(this, HomePage::class.java)
+            startActivity(intent)
+        }
+
+        // Handle the SignUp button to navigate to RegisterPage
+        val signUpButton: Button = findViewById(R.id.btnSignUpPage)
         signUpButton.setOnClickListener {
             val intent = Intent(this, RegisterPage::class.java)
             startActivity(intent)
