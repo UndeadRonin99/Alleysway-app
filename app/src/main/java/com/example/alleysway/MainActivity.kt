@@ -1,36 +1,27 @@
 package com.example.alleysway
 
-import android.content.Intent
+import android.animation.ObjectAnimator
 import android.os.Bundle
+import android.view.animation.AccelerateInterpolator
 import android.widget.ImageView
-import android.widget.TextView
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 
 class MainActivity : AppCompatActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
         setContentView(R.layout.activity_main)
 
-        val createAccountTextView = findViewById<TextView>(R.id.text_signup)
-        val btnlogin = findViewById<ImageView>(R.id.image_rectangle3)
+        // Find the ImageView by its ID
+        val logoImageView: ImageView = findViewById(R.id.imageView2)
 
-        createAccountTextView.setOnClickListener {
-            navigateToRegisterPage()
+        // Create an ObjectAnimator for the fade-in effect
+        val fadeInAnimator = ObjectAnimator.ofFloat(logoImageView, "alpha", 0f, 1f).apply {
+            duration = 1500 // Duration of the animation in milliseconds
+            interpolator = AccelerateInterpolator() // Smooth fading effect
         }
 
-        btnlogin.setOnClickListener {
-            login()
-        }
+        // Start the fade-in animation
+        fadeInAnimator.start()
     }
-        private fun navigateToRegisterPage() {
-            startActivity(Intent(this, Register_page::class.java))
-        }
-
-        private fun login() {
-            startActivity(Intent(this, HomePage::class.java))
-        }
-    }
+}
