@@ -12,9 +12,6 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.CodiaDemo">
         <activity
-            android:name=".SettingsPage"
-            android:exported="false" />
-        <activity
             android:name=".SettingsSplash"
             android:exported="false" />
         <activity
