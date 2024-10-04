@@ -1,3 +1,5 @@
 <resources>
-    <string name="app_name">CodiaDemoKotlin</string>
+    <string name="app_name">Alleysway</string>
+    <string name="default_web_client_id">890106355046-qnffub5gcguamt6jodld65n7tvdku842.apps.googleusercontent.com</string>
+    <string name="web_client_id">890106355046-i4t8lqblco7om7cc9sf3hq9k57f5k62e.apps.googleusercontent.com</string>
 </resources>

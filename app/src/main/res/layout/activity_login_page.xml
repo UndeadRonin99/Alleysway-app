@@ -11,7 +11,7 @@
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="343dp"
-        android:layout_height="511dp"
+        android:layout_height="323dp"
         android:layout_marginStart="25dp"
         android:layout_marginTop="170dp"
         android:layout_marginEnd="25dp"
@@ -21,7 +21,7 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0"
+        app:layout_constraintVertical_bias="0.382"
         app:srcCompat="@drawable/image_rectangle" />
 
     <ImageView
@@ -39,95 +39,32 @@
         app:srcCompat="@drawable/image_alleysway_logo" />
 
     <Button
-        android:id="@+id/btnLoginPage"
+        android:id="@+id/txtLogin"
         android:layout_width="130dp"
         android:layout_height="60dp"
-        android:layout_marginStart="131dp"
-        android:layout_marginTop="196dp"
-        android:layout_marginEnd="132dp"
-        android:layout_marginBottom="551dp"
+        android:layout_marginStart="104dp"
+        android:layout_marginTop="24dp"
         android:background="#00FFFFFF"
         android:focusable="false"
         android:focusableInTouchMode="false"
         android:text="Login"
         android:textColor="#ED8240"
         android:textSize="25sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintStart_toStartOf="@+id/imageView"
+        app:layout_constraintTop_toTopOf="@+id/imageView" />
 
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="88dp"
-        android:layout_marginTop="127dp"
-        android:layout_marginEnd="89dp"
-        android:layout_marginBottom="351dp"
+    <Button
+        android:id="@+id/txtWelcome"
+        android:layout_width="248dp"
+        android:layout_height="63dp"
+        android:layout_marginStart="44dp"
+        android:layout_marginTop="108dp"
+        android:background="#00FFFFFF"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
         android:text="Welcome Back"
         android:textColor="#FFFFFF"
-        android:textSize="30dp"
-        app:layout_constraintBottom_toBottomOf="@+id/imageView"
-        app:layout_constraintEnd_toEndOf="@+id/imageView"
-        app:layout_constraintStart_toStartOf="@+id/imageView"
-        app:layout_constraintTop_toTopOf="@+id/imageView" />
-
-    <TextView
-        android:id="@+id/textView2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="48dp"
-        android:layout_marginTop="187dp"
-        android:layout_marginEnd="231dp"
-        android:layout_marginBottom="305dp"
-        android:text="Username"
-        android:textColor="#FFFFFF"
-        app:layout_constraintBottom_toBottomOf="@+id/imageView"
-        app:layout_constraintEnd_toEndOf="@+id/imageView"
-        app:layout_constraintStart_toStartOf="@+id/imageView"
-        app:layout_constraintTop_toTopOf="@+id/imageView" />
-
-    <TextView
-        android:id="@+id/txtLUsername"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="30dp"
-        android:layout_marginTop="197dp"
-        android:layout_marginEnd="30dp"
-        android:layout_marginBottom="269dp"
-        android:background="@drawable/image_rectangle1"
-        app:layout_constraintBottom_toBottomOf="@+id/imageView"
-        app:layout_constraintEnd_toEndOf="@+id/imageView"
-        app:layout_constraintStart_toStartOf="@+id/imageView"
-        app:layout_constraintTop_toTopOf="@+id/imageView" />
-
-    <TextView
-        android:id="@+id/textView4"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="49dp"
-        android:layout_marginTop="284dp"
-        android:layout_marginEnd="231dp"
-        android:layout_marginBottom="208dp"
-        android:text="Password"
-        android:textColor="#FFFFFF"
-        app:layout_constraintBottom_toBottomOf="@+id/imageView"
-        app:layout_constraintEnd_toEndOf="@+id/imageView"
-        app:layout_constraintStart_toStartOf="@+id/imageView"
-        app:layout_constraintTop_toTopOf="@+id/imageView" />
-
-    <TextView
-        android:id="@+id/txtPassword"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="30dp"
-        android:layout_marginTop="295dp"
-        android:layout_marginEnd="30dp"
-        android:layout_marginBottom="171dp"
-        android:background="@drawable/image_rectangle1"
-        app:layout_constraintBottom_toBottomOf="@+id/imageView"
-        app:layout_constraintEnd_toEndOf="@+id/imageView"
+        android:textSize="25sp"
         app:layout_constraintStart_toStartOf="@+id/imageView"
         app:layout_constraintTop_toTopOf="@+id/imageView" />
 
@@ -146,6 +83,18 @@
         app:layout_constraintEnd_toEndOf="@+id/imageView"
         app:layout_constraintStart_toStartOf="@+id/imageView"
         app:layout_constraintTop_toTopOf="@+id/imageView" />
+
+    <ImageView
+        android:id="@+id/imageView4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:scaleX="0.75"
+        android:scaleY="0.75"
+        app:layout_constraintBottom_toBottomOf="@+id/imageView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txtWelcome"
+        app:srcCompat="@drawable/wtf" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
