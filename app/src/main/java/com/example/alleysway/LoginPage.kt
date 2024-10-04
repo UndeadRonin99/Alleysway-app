@@ -18,12 +18,5 @@ class LoginPage : AppCompatActivity() {
             val intent = Intent(this, HomePage::class.java)
             startActivity(intent)
         }
-
-        // Handle the SignUp button to navigate to RegisterPage
-        val signUpButton: Button = findViewById(R.id.btnSignUpPage)
-        signUpButton.setOnClickListener {
-            val intent = Intent(this, RegisterPage::class.java)
-            startActivity(intent)
-        }
     }
 }
