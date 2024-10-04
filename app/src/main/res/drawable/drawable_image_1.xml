@@ -1,4 +1,4 @@
-<vector xmlns:android="http://schemas.android.com/apk/res/android" xmlns:aapt="http://schemas.android.com/aapt" android:width="390.00dp" android:height="70.00dp" android:viewportWidth="390" android:viewportHeight="104">
+<vector xmlns:android="http://schemas.android.com/apk/res/android" xmlns:aapt="http://schemas.android.com/aapt" android:width="390.00dp" android:height="104.00dp" android:viewportWidth="390" android:viewportHeight="104">
     <group>
         <path android:pathData="M390 104H0V0h390v104Z">
             <aapt:attr name="android:fillColor">
