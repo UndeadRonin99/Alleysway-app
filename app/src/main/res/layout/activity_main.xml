@@ -4,7 +4,7 @@
     android:id="@+id/container_app_login_page"
     android:layout_width="match_parent"
     android:layout_height="844dp"
-    android:background="#000000">
+    android:background="#27262C">
 
     <ImageView
         android:id="@+id/imageView2"
