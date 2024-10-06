@@ -2,6 +2,7 @@
 agp = "8.5.1"
 firebaseBom = "33.4.0"
 firebaseDatabaseKtx = "21.0.0"
+glideVersion = "4.15.1"
 kotlin = "1.9.0"
 coreKtx = "1.13.1"
 junit = "4.13.2"
@@ -19,6 +20,7 @@ androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = 
 firebase-analytics = { module = "com.google.firebase:firebase-analytics" }
 firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
 firebase-database-ktx = { module = "com.google.firebase:firebase-database-ktx", version.ref = "firebaseDatabaseKtx" }
+github-glide = { module = "com.github.bumptech.glide:glide", version.ref = "glideVersion" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }

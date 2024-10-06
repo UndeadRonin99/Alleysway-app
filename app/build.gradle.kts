@@ -41,6 +41,8 @@ android {
 
 
 dependencies {
+    implementation(libs.github.glide)
+
     implementation(libs.play.services.auth)
     // Add Firebase Realtime Database dependency
     implementation(libs.firebase.database.ktx)

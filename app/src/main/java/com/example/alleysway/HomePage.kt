@@ -9,12 +9,17 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.google.android.gms.auth.api.signin.*
 import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.*
 import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 
@@ -53,6 +58,7 @@ class HomePage : AppCompatActivity() {
         // Initialize DrawerLayout and settings button
         drawerLayout = findViewById(R.id.drawer_layout)
         val btnSettings: ImageView = findViewById(R.id.btnSettings)
+        imgProfile = findViewById(R.id.imgProfile)
 
         btnSettings.setOnClickListener {
             if (!drawerLayout.isDrawerOpen(GravityCompat.END)) {
@@ -69,6 +75,8 @@ class HomePage : AppCompatActivity() {
         btnDelAccount = findViewById(R.id.btnDelAccount)
         btnFAQ = findViewById(R.id.btnFAQ)
         btnLogout = findViewById(R.id.btnLogout)
+
+        loadProfileImage()
 
         // Fetch and display the user's full name in the drawer
         getFullName { fullName ->
@@ -122,6 +130,44 @@ class HomePage : AppCompatActivity() {
                 super.onDrawerClosed(drawerView)
             }
         })
+    }
+
+    private fun loadProfileImage() {
+        val user = Firebase.auth.currentUser
+        if (user != null) {
+            val uid = user.uid
+            val database = Firebase.database.reference
+
+            val userRef = database.child("users").child(uid)
+
+            userRef.child("profileImageUrl").addListenerForSingleValueEvent(object :
+                ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    val profileImageUrl = snapshot.getValue(String::class.java)
+                    if (!profileImageUrl.isNullOrEmpty()) {
+                        // Load the image using Glide
+                        Glide.with(this@HomePage)
+                            .load(profileImageUrl)
+                            .apply(RequestOptions.circleCropTransform())
+                            .placeholder(R.drawable.dft) // Optional placeholder image
+                            .error(R.drawable.dft) // Optional error image
+                            .into(imgProfile)
+                    } else {
+                        Log.e("loadProfileImage", "Profile image URL is empty.")
+                        // Optionally set a default image or handle the case where URL is empty
+                        imgProfile.setImageResource(R.drawable.dft)
+                    }
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    Log.e("loadProfileImage", "Error fetching profile image URL: ${error.message}")
+                    // Handle the error
+                }
+            })
+        } else {
+            Log.e("loadProfileImage", "No user is signed in.")
+            // Handle the case where no user is signed in
+        }
     }
 
     // Function to retrieve the user's full name
