@@ -39,7 +39,6 @@ class SettingSideBar : AppCompatActivity() {
         btnDelAccount = findViewById(R.id.btnDelAccount)
         btnUOM = findViewById(R.id.btnUOM)
         btnViewP = findViewById(R.id.btnViewP)
-        btnEditP = findViewById(R.id.btnEditP)
         txtName = findViewById(R.id.txtName)
 
         getFullName { fullName ->

@@ -32,7 +32,6 @@ class HomePage : AppCompatActivity() {
     private lateinit var imgProfile: ImageView
     private lateinit var txtName: TextView
     private lateinit var btnViewP: Button
-    private lateinit var btnEditP: Button
     private lateinit var btnUOM: Button
     private lateinit var btnDelAccount: Button
     private lateinit var btnFAQ: Button
@@ -70,7 +69,6 @@ class HomePage : AppCompatActivity() {
         imgProfile = findViewById(R.id.imgProfile)
         txtName = findViewById(R.id.txtName)
         btnViewP = findViewById(R.id.btnViewP)
-        btnEditP = findViewById(R.id.btnEditP)
         btnUOM = findViewById(R.id.btnUOM)
         btnDelAccount = findViewById(R.id.btnDelAccount)
         btnFAQ = findViewById(R.id.btnFAQ)
@@ -114,15 +112,10 @@ class HomePage : AppCompatActivity() {
 
         btnViewP.setOnClickListener {
             // Handle view profile button click
-            Toast.makeText(this, "View Profile clicked", Toast.LENGTH_SHORT).show()
-            // Implement view profile functionality
+            startActivity(Intent(this, EditProfile::class.java))
         }
 
-        btnEditP.setOnClickListener {
-            // Handle edit profile button click
-            Toast.makeText(this, "Edit Profile clicked", Toast.LENGTH_SHORT).show()
-            // Implement edit profile functionality
-        }
+
 
         // Close the drawer when clicking outside
         drawerLayout.addDrawerListener(object : DrawerLayout.SimpleDrawerListener() {

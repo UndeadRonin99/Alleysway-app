@@ -64,34 +64,22 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="17dp"
         android:background="#27262C"
         android:text="View profile"
         android:textColor="#FFFFFF"
         app:layout_constraintStart_toEndOf="@+id/imageView8"
-        app:layout_constraintTop_toBottomOf="@+id/btnEditP" />
+        app:layout_constraintTop_toBottomOf="@+id/imageView21" />
 
     <ImageView
         android:id="@+id/imageView8"
         android:layout_width="30dp"
         android:layout_height="30dp"
         android:layout_marginStart="18dp"
-        android:layout_marginTop="48dp"
+        android:layout_marginTop="24dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView5"
+        app:layout_constraintTop_toBottomOf="@+id/imageView21"
         app:srcCompat="@drawable/image_user_circle" />
-
-    <Button
-        android:id="@+id/btnEditP"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="52dp"
-        android:background="#27262C"
-        android:text="Edit profile"
-        android:textColor="#FFFFFF"
-        app:layout_constraintStart_toEndOf="@+id/imageView5"
-        app:layout_constraintTop_toBottomOf="@+id/imageView21" />
 
     <ImageView
         android:id="@+id/imageView17"
@@ -102,16 +90,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageView8"
         app:srcCompat="@drawable/image_inbox" />
-
-    <ImageView
-        android:id="@+id/imageView5"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:layout_marginStart="18dp"
-        android:layout_marginTop="62dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView21"
-        app:srcCompat="@drawable/image_user_circle" />
 
     <ImageView
         android:id="@+id/imageView18"
