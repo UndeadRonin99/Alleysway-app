@@ -15,25 +15,20 @@
         android:scaleType="centerCrop"
         android:src="@drawable/image_bookings" />
 
-    <!-- ScrollView to add the "Find an Expert" section with the image -->
-
-    <!-- Bottom Navigation Bar -->
     <ScrollView
         android:id="@+id/scrollView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/imageView9"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0">
+        app:layout_constraintBottom_toTopOf="@+id/imageView9"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
             android:orientation="vertical"
+            android:gravity="center_horizontal"
             android:padding="16dp">
 
             <!-- "Find an Expert" Text -->
@@ -41,11 +36,11 @@
                 android:id="@+id/findExpertText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
                 android:text="Find an Expert"
-                android:textColor="@android:color/white"
                 android:textSize="24sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:textColor="@android:color/black"
+                android:layout_marginTop="24dp" />
 
             <!-- Personal Trainer Image -->
             <ImageView
@@ -53,20 +48,104 @@
                 android:layout_width="200dp"
                 android:layout_height="300dp"
                 android:layout_marginTop="16dp"
-                android:contentDescription="Personal Trainer Image"
                 android:scaleType="centerCrop"
-                android:src="@drawable/pt_bookings" />
+                android:src="@drawable/pt_bookings"
+                android:contentDescription="Personal Trainer Image" />
 
+            <!-- Day selection buttons -->
+            <LinearLayout
+                android:id="@+id/daySelectionLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:layout_marginBottom="16dp"
+                android:weightSum="7">
+
+                <!-- Day Buttons -->
+                <Button
+                    android:id="@+id/btnMonday"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:backgroundTint="#1E88E5"
+                    android:text="MON"
+                    android:textColor="@android:color/white"
+                    android:layout_margin="4dp" />
+
+                <Button
+                    android:id="@+id/btnTuesday"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="#1E88E5"
+                    android:text="TUE"
+                    android:textColor="@android:color/white"
+                    android:layout_margin="4dp" />
+
+                <Button
+                    android:id="@+id/btnWednesday"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="#1E88E5"
+                    android:text="WED"
+                    android:textColor="@android:color/white"
+                    android:layout_margin="4dp" />
+
+                <Button
+                    android:id="@+id/btnThursday"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="#1E88E5"
+                    android:text="THU"
+                    android:textColor="@android:color/white"
+                    android:layout_margin="4dp" />
+
+                <Button
+                    android:id="@+id/btnFriday"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="#1E88E5"
+                    android:text="FRI"
+                    android:textColor="@android:color/white"
+                    android:layout_margin="4dp" />
+
+                <Button
+                    android:id="@+id/btnSaturday"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="#1E88E5"
+                    android:text="SAT"
+                    android:textColor="@android:color/white"
+                    android:layout_margin="4dp" />
+
+                <Button
+                    android:id="@+id/btnSunday"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="#1E88E5"
+                    android:text="SUN"
+                    android:textColor="@android:color/white"
+                    android:layout_margin="4dp" />
+            </LinearLayout>
+
+            <!-- Bar Chart -->
             <com.github.mikephil.charting.charts.BarChart
                 android:id="@+id/popularTimesChart"
                 android:layout_width="match_parent"
                 android:layout_height="400dp"
-                android:layout_marginTop="24dp" />
-
+                android:layout_marginTop="24dp"
+                android:layout_marginBottom="16dp" />
 
         </LinearLayout>
     </ScrollView>
 
+    <!-- Bottom Navigation Bar -->
 
     <ImageView
         android:id="@+id/imageView9"
@@ -218,7 +297,5 @@
         app:layout_constraintBottom_toBottomOf="@+id/imageView9"
         app:layout_constraintEnd_toEndOf="@+id/imageView9"
         app:layout_constraintStart_toStartOf="@+id/imageView9"
-        app:layout_constraintTop_toTopOf="@+id/imageView9"
-        />
-
+        app:layout_constraintTop_toTopOf="@+id/imageView9" />
 </androidx.constraintlayout.widget.ConstraintLayout>
