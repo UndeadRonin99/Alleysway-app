@@ -16,20 +16,24 @@
         android:src="@drawable/image_bookings" />
 
     <!-- ScrollView to add the "Find an Expert" section with the image -->
+
+    <!-- Bottom Navigation Bar -->
     <ScrollView
         android:id="@+id/scrollView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@+id/imageView9"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
             android:gravity="center_horizontal"
+            android:orientation="vertical"
             android:padding="16dp">
 
             <!-- "Find an Expert" Text -->
@@ -37,11 +41,11 @@
                 android:id="@+id/findExpertText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
                 android:text="Find an Expert"
-                android:textSize="24sp"
-                android:textStyle="bold"
                 android:textColor="@android:color/white"
-                android:layout_marginTop="24dp" />
+                android:textSize="24sp"
+                android:textStyle="bold" />
 
             <!-- Personal Trainer Image -->
             <ImageView
@@ -49,9 +53,9 @@
                 android:layout_width="200dp"
                 android:layout_height="300dp"
                 android:layout_marginTop="16dp"
+                android:contentDescription="Personal Trainer Image"
                 android:scaleType="centerCrop"
-                android:src="@drawable/pt_bookings"
-                android:contentDescription="Personal Trainer Image" />
+                android:src="@drawable/pt_bookings" />
 
             <com.github.mikephil.charting.charts.BarChart
                 android:id="@+id/popularTimesChart"
@@ -64,7 +68,6 @@
     </ScrollView>
 
 
-    <!-- Bottom Navigation Bar -->
     <ImageView
         android:id="@+id/imageView9"
         android:layout_width="418dp"

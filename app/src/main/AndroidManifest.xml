@@ -19,6 +19,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.CodiaDemo">
         <activity
+            android:name=".Tracker"
+            android:exported="false" />
+        <activity
             android:name=".Bookings"
             android:exported="false" />
         <activity
