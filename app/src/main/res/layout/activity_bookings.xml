@@ -90,7 +90,6 @@
         app:layout_constraintTop_toTopOf="@+id/imageView9"
         app:srcCompat="@drawable/img_home_icon_unselected" />
 
-    <!-- Booking button -->
     <ImageView
         android:id="@+id/btnBooking"
         android:layout_width="40dp"
