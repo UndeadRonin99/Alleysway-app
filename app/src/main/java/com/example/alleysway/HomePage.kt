@@ -1,6 +1,5 @@
 package com.example.alleysway
 
-import Bookings
 import android.content.Intent
 import android.os.Bundle
 import android.text.InputType

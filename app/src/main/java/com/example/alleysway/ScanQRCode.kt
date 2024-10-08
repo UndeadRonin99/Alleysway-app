@@ -31,8 +31,6 @@ class ScanQRCode : AppCompatActivity() {
         integrator.setBeepEnabled(true)
         integrator.captureActivity = CustomCaptureActivity::class.java
         integrator.initiateScan()
-
-
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -48,6 +46,7 @@ class ScanQRCode : AppCompatActivity() {
                 // Verify if the scanned data is correct
                 if (scannedData == expectedData) {
                     updateAttendance()
+                    updatePublicAttendance()
                     Toast.makeText(this, "Attendance logged", Toast.LENGTH_SHORT).show()
                     this.finish()
                 } else {
@@ -60,11 +59,30 @@ class ScanQRCode : AppCompatActivity() {
     }
 
     private fun updateAttendance() {
+        // Get the currently logged-in user's ID
         val auth = FirebaseAuth.getInstance()
         val userId = auth.currentUser?.uid ?: return
 
         // Reference to the attendance node for the user in Firebase
         val databaseReference = FirebaseDatabase.getInstance().getReference("users").child(userId).child("attendance")
+
+        // Get today's date in the desired format
+        val todayDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
+
+        // Mark attendance for the current date
+        databaseReference.child(todayDate).setValue(true)
+            .addOnSuccessListener {
+                Toast.makeText(this, "Attendance Marked Successfully", Toast.LENGTH_SHORT).show()
+            }
+            .addOnFailureListener {
+                Toast.makeText(this, "Failed to Mark Attendance", Toast.LENGTH_SHORT).show()
+            }
+    }
+
+    private fun updatePublicAttendance() {
+
+        // Reference to the attendance node for the user in Firebase
+        val databaseReference = FirebaseDatabase.getInstance().getReference("attendance")
 
         // Get today's date in the desired format
         val todayDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
