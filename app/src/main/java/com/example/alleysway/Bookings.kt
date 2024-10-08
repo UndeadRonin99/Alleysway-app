@@ -101,6 +101,7 @@ class Bookings : AppCompatActivity() {
     private fun updateBarChart(entries: List<BarEntry>, labels: Array<String>) {
         val barDataSet = BarDataSet(entries, "Hourly Attendance")
 
+        // Customize colors based on busyness
         barDataSet.colors = entries.mapIndexed { i, entry ->
             when {
                 entry.x.toInt() == liveHour -> Color.RED
@@ -112,10 +113,17 @@ class Bookings : AppCompatActivity() {
 
         barDataSet.setDrawValues(false)
         val barData = BarData(barDataSet)
+
+        // Set bar width to allow spacing between bars
+        barData.barWidth = 0.9f
+
+        // Apply data to the chart
         barChart.data = barData
         barChart.xAxis.valueFormatter = IndexAxisValueFormatter(labels)
+        barChart.setFitBars(true) // Makes the bars fit within the view
         barChart.invalidate()
     }
+
 
     private fun setupBarChartStyle() {
         barChart.description.isEnabled = false
@@ -123,34 +131,65 @@ class Bookings : AppCompatActivity() {
         barChart.setDrawBarShadow(false)
         barChart.setPinchZoom(false)
 
+        // Enable dragging and horizontal scrolling
+        barChart.isDragEnabled = true
+        barChart.setScaleEnabled(false) // If you don't want scaling, keep it false
+        barChart.setVisibleXRangeMaximum(6f) // Show 6 bars at a time for horizontal scrolling
+        barChart.setExtraOffsets(10f, 0f, 10f, 0f) // Add space to the left and right of the chart
+
         val xAxis = barChart.xAxis
         xAxis.position = XAxis.XAxisPosition.BOTTOM
         xAxis.setDrawGridLines(false)
         xAxis.setDrawAxisLine(false)
         xAxis.textColor = Color.WHITE
         xAxis.textSize = 12f
+        xAxis.spaceMin = 0.5f // Space on the left side
+        xAxis.spaceMax = 0.5f // Space on the right side
 
         barChart.axisLeft.isEnabled = false
         barChart.axisRight.isEnabled = false
         barChart.legend.isEnabled = false
         barChart.setBackgroundColor(Color.parseColor("#27262C"))
-        barChart.isDragEnabled = true
-        barChart.setScaleEnabled(false)
-        barChart.setVisibleXRangeMaximum(6f)
     }
+
 
     private fun setupChartValueClickListener() {
         barChart.setOnChartValueSelectedListener(object : OnChartValueSelectedListener {
             override fun onValueSelected(e: Entry?, h: Highlight?) {
                 e?.let {
                     barChart.xAxis.removeAllLimitLines()
+
+                    // Get the selected hour and the corresponding busy count
                     val selectedHour = it.x.toInt()
-                    val limitLine = LimitLine(selectedHour.toFloat(), "Time: ${String.format("%02d:00", selectedHour)}")
+                    val busyCount = it.y.toInt() // how busy it is (attendance count)
+
+                    // Determine the busyness label
+                    val busynessLabel = when {
+                        busyCount < 12 -> "Not Busy"
+                        busyCount in 13..30 -> "Moderately Busy"
+                        else -> "Busy"
+                    }
+
+                    // Create the limit line label
+                    val limitLineText = "Time: ${String.format("%02d:00", selectedHour)}, $busynessLabel"
+                    val limitLine = LimitLine(selectedHour.toFloat(), limitLineText)
+
+                    // Set the appearance of the limit line
                     limitLine.lineColor = Color.RED
                     limitLine.textColor = Color.WHITE
                     limitLine.textSize = 12f
+
+                    // Determine if the selected bar is on the left or right side of the chart
+                    val midPoint = (barChart.highestVisibleX + barChart.lowestVisibleX) / 2
+                    limitLine.labelPosition = if (it.x > midPoint) {
+                        LimitLine.LimitLabelPosition.LEFT_TOP // Move label to the left for bars on the right
+                    } else {
+                        LimitLine.LimitLabelPosition.RIGHT_TOP // Move label to the right for bars on the left
+                    }
+
+                    // Add the limit line to the x-axis
                     barChart.xAxis.addLimitLine(limitLine)
-                    barChart.invalidate()
+                    barChart.invalidate() // Redraw the chart
                 }
             }
 
@@ -160,6 +199,8 @@ class Bookings : AppCompatActivity() {
             }
         })
     }
+
+
 
     private fun generateHourLabels(): Array<String> {
         return Array(24) { i -> String.format("%02d:00", i) }
