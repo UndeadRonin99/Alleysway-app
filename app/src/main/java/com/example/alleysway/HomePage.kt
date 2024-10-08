@@ -32,6 +32,7 @@ class HomePage : AppCompatActivity() {
 
     // Drawer (Settings Page) UI Elements
     private lateinit var imgProfile: ImageView
+    private lateinit var imgCamera: ImageView
     private lateinit var txtName: TextView
     private lateinit var btnViewP: Button
     private lateinit var btnUOM: Button
@@ -59,6 +60,12 @@ class HomePage : AppCompatActivity() {
 
 
         btnAttendance = findViewById(R.id.imageView7)
+        imgCamera = findViewById(R.id.btnCamera)
+        btnAttendance.setOnClickListener {
+            val intent = Intent(this, ScanQRCode::class.java)
+            startActivity(intent)
+        }
+
         btnAttendance.setOnClickListener {
             val intent = Intent(this, ScanQRCode::class.java)
             startActivity(intent)
