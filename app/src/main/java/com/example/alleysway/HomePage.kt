@@ -1,5 +1,6 @@
 package com.example.alleysway
 
+import Bookings
 import android.content.Intent
 import android.os.Bundle
 import android.text.InputType
@@ -57,6 +58,14 @@ class HomePage : AppCompatActivity() {
                 Toast.makeText(this, "Could not retrieve full name.", Toast.LENGTH_SHORT).show()
             }
         }
+        // Inside onCreate method
+        val btnBooking: ImageView = findViewById(R.id.btnBooking)
+        btnBooking.setOnClickListener {
+            // Navigate to the Bookings activity
+            val intent = Intent(this, Bookings::class.java)
+            startActivity(intent)
+        }
+
 
 
         btnAttendance = findViewById(R.id.imageView7)

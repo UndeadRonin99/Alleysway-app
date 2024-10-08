@@ -9,7 +9,11 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.MutableData
+import com.google.firebase.database.Transaction
 import com.google.firebase.ktx.Firebase
 import com.google.zxing.integration.android.IntentIntegrator
 import com.google.zxing.integration.android.IntentResult
@@ -58,23 +62,34 @@ class ScanQRCode : AppCompatActivity() {
     }
 
     private fun updateAttendance() {
-        // Get the currently logged-in user's ID
         val auth = FirebaseAuth.getInstance()
         val userId = auth.currentUser?.uid ?: return
 
-        // Reference to the attendance node for the user in Firebase
-        val databaseReference = FirebaseDatabase.getInstance().getReference("users").child(userId).child("attendance")
-
-        // Get today's date in the desired format
+        val databaseReference = FirebaseDatabase.getInstance().getReference("attendance")
         val todayDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
+        val currentHour = SimpleDateFormat("HH", Locale.getDefault()).format(Date()) // Get the hour of check-in
 
-        // Mark attendance for the current date
-        databaseReference.child(todayDate).setValue(true)
-            .addOnSuccessListener {
-                Toast.makeText(this, "Attendance Marked Successfully", Toast.LENGTH_SHORT).show()
+        // Increment the counter for the current hour
+        val hourlyAttendanceRef = databaseReference.child(todayDate).child(currentHour)
+        hourlyAttendanceRef.runTransaction(object : Transaction.Handler {
+            override fun doTransaction(currentData: MutableData): Transaction.Result {
+                val currentCount = currentData.getValue(Int::class.java) ?: 0
+                currentData.value = currentCount + 1
+                return Transaction.success(currentData)
             }
-            .addOnFailureListener {
-                Toast.makeText(this, "Failed to Mark Attendance", Toast.LENGTH_SHORT).show()
+
+            override fun onComplete(
+                error: DatabaseError?,
+                committed: Boolean,
+                currentData: DataSnapshot?
+            ) {
+                if (committed) {
+                    Toast.makeText(this@ScanQRCode, "Attendance Marked Successfully", Toast.LENGTH_SHORT).show()
+                } else {
+                    Toast.makeText(this@ScanQRCode, "Failed to Mark Attendance", Toast.LENGTH_SHORT).show()
+                }
             }
+        })
     }
+
 }

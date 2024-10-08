@@ -53,8 +53,16 @@
                 android:src="@drawable/pt_bookings"
                 android:contentDescription="Personal Trainer Image" />
 
+            <com.github.mikephil.charting.charts.BarChart
+                android:id="@+id/popularTimesChart"
+                android:layout_width="match_parent"
+                android:layout_height="400dp"
+                android:layout_marginTop="24dp" />
+
+
         </LinearLayout>
     </ScrollView>
+
 
     <!-- Bottom Navigation Bar -->
     <ImageView
