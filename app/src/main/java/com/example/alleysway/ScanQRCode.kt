@@ -3,14 +3,9 @@ package com.example.alleysway
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.ktx.Firebase
 import com.google.zxing.integration.android.IntentIntegrator
 import com.google.zxing.integration.android.IntentResult
 import java.text.SimpleDateFormat
@@ -39,6 +34,7 @@ class ScanQRCode : AppCompatActivity() {
         if (result != null) {
             if (result.contents == null) {
                 Toast.makeText(this, "Scan Cancelled", Toast.LENGTH_LONG).show()
+                this.finish()
             } else {
                 val scannedData = result.contents
                 val expectedData = "https://yourapp.com/attendance_checkin"  // The data embedded in your QR code
