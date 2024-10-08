@@ -19,12 +19,12 @@ import com.google.firebase.database.*
 import com.example.alleysway.R
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.collections.ArrayList
 
 class Bookings : AppCompatActivity() {
     private lateinit var barChart: BarChart
     private lateinit var databaseReference: DatabaseReference
     private val liveHour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY)
+    private val todayDayOfWeek = getCurrentDayOfWeek() // Get today's day in the same format as your data (e.g., "MON", "TUE")
     private val dayLabels = arrayOf("MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN")
     private var hourlyAttendanceData = mapOf<String, List<BarEntry>>()
 
@@ -77,7 +77,7 @@ class Bookings : AppCompatActivity() {
         hourlyData.forEach { entry ->
             completeHourlyData[entry.x.toInt()] = entry
         }
-        updateBarChart(completeHourlyData, generateHourLabels())
+        updateBarChart(completeHourlyData, generateHourLabels(), day)
     }
 
     private fun setupDayButtons() {
@@ -91,23 +91,44 @@ class Bookings : AppCompatActivity() {
             "SUN" to findViewById<Button>(R.id.btnSunday)
         )
 
+        // Highlight today's button on app load
+        highlightSelectedButton(todayDayOfWeek, dayButtons)
+
         dayButtons.forEach { (day, button) ->
             button.setOnClickListener {
+                // Load the data for the clicked day
                 loadHourlyDataForDay(day)
+
+                // Highlight the selected button
+                highlightSelectedButton(day, dayButtons)
             }
         }
     }
 
-    private fun updateBarChart(entries: List<BarEntry>, labels: Array<String>) {
+    private fun highlightSelectedButton(selectedDay: String, dayButtons: Map<String, Button>) {
+        // Reset all button background tints to default
+        dayButtons.forEach { (_, button) ->
+            button.backgroundTintList = getColorStateList(R.color.defaultButtonColor) // Default color
+        }
+
+        // Highlight the selected day button
+        dayButtons[selectedDay]?.backgroundTintList = getColorStateList(R.color.highlightButtonColor) // Highlight color
+    }
+
+    private fun updateBarChart(entries: List<BarEntry>, labels: Array<String>, currentDay: String) {
         val barDataSet = BarDataSet(entries, "Hourly Attendance")
 
-        // Customize colors based on busyness
+        // Customize colors based on busyness and current hour
         barDataSet.colors = entries.mapIndexed { i, entry ->
-            when {
-                entry.x.toInt() == liveHour -> Color.RED
-                entry.y > 30 -> Color.parseColor("#FFA726")
-                entry.y > 15 -> Color.parseColor("#FB8C00")
-                else -> Color.parseColor("#1E88E5")
+            // Only highlight the current hour in red if it's today's data
+            if (currentDay == todayDayOfWeek && entry.x.toInt() == liveHour) {
+                Color.RED // Highlight current hour only for today's data
+            } else if (entry.y > 30) {
+                Color.parseColor("#FFA726") // Busy
+            } else if (entry.y > 15) {
+                Color.parseColor("#FB8C00") // Moderately Busy
+            } else {
+                Color.parseColor("#FFB850") // Not Busy
             }
         }
 
@@ -124,6 +145,20 @@ class Bookings : AppCompatActivity() {
         barChart.invalidate()
     }
 
+    private fun getCurrentDayOfWeek(): String {
+        // Get the current day of the week as a string (e.g., "MON", "TUE")
+        val calendar = Calendar.getInstance()
+        return when (calendar.get(Calendar.DAY_OF_WEEK)) {
+            Calendar.MONDAY -> "MON"
+            Calendar.TUESDAY -> "TUE"
+            Calendar.WEDNESDAY -> "WED"
+            Calendar.THURSDAY -> "THU"
+            Calendar.FRIDAY -> "FRI"
+            Calendar.SATURDAY -> "SAT"
+            Calendar.SUNDAY -> "SUN"
+            else -> "MON"
+        }
+    }
 
     private fun setupBarChartStyle() {
         barChart.description.isEnabled = false
@@ -152,7 +187,6 @@ class Bookings : AppCompatActivity() {
         barChart.setBackgroundColor(Color.parseColor("#27262C"))
     }
 
-
     private fun setupChartValueClickListener() {
         barChart.setOnChartValueSelectedListener(object : OnChartValueSelectedListener {
             override fun onValueSelected(e: Entry?, h: Highlight?) {
@@ -166,7 +200,7 @@ class Bookings : AppCompatActivity() {
                     // Determine the busyness label
                     val busynessLabel = when {
                         busyCount < 12 -> "Not Busy"
-                        busyCount in 13..30 -> "Moderately Busy"
+                        busyCount in 13..25 -> "Moderately Busy"
                         else -> "Busy"
                     }
 
@@ -199,8 +233,6 @@ class Bookings : AppCompatActivity() {
             }
         })
     }
-
-
 
     private fun generateHourLabels(): Array<String> {
         return Array(24) { i -> String.format("%02d:00", i) }

@@ -51,7 +51,6 @@
                 android:src="@drawable/pt_bookings"
                 android:contentDescription="Personal Trainer Image" />
 
-            <!-- Day selection buttons with margin and customized background -->
             <LinearLayout
                 android:id="@+id/daySelectionLayout"
                 android:layout_width="match_parent"
@@ -59,89 +58,124 @@
                 android:orientation="horizontal"
                 android:gravity="center"
                 android:background="@drawable/button_background"
-            android:padding="8dp"
-            android:weightSum="7"
-            android:layout_marginTop="24dp">
+                android:padding="2dp"
+                android:weightSum="7"
+                android:layout_marginTop="25dp">
 
-            <!-- Monday Button -->
-            <Button
-                android:id="@+id/btnMonday"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:backgroundTint="#1E88E5"
-                android:text="MON"
-                android:textColor="@android:color/white"
-                android:layout_margin="4dp" />
+                <!-- Monday Button -->
+                <Button
+                    android:id="@+id/btnMonday"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:backgroundTint="#1E88E5"
+                    android:text="MON"
+                    android:textColor="@android:color/white"
+                    android:layout_margin="1dp"
+                    android:textSize="16sp"
+                    android:minWidth="75dp"
+                    android:ellipsize="none"
+                    android:singleLine="true"
+                    android:maxLines="1"/>
 
-            <!-- Tuesday Button -->
-            <Button
-                android:id="@+id/btnTuesday"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="wrap_content"
-                android:backgroundTint="#1E88E5"
-                android:text="TUE"
-                android:textColor="@android:color/white"
-                android:layout_margin="4dp" />
+                <!-- Tuesday Button -->
+                <Button
+                    android:id="@+id/btnTuesday"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="#1E88E5"
+                    android:text="TUE"
+                    android:textColor="@android:color/white"
+                    android:layout_margin="1dp"
+                    android:textSize="16sp"
+                    android:minWidth="75dp"
+                    android:ellipsize="none"
+                    android:singleLine="true"
+                    android:maxLines="1"/>
 
-            <!-- Wednesday Button -->
-            <Button
-                android:id="@+id/btnWednesday"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="wrap_content"
-                android:backgroundTint="#1E88E5"
-                android:text="WED"
-                android:textColor="@android:color/white"
-                android:layout_margin="4dp" />
+                <!-- Wednesday Button -->
+                <Button
+                    android:id="@+id/btnWednesday"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="#1E88E5"
+                    android:text="WED"
+                    android:textColor="@android:color/white"
+                    android:layout_margin="1dp"
+                    android:textSize="16sp"
+                    android:minWidth="75dp"
+                    android:ellipsize="none"
+                    android:singleLine="true"
+                    android:maxLines="1"/>
 
-            <!-- Thursday Button -->
-            <Button
-                android:id="@+id/btnThursday"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="wrap_content"
-                android:backgroundTint="#1E88E5"
-                android:text="THU"
-                android:textColor="@android:color/white"
-                android:layout_margin="4dp" />
+                <!-- Thursday Button -->
+                <Button
+                    android:id="@+id/btnThursday"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="#1E88E5"
+                    android:text="THU"
+                    android:textColor="@android:color/white"
+                    android:layout_margin="1dp"
+                    android:textSize="16sp"
+                    android:minWidth="75dp"
+                    android:ellipsize="none"
+                    android:singleLine="true"
+                    android:maxLines="1"/>
 
-            <!-- Friday Button -->
-            <Button
-                android:id="@+id/btnFriday"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="wrap_content"
-                android:backgroundTint="#1E88E5"
-                android:text="FRI"
-                android:textColor="@android:color/white"
-                android:layout_margin="4dp" />
+                <!-- Friday Button -->
+                <Button
+                    android:id="@+id/btnFriday"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="#1E88E5"
+                    android:text="FRI"
+                    android:textColor="@android:color/white"
+                    android:layout_margin="1dp"
+                    android:textSize="16sp"
+                    android:minWidth="75dp"
+                    android:ellipsize="none"
+                    android:singleLine="true"
+                    android:maxLines="1"/>
 
-            <!-- Saturday Button -->
-            <Button
-                android:id="@+id/btnSaturday"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="wrap_content"
-                android:backgroundTint="#1E88E5"
-                android:text="SAT"
-                android:textColor="@android:color/white"
-                android:layout_margin="4dp" />
+                <!-- Saturday Button -->
+                <Button
+                    android:id="@+id/btnSaturday"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="#1E88E5"
+                    android:text="SAT"
+                    android:textColor="@android:color/white"
+                    android:layout_margin="1dp"
+                    android:textSize="16sp"
+                    android:minWidth="75dp"
+                    android:ellipsize="none"
+                    android:singleLine="true"
+                    android:maxLines="1"/>
 
-            <!-- Sunday Button -->
-            <Button
-                android:id="@+id/btnSunday"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="wrap_content"
-                android:backgroundTint="#1E88E5"
-                android:text="SUN"
-                android:textColor="@android:color/white"
-                android:layout_margin="4dp" />
-        </LinearLayout>
+                <!-- Sunday Button -->
+                <Button
+                    android:id="@+id/btnSunday"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="#1E88E5"
+                    android:text="SUN"
+                    android:textColor="@android:color/white"
+                    android:layout_margin="1dp"
+                    android:textSize="16sp"
+                    android:minWidth="75dp"
+                    android:ellipsize="none"
+                    android:singleLine="true"
+                    android:maxLines="1"/>
+            </LinearLayout>
 
-        <!-- Bar Chart with no top margin to "touch" the buttons -->
+            <!-- Bar Chart with no top margin to "touch" the buttons -->
         <com.github.mikephil.charting.charts.BarChart
             android:id="@+id/popularTimesChart"
             android:layout_width="match_parent"
