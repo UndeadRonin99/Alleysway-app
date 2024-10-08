@@ -16,12 +16,12 @@
         tools:context=".HomePage">
 
         <!-- Your existing home page content -->
+
         <ImageView
             android:id="@+id/imageView15"
-            android:layout_width="278dp"
+            android:layout_width="wrap_content"
             android:layout_height="141dp"
-            android:layout_marginStart="57dp"
-            android:layout_marginEnd="58dp"
+            android:layout_marginTop="30dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -36,7 +36,6 @@
             android:layout_marginBottom="96dp"
             app:layout_constraintBottom_toTopOf="@+id/imageView6"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/imageView15"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/img_group" />
 
@@ -44,14 +43,10 @@
             android:id="@+id/imageView6"
             android:layout_width="327dp"
             android:layout_height="118dp"
-            android:layout_marginStart="33dp"
-            android:layout_marginTop="150dp"
-            android:layout_marginEnd="33dp"
-            android:layout_marginBottom="539dp"
-            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginTop="30dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/imageView15"
             app:srcCompat="@drawable/img_rectangle1" />
 
         <TextView
@@ -73,16 +68,13 @@
 
         <ImageView
             android:id="@+id/imageView7"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="22dp"
-            android:layout_marginTop="336dp"
-            android:layout_marginEnd="23dp"
-            android:layout_marginBottom="394dp"
+            android:layout_marginBottom="364dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/img_rectangle2" />
 
         <TextView
@@ -126,7 +118,7 @@
 
         <ImageView
             android:id="@+id/imageView10"
-            android:layout_width="395dp"
+            android:layout_width="0dp"
             android:layout_height="31dp"
             android:layout_marginBottom="70dp"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -265,18 +257,16 @@
         android:layout_height="match_parent"
         android:layout_gravity="end"> <!-- Set gravity here -->
 
-        <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:app="http://schemas.android.com/apk/res-auto"
-            xmlns:tools="http://schemas.android.com/tools"
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="220dp"
             android:layout_height="match_parent"
             android:background="#27262C">
 
             <ImageView
                 android:id="@+id/imgProfile"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_marginStart="26dp"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginStart="60dp"
                 android:layout_marginTop="26dp"
                 android:layout_marginEnd="22dp"
                 android:layout_marginBottom="37dp"
@@ -290,7 +280,7 @@
                 android:id="@+id/txtName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="22dp"
+                android:layout_marginStart="15dp"
                 android:layout_marginTop="36dp"
                 android:layout_marginEnd="60dp"
                 android:layout_marginBottom="48dp"
@@ -327,13 +317,15 @@
 
             <Button
                 android:id="@+id/btnViewP"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="17dp"
+                android:layout_marginEnd="8dp"
                 android:background="#27262C"
                 android:text="View profile"
                 android:textColor="#FFFFFF"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/imageView8"
                 app:layout_constraintTop_toBottomOf="@+id/imageView21" />
 
@@ -369,53 +361,61 @@
 
             <Button
                 android:id="@+id/btnDelAccount"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="26dp"
+                android:layout_marginEnd="8dp"
                 android:background="#27262C"
                 android:text="Delete account"
                 android:textColor="#FFFFFF"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/imageView18"
                 app:layout_constraintTop_toBottomOf="@+id/btnUOM" />
 
             <Button
                 android:id="@+id/btnUOM"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="31dp"
+                android:layout_marginEnd="8dp"
                 android:background="#27262C"
                 android:text="Unit of measurment"
                 android:textColor="#FFFFFF"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/imageView17"
                 app:layout_constraintTop_toBottomOf="@+id/btnViewP" />
 
             <Button
                 android:id="@+id/btnFAQ"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="250dp"
+                android:layout_marginEnd="8dp"
                 android:layout_marginBottom="128dp"
                 android:background="#27262C"
                 android:text="FAQ's"
                 android:textColor="#FFFFFF"
                 app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/imageView19"
                 app:layout_constraintTop_toBottomOf="@+id/btnDelAccount" />
 
             <Button
                 android:id="@+id/btnLogout"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="22dp"
+                android:layout_marginEnd="8dp"
                 android:layout_marginBottom="58dp"
                 android:background="#27262C"
                 android:text="Logout account"
                 android:textColor="#FFFC670B"
                 app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/imageView20"
                 app:layout_constraintTop_toBottomOf="@+id/btnFAQ" />
 

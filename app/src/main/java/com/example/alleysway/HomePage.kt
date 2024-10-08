@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.text.InputType
 import android.util.Log
 import android.widget.*
+import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
@@ -27,6 +28,7 @@ class HomePage : AppCompatActivity() {
 
     private lateinit var drawerLayout: DrawerLayout
     private lateinit var txtWelcome: TextView
+    private lateinit var btnAttendance: ImageView
 
     // Drawer (Settings Page) UI Elements
     private lateinit var imgProfile: ImageView
@@ -42,6 +44,7 @@ class HomePage : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home_page)
+        enableEdgeToEdge()
 
         txtWelcome = findViewById(R.id.txtWelcome)
         getFullName { fullName ->
@@ -52,6 +55,13 @@ class HomePage : AppCompatActivity() {
                 Log.e("HomePage", "Failed to retrieve user's full name.")
                 Toast.makeText(this, "Could not retrieve full name.", Toast.LENGTH_SHORT).show()
             }
+        }
+
+
+        btnAttendance = findViewById(R.id.imageView7)
+        btnAttendance.setOnClickListener {
+            val intent = Intent(this, ScanQRCode::class.java)
+            startActivity(intent)
         }
 
         // Initialize DrawerLayout and settings button

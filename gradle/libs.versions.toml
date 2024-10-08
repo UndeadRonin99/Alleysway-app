@@ -1,5 +1,6 @@
 [versions]
 agp = "8.5.1"
+core = "3.4.1"
 firebaseBom = "33.4.0"
 firebaseDatabaseKtx = "21.0.0"
 glideVersion = "4.15.1"
@@ -15,13 +16,16 @@ constraintlayout = "2.1.4"
 playServicesAuth = "21.2.0"
 firebaseAuthKtx = "23.0.0"
 firebaseStorageKtx = "21.0.1"
+zxingAndroidEmbeddedVersion = "4.3.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+core = { module = "com.google.zxing:core", version.ref = "core" }
 firebase-analytics = { module = "com.google.firebase:firebase-analytics" }
 firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
 firebase-database-ktx = { module = "com.google.firebase:firebase-database-ktx", version.ref = "firebaseDatabaseKtx" }
 github-glide = { module = "com.github.bumptech.glide:glide", version.ref = "glideVersion" }
+journeyapps-zxing-android-embedded = { module = "com.journeyapps:zxing-android-embedded", version.ref = "zxingAndroidEmbeddedVersion" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }

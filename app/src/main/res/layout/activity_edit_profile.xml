@@ -6,13 +6,14 @@
     android:id="@+id/container_edit_profile"
     android:layout_width="match_parent"
     android:layout_height="844dp"
-    android:background="@drawable/container_edit_profile">
+    android:background="@drawable/container_edit_profile"
+    tools:layout_editor_absoluteX="102dp"
+    tools:layout_editor_absoluteY="2dp">
 
     <TextView
         android:id="@+id/text_edit_profile"
-        android:layout_width="wrap_content"
+        android:layout_width="143dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="72dp"
         android:layout_marginTop="44dp"
         android:gravity="center_horizontal|center_vertical"
         android:includeFontPadding="false"
@@ -21,18 +22,19 @@
         android:text="Edit profile"
         android:textColor="#FFFFFFFF"
         android:textSize="30dp"
-        app:layout_constraintStart_toEndOf="@+id/btnBack"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
         android:id="@+id/imgPFP"
         android:layout_width="85dp"
         android:layout_height="85dp"
-        android:layout_marginStart="52dp"
         android:layout_marginTop="96dp"
         android:radius="200dp"
         android:scaleType="centerInside"
         android:src="@drawable/dft"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -40,8 +42,8 @@
         android:id="@+id/image_add_photo"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:layout_marginStart="50dp"
-        android:layout_marginTop="51dp"
+        android:layout_marginStart="52dp"
+        android:layout_marginTop="52dp"
         android:scaleType="centerInside"
         android:src="@drawable/image_add_photo"
         app:layout_constraintStart_toStartOf="@+id/imgPFP"
@@ -49,10 +51,10 @@
 
     <ImageView
         android:id="@+id/image_rectangle"
-        android:layout_width="310dp"
+        android:layout_width="311dp"
         android:layout_height="40dp"
-        android:layout_marginStart="40dp"
-        android:layout_marginEnd="40dp"
+        android:layout_marginStart="41dp"
+        android:layout_marginEnd="41dp"
         android:layout_marginBottom="20dp"
         android:background="@drawable/image_rectangle_name"
         android:scaleType="centerInside"
@@ -77,30 +79,28 @@
 
     <ImageView
         android:id="@+id/image_rectangle_name"
-        android:layout_width="310dp"
+        android:layout_width="311dp"
         android:layout_height="40dp"
-        android:layout_marginStart="40dp"
-        android:layout_marginEnd="40dp"
+        android:layout_marginStart="41dp"
+        android:layout_marginEnd="41dp"
         android:layout_marginBottom="20dp"
         android:background="@drawable/image_rectangle_name"
         android:scaleType="centerInside"
         app:layout_constraintBottom_toTopOf="@+id/text_username"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent" />
 
     <ImageView
         android:id="@+id/image_rectangle_username"
-        android:layout_width="310dp"
+        android:layout_width="311dp"
         android:layout_height="40dp"
-        android:layout_marginStart="40dp"
-        android:layout_marginEnd="40dp"
+        android:layout_marginStart="41dp"
+        android:layout_marginEnd="41dp"
         android:layout_marginBottom="432dp"
         android:background="@drawable/image_rectangle_username"
         android:scaleType="centerInside"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
@@ -145,65 +145,6 @@
         app:layout_constraintBottom_toTopOf="@+id/image_rectangle_name"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <TextView
-        android:id="@+id/text_gender"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="21dp"
-        android:layout_marginTop="34dp"
-        android:gravity="center_horizontal|center_vertical"
-        android:includeFontPadding="false"
-        android:maxLines="1"
-        android:singleLine="true"
-        android:text="Gender :"
-        android:textColor="#FFFFFFFF"
-        android:textSize="20dp"
-        app:layout_constraintStart_toEndOf="@+id/container_line"
-        app:layout_constraintTop_toBottomOf="@+id/text_edit_profile" />
-
-    <TextView
-        android:id="@+id/text_male"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="34dp"
-        android:clickable="true"
-        android:gravity="center_horizontal|center_vertical"
-        android:includeFontPadding="false"
-        android:maxLines="1"
-        android:singleLine="true"
-        android:text="Male"
-        android:textColor="#FFFFFFFF"
-        android:textSize="20dp"
-        app:layout_constraintStart_toEndOf="@+id/text_gender"
-        app:layout_constraintTop_toBottomOf="@+id/text_edit_profile" />
-
-    <TextView
-        android:id="@+id/text_female"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="34dp"
-        android:clickable="true"
-        android:gravity="center_horizontal|center_vertical"
-        android:includeFontPadding="false"
-        android:maxLines="1"
-        android:singleLine="true"
-        android:text="Female"
-        android:textColor="#FFFC670B"
-        android:textSize="20dp"
-        app:layout_constraintStart_toEndOf="@+id/text_male"
-        app:layout_constraintTop_toBottomOf="@+id/text_edit_profile" />
-
-    <ImageView
-        android:id="@+id/container_line"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="164dp"
-        android:layout_marginTop="17dp"
-        android:scaleType="centerInside"
-        android:src="@drawable/container_line"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/text_edit_profile" />
-
     <ImageView
         android:id="@+id/btnBack"
         android:layout_width="wrap_content"
@@ -217,8 +158,8 @@
 
     <EditText
         android:id="@+id/txtUsername"
-        android:layout_width="wrap_content"
-        android:layout_height="40dp"
+        android:layout_width="294dp"
+        android:layout_height="39dp"
         android:layout_marginStart="10dp"
         android:clickable="true"
         android:ems="10"
@@ -229,12 +170,14 @@
 
     <EditText
         android:id="@+id/txtEmail"
-        android:layout_width="211dp"
+        android:layout_width="297dp"
         android:layout_height="40dp"
         android:layout_marginStart="10dp"
         android:clickable="false"
         android:editable="false"
         android:ems="10"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
         android:inputType="text"
         android:text="Name"
         app:layout_constraintStart_toStartOf="@+id/image_rectangle_name"
@@ -242,12 +185,13 @@
 
     <EditText
         android:id="@+id/txtName"
-        android:layout_width="wrap_content"
+        android:layout_width="297dp"
         android:layout_height="40dp"
         android:layout_marginStart="10dp"
         android:clickable="false"
-        android:editable="false"
         android:ems="10"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
         android:inputType="text"
         android:text="Name"
         app:layout_constraintStart_toStartOf="@+id/image_rectangle"

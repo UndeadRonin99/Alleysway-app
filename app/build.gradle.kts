@@ -42,6 +42,8 @@ android {
 
 dependencies {
     implementation(libs.github.glide)
+    implementation(libs.journeyapps.zxing.android.embedded)
+    implementation(libs.core)
 
     implementation(libs.play.services.auth)
     // Add Firebase Realtime Database dependency
