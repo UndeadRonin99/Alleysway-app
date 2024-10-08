@@ -3,10 +3,7 @@ package com.example.alleysway
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.DataSnapshot
@@ -43,6 +40,7 @@ class ScanQRCode : AppCompatActivity() {
         if (result != null) {
             if (result.contents == null) {
                 Toast.makeText(this, "Scan Cancelled", Toast.LENGTH_LONG).show()
+                this.finish()
             } else {
                 val scannedData = result.contents
                 val expectedData = "https://yourapp.com/attendance_checkin"  // The data embedded in your QR code
@@ -65,7 +63,10 @@ class ScanQRCode : AppCompatActivity() {
         val auth = FirebaseAuth.getInstance()
         val userId = auth.currentUser?.uid ?: return
 
-        val databaseReference = FirebaseDatabase.getInstance().getReference("attendance")
+        // Reference to the attendance node for the user in Firebase
+        val databaseReference = FirebaseDatabase.getInstance().getReference("users").child(userId).child("attendance")
+
+        // Get today's date in the desired format
         val todayDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
         val currentHour = SimpleDateFormat("HH", Locale.getDefault()).format(Date()) // Get the hour of check-in
 
