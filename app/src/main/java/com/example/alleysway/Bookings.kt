@@ -4,28 +4,29 @@ import android.graphics.Color
 import android.icu.util.Calendar
 import android.os.Bundle
 import android.widget.Button
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.github.mikephil.charting.charts.BarChart
+import com.github.mikephil.charting.components.LimitLine
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
+import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
 import com.github.mikephil.charting.highlight.Highlight
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener
 import com.google.firebase.database.*
 import com.example.alleysway.R
 import java.text.SimpleDateFormat
-import java.util.Locale
+import java.util.*
+import kotlin.collections.ArrayList
 
 class Bookings : AppCompatActivity() {
     private lateinit var barChart: BarChart
     private lateinit var databaseReference: DatabaseReference
-    private val liveHour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY)  // Current hour
-
+    private val liveHour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY)
     private val dayLabels = arrayOf("MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN")
-    private var hourlyAttendanceData = mapOf<String, List<BarEntry>>()  // Stores hourly data for each day
+    private var hourlyAttendanceData = mapOf<String, List<BarEntry>>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,7 +37,8 @@ class Bookings : AppCompatActivity() {
 
         setupBarChartStyle()
         loadWeeklyData()
-        setupDayButtons()  // Setup buttons for day selection
+        setupDayButtons()
+        setupChartValueClickListener()
     }
 
     private fun loadWeeklyData() {
@@ -45,35 +47,35 @@ class Bookings : AppCompatActivity() {
                 val tempHourlyData = mutableMapOf<String, List<BarEntry>>()
 
                 for (daySnapshot in snapshot.children) {
-                    val dateKey = daySnapshot.key ?: continue  // Example: "2024-10-08"
-                    val dayOfWeek = getDayOfWeek(dateKey)  // Get day of the week (e.g., "TUE" for Tuesday)
+                    val dateKey = daySnapshot.key ?: continue
+                    val dayOfWeek = getDayOfWeek(dateKey)
                     val hourlyDataForDay = mutableListOf<BarEntry>()
 
                     for (hourSnapshot in daySnapshot.children) {
-                        val hour = hourSnapshot.key?.toInt() ?: 0  // Get the hour (e.g., 18 for 18:00)
+                        val hour = hourSnapshot.key?.toInt() ?: 0
                         val count = hourSnapshot.getValue(Int::class.java) ?: 0
-                        hourlyDataForDay.add(BarEntry(hour.toFloat(), count.toFloat()))  // Use the hour as the X-value
+                        hourlyDataForDay.add(BarEntry(hour.toFloat(), count.toFloat()))
                     }
 
-                    tempHourlyData[dayOfWeek] = hourlyDataForDay  // Map data to correct day of the week
+                    tempHourlyData[dayOfWeek] = hourlyDataForDay
                 }
 
-                hourlyAttendanceData = tempHourlyData  // Store hourly data
-                val currentDay = getDayOfWeek(SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Calendar.getInstance().time))  // Get current day
-                loadHourlyDataForDay(currentDay)  // Load data for the current day
+                hourlyAttendanceData = tempHourlyData
+                val currentDay = getDayOfWeek(SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Calendar.getInstance().time))
+                loadHourlyDataForDay(currentDay)
             }
 
             override fun onCancelled(error: DatabaseError) {
-                Toast.makeText(this@Bookings, "Failed to load data", Toast.LENGTH_SHORT).show()
+                // Error handling
             }
         })
     }
 
     private fun loadHourlyDataForDay(day: String) {
         val hourlyData = hourlyAttendanceData[day] ?: listOf()
-        val completeHourlyData = Array(24) { i -> BarEntry(i.toFloat(), 0f) }.toMutableList()  // Fill with zeros
+        val completeHourlyData = MutableList(24) { i -> BarEntry(i.toFloat(), 0f) }
         hourlyData.forEach { entry ->
-            completeHourlyData[entry.x.toInt()] = entry  // Replace zeros with actual data where available
+            completeHourlyData[entry.x.toInt()] = entry
         }
         updateBarChart(completeHourlyData, generateHourLabels())
     }
@@ -89,7 +91,7 @@ class Bookings : AppCompatActivity() {
             "SUN" to findViewById<Button>(R.id.btnSunday)
         )
 
-        for ((day, button) in dayButtons) {
+        dayButtons.forEach { (day, button) ->
             button.setOnClickListener {
                 loadHourlyDataForDay(day)
             }
@@ -98,20 +100,21 @@ class Bookings : AppCompatActivity() {
 
     private fun updateBarChart(entries: List<BarEntry>, labels: Array<String>) {
         val barDataSet = BarDataSet(entries, "Hourly Attendance")
-        barDataSet.color = Color.parseColor("#1E88E5")  // Default bar color (blue)
-        barDataSet.setDrawValues(false)  // Disable value text on bars
 
-        // Highlight the live hour in red, only for the current day
-        entries.find { it.x.toInt() == liveHour }?.let {
-            barDataSet.setColors(*IntArray(entries.size) { i ->
-                if (i == liveHour) Color.RED else Color.parseColor("#1E88E5")
-            })
+        barDataSet.colors = entries.mapIndexed { i, entry ->
+            when {
+                entry.x.toInt() == liveHour -> Color.RED
+                entry.y > 30 -> Color.parseColor("#FFA726")
+                entry.y > 15 -> Color.parseColor("#FB8C00")
+                else -> Color.parseColor("#1E88E5")
+            }
         }
 
+        barDataSet.setDrawValues(false)
         val barData = BarData(barDataSet)
         barChart.data = barData
         barChart.xAxis.valueFormatter = IndexAxisValueFormatter(labels)
-        barChart.invalidate()  // Refresh the chart with the new data
+        barChart.invalidate()
     }
 
     private fun setupBarChartStyle() {
@@ -120,38 +123,48 @@ class Bookings : AppCompatActivity() {
         barChart.setDrawBarShadow(false)
         barChart.setPinchZoom(false)
 
-        // Styling x-axis (moved to the bottom)
         val xAxis = barChart.xAxis
-        xAxis.position = XAxis.XAxisPosition.BOTTOM  // Moved to the bottom
+        xAxis.position = XAxis.XAxisPosition.BOTTOM
         xAxis.setDrawGridLines(false)
         xAxis.setDrawAxisLine(false)
-        xAxis.textColor = Color.BLACK
+        xAxis.textColor = Color.WHITE
         xAxis.textSize = 12f
 
-        // Disable left Y-axis
-        barChart.axisLeft.isEnabled = false  // Disable the left Y-axis
-
-        // Disable right Y-axis
+        barChart.axisLeft.isEnabled = false
         barChart.axisRight.isEnabled = false
-
-        // Remove the legend
         barChart.legend.isEnabled = false
-
-        // Set background color
-        barChart.setBackgroundColor(Color.WHITE)
-
-        // Enable horizontal scrolling
+        barChart.setBackgroundColor(Color.parseColor("#27262C"))
         barChart.isDragEnabled = true
-        barChart.setScaleEnabled(false)  // Disable zooming in/out
-        barChart.setVisibleXRangeMaximum(6f)  // Show only 6 hours at a time
+        barChart.setScaleEnabled(false)
+        barChart.setVisibleXRangeMaximum(6f)
     }
 
-    // Show the hours in HH:00 format
+    private fun setupChartValueClickListener() {
+        barChart.setOnChartValueSelectedListener(object : OnChartValueSelectedListener {
+            override fun onValueSelected(e: Entry?, h: Highlight?) {
+                e?.let {
+                    barChart.xAxis.removeAllLimitLines()
+                    val selectedHour = it.x.toInt()
+                    val limitLine = LimitLine(selectedHour.toFloat(), "Time: ${String.format("%02d:00", selectedHour)}")
+                    limitLine.lineColor = Color.RED
+                    limitLine.textColor = Color.WHITE
+                    limitLine.textSize = 12f
+                    barChart.xAxis.addLimitLine(limitLine)
+                    barChart.invalidate()
+                }
+            }
+
+            override fun onNothingSelected() {
+                barChart.xAxis.removeAllLimitLines()
+                barChart.invalidate()
+            }
+        })
+    }
+
     private fun generateHourLabels(): Array<String> {
-        return Array(24) { i -> String.format("%02d:00", i) }  // Labels: 00:00, 01:00, ..., 23:00
+        return Array(24) { i -> String.format("%02d:00", i) }
     }
 
-    // Function to convert a date string to a day of the week (e.g., "2024-10-08" -> "TUE")
     private fun getDayOfWeek(dateString: String): String {
         val format = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
         val date = format.parse(dateString)
@@ -166,29 +179,7 @@ class Bookings : AppCompatActivity() {
             Calendar.FRIDAY -> "FRI"
             Calendar.SATURDAY -> "SAT"
             Calendar.SUNDAY -> "SUN"
-            else -> "MON"  // Default to Monday in case of error
-        }
-    }
-
-    // Live sample data load
-    private fun loadSampleData() {
-        val sampleData = mapOf(
-            "2024-10-08" to mapOf(
-                "06" to 5,  // 5 people checked in at 6 AM
-                "09" to 15,  // 15 people checked in at 9 AM
-                "12" to 25,  // 25 people checked in at 12 PM
-                "18" to 50,  // 50 people checked in at 6 PM (Live hour)
-                "19" to 45,  // 45 people checked in at 7 PM
-                "20" to 30   // 30 people checked in at 8 PM
-            )
-            // Add more days and data here...
-        )
-
-        val databaseReference = FirebaseDatabase.getInstance().getReference("attendance")
-        databaseReference.setValue(sampleData).addOnSuccessListener {
-            Toast.makeText(this, "Sample data loaded successfully", Toast.LENGTH_SHORT).show()
-        }.addOnFailureListener {
-            Toast.makeText(this, "Failed to load sample data", Toast.LENGTH_SHORT).show()
+            else -> "MON"
         }
     }
 }
