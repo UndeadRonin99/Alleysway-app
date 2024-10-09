@@ -21,6 +21,9 @@
             android:name=".Workouts"
             android:exported="false" />
         <activity
+            android:name=".Tracker"
+            android:exported="false" />
+        <activity
             android:name=".Bookings"
             android:exported="false" />
         <activity
