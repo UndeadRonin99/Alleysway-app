@@ -4,7 +4,11 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.InputType
 import android.util.Log
-import android.widget.*
+import android.widget.Button
+import android.widget.EditText
+import android.widget.ImageView
+import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -12,10 +16,12 @@ import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
-import com.google.android.gms.auth.api.signin.*
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
-import com.google.firebase.auth.*
+import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.EmailAuthProvider
+import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.DataSnapshot
@@ -29,10 +35,11 @@ class HomePage : AppCompatActivity() {
     private lateinit var drawerLayout: DrawerLayout
     private lateinit var txtWelcome: TextView
     private lateinit var btnAttendance: ImageView
+    private lateinit var btnScan: ImageView
+    private lateinit var btnWorkout: ImageView
 
     // Drawer (Settings Page) UI Elements
     private lateinit var imgProfile: ImageView
-    private lateinit var imgCamera: ImageView
     private lateinit var txtName: TextView
     private lateinit var btnViewP: Button
     private lateinit var btnUOM: Button
@@ -77,9 +84,18 @@ class HomePage : AppCompatActivity() {
 
 
         btnAttendance = findViewById(R.id.imageView7)
-        imgCamera = findViewById(R.id.btnCamera)
+        btnScan = findViewById(R.id.btnCamera)
+        btnWorkout = findViewById(R.id.btnWorkout)
         btnAttendance.setOnClickListener {
             val intent = Intent(this, ScanQRCode::class.java)
+            startActivity(intent)
+        }
+        btnScan.setOnClickListener {
+            val intent = Intent(this, ScanQRCode::class.java)
+            startActivity(intent)
+        }
+        btnWorkout.setOnClickListener{
+            val intent = Intent(this, Workouts::class.java)
             startActivity(intent)
         }
 
@@ -153,9 +169,6 @@ class HomePage : AppCompatActivity() {
 
         // Close the drawer when clicking outside
         drawerLayout.addDrawerListener(object : DrawerLayout.SimpleDrawerListener() {
-            override fun onDrawerClosed(drawerView: android.view.View) {
-                super.onDrawerClosed(drawerView)
-            }
         })
     }
 
