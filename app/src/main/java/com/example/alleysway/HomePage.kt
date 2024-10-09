@@ -63,6 +63,15 @@ class HomePage : AppCompatActivity() {
             // Navigate to the Bookings activity
             val intent = Intent(this, Bookings::class.java)
             startActivity(intent)
+
+        }
+        // Inside onCreate method
+        val btnWorkout: ImageView = findViewById(R.id.btnWorkout)
+        btnWorkout.setOnClickListener {
+            // Navigate to the Bookings activity
+            val intent = Intent(this, Tracker::class.java)
+            startActivity(intent)
+
         }
 
 

@@ -1,9 +1,11 @@
 package com.example.alleysway
 
+import android.content.Intent
 import android.graphics.Color
 import android.icu.util.Calendar
 import android.os.Bundle
 import android.widget.Button
+import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.components.LimitLine
@@ -39,6 +41,21 @@ class Bookings : AppCompatActivity() {
         loadWeeklyData()
         setupDayButtons()
         setupChartValueClickListener()
+
+    // Inside onCreate method
+    val btnWorkout: ImageView = findViewById(R.id.btnWorkout)
+        btnWorkout.setOnClickListener {
+        // Navigate to the Bookings activity
+        val intent = Intent(this, Tracker::class.java)
+        startActivity(intent) }
+
+        val btnHome: ImageView = findViewById(R.id.btnHome)
+        btnHome.setOnClickListener {
+            // Navigate to the Bookings activity
+            val intent = Intent(this, Tracker::class.java)
+            startActivity(intent) }
+
+
     }
 
     private fun loadWeeklyData() {
