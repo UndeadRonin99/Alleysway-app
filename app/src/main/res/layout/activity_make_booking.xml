@@ -83,7 +83,7 @@
         app:layout_constraintEnd_toEndOf="@+id/imageView9"
         app:layout_constraintStart_toStartOf="@+id/imageView9"
         app:layout_constraintTop_toTopOf="@+id/imageView9"
-        app:srcCompat="@drawable/img_home_icon" />
+        app:srcCompat="@drawable/img_home_icon_unselected" />
 
     <ImageView
         android:id="@+id/btnBooking"
@@ -97,7 +97,7 @@
         app:layout_constraintEnd_toEndOf="@+id/imageView9"
         app:layout_constraintStart_toStartOf="@+id/imageView9"
         app:layout_constraintTop_toTopOf="@+id/imageView9"
-        app:srcCompat="@drawable/img_bookings_icon" />
+        app:srcCompat="@drawable/bookings_selected" />
 
     <ImageView
         android:id="@+id/btnCamera"
@@ -148,7 +148,7 @@
         android:layout_marginBottom="3dp"
         android:text="Home"
         android:textAlignment="center"
-        android:textColor="#FC670B"
+        android:textColor="#676D75"
         app:layout_constraintBottom_toBottomOf="@+id/imageView9"
         app:layout_constraintEnd_toEndOf="@+id/imageView9"
         app:layout_constraintStart_toStartOf="@+id/imageView9" />
@@ -163,7 +163,7 @@
         android:layout_marginBottom="2dp"
         android:text="Bookings"
         android:textAlignment="center"
-        android:textColor="#676D75"
+        android:textColor="#FC670B"
         app:layout_constraintBottom_toBottomOf="@+id/imageView9"
         app:layout_constraintEnd_toEndOf="@+id/imageView9"
         app:layout_constraintStart_toStartOf="@+id/imageView9"
