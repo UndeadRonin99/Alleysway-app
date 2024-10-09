@@ -61,7 +61,7 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 
-    implementation("com.github.PhilJay:MPAndroidChart:3.1.0")
+    implementation(libs.mpandroidchart.v310)
 
 
 
