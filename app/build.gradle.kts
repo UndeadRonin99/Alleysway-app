@@ -44,6 +44,11 @@ dependencies {
     implementation(libs.github.glide)
     implementation(libs.journeyapps.zxing.android.embedded)
     implementation(libs.core)
+    implementation(libs.coil)
+    implementation(libs.coil.gif)
+    implementation(libs.coil.video) // AVIF support
+    implementation(libs.kotlinx.coroutines.android)
+
 
     implementation(libs.play.services.auth)
     // Add Firebase Realtime Database dependency

@@ -1,8 +1,10 @@
 [versions]
 agp = "8.5.1"
+coil = "2.0.0"
 core = "3.4.1"
 firebaseBom = "33.4.0"
 firebaseDatabaseKtx = "21.0.0"
+githubAvifDecoder = "1.3.0"
 glideVersion = "4.15.1"
 kotlin = "1.9.0"
 coreKtx = "1.13.1"
@@ -10,6 +12,7 @@ junit = "4.13.2"
 junitVersion = "1.2.1"
 espressoCore = "3.6.1"
 appcompat = "1.7.0"
+kotlinxCoroutinesAndroid = "1.7.3"
 material = "1.12.0"
 activity = "1.9.1"
 constraintlayout = "2.1.4"
@@ -22,16 +25,21 @@ zxingAndroidEmbeddedVersion = "4.3.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+coil = { module = "io.coil-kt:coil", version.ref = "coil" }
+coil-gif = { module = "io.coil-kt:coil-gif", version.ref = "coil" }
+coil-video = { module = "io.coil-kt:coil-video", version.ref = "coil" }
 core = { module = "com.google.zxing:core", version.ref = "core" }
 firebase-analytics = { module = "com.google.firebase:firebase-analytics" }
 firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
 firebase-database-ktx = { module = "com.google.firebase:firebase-database-ktx", version.ref = "firebaseDatabaseKtx" }
+github-avif-decoder = { module = "com.github.xiaoqi_avif:avif-decoder", version.ref = "githubAvifDecoder" }
 github-glide = { module = "com.github.bumptech.glide:glide", version.ref = "glideVersion" }
 journeyapps-zxing-android-embedded = { module = "com.journeyapps:zxing-android-embedded", version.ref = "zxingAndroidEmbeddedVersion" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
+kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlinxCoroutinesAndroid" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 androidx-activity = { group = "androidx.activity", name = "activity", version.ref = "activity" }
 androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }

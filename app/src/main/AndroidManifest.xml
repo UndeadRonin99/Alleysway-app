@@ -18,6 +18,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.CodiaDemo">
         <activity
+            android:name=".FinalizeBookings"
+            android:exported="false" />
+        <activity
+            android:name=".MakeBooking"
+            android:exported="false" />
+        <activity
             android:name=".Workouts"
             android:exported="false" />
         <activity

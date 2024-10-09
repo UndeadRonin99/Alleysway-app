@@ -1,9 +1,12 @@
 package com.example.alleysway
 
+import android.content.Intent
 import android.graphics.Color
 import android.icu.util.Calendar
 import android.os.Bundle
 import android.widget.Button
+import android.widget.ImageView
+import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.components.LimitLine
@@ -11,23 +14,23 @@ import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
+import com.github.mikephil.charting.data.Entry
+import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
+import com.github.mikephil.charting.highlight.Highlight
+import com.github.mikephil.charting.listener.OnChartValueSelectedListener
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
-import com.github.mikephil.charting.data.Entry
-import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
-import com.github.mikephil.charting.highlight.Highlight
-import com.github.mikephil.charting.listener.OnChartValueSelectedListener
-import com.google.firebase.database.*
-import com.example.alleysway.R
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Locale
 
 class Bookings : AppCompatActivity() {
     private lateinit var barChart: BarChart
     private lateinit var databaseReference: DatabaseReference
+    private lateinit var btnMakeBooking: ImageView
+
     private val liveHour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY)
     private val todayDayOfWeek = getCurrentDayOfWeek() // Get today's day in the same format as your data (e.g., "MON", "TUE")
     private val dayLabels = arrayOf("MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN")
@@ -40,6 +43,12 @@ class Bookings : AppCompatActivity() {
 
         barChart = findViewById(R.id.popularTimesChart)
         databaseReference = FirebaseDatabase.getInstance().getReference("attendance")
+        btnMakeBooking = findViewById(R.id.ptImage)
+
+        btnMakeBooking.setOnClickListener {
+            val intent = Intent(this, MakeBooking::class.java)
+            startActivity(intent)
+        }
 
         setupBarChartStyle()
         loadWeeklyData()
