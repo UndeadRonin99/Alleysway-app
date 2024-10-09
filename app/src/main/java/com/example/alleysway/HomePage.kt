@@ -70,13 +70,28 @@ class HomePage : AppCompatActivity() {
             // Navigate to the Bookings activity
             val intent = Intent(this, Bookings::class.java)
             startActivity(intent)
+
         }
+        // Inside onCreate method
+        val btnWorkout: ImageView = findViewById(R.id.btnWorkout)
+        btnWorkout.setOnClickListener {
+            // Navigate to the Bookings activity
+            val intent = Intent(this, Tracker::class.java)
+            startActivity(intent)
+
+        }
+
+        val btnTracker: ImageView = findViewById(R.id.btnTracker)
+        btnTracker.setOnClickListener {
+            // Navigate to the Bookings activity
+            val intent = Intent(this, Tracker::class.java)
+            startActivity(intent) }
+
 
 
 
         btnAttendance = findViewById(R.id.imageView7)
         btnScan = findViewById(R.id.btnCamera)
-        btnWorkout = findViewById(R.id.btnWorkout)
         btnAttendance.setOnClickListener {
             val intent = Intent(this, ScanQRCode::class.java)
             startActivity(intent)
