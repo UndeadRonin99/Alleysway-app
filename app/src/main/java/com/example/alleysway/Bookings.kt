@@ -50,14 +50,20 @@ class Bookings : AppCompatActivity() {
         setupChartValueClickListener()
 
     // Inside onCreate method
-    val btnWorkout: ImageView = findViewById(R.id.btnWorkout)
-        btnWorkout.setOnClickListener {
+    val btnHome: ImageView = findViewById(R.id.btnHome)
+        btnHome.setOnClickListener {
         // Navigate to the Bookings activity
-        val intent = Intent(this, Tracker::class.java)
+        val intent = Intent(this, HomePage::class.java)
         startActivity(intent) }
 
-        val btnHome: ImageView = findViewById(R.id.btnHome)
-        btnHome.setOnClickListener {
+        val btnWorkout: ImageView = findViewById(R.id.btnWorkout)
+        btnWorkout.setOnClickListener {
+            // Navigate to the Bookings activity
+            val intent = Intent(this, Workouts::class.java)
+            startActivity(intent) }
+
+        val btnTracker: ImageView = findViewById(R.id.btnTracker)
+        btnTracker.setOnClickListener {
             // Navigate to the Bookings activity
             val intent = Intent(this, Tracker::class.java)
             startActivity(intent) }

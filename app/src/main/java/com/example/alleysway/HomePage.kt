@@ -81,6 +81,13 @@ class HomePage : AppCompatActivity() {
 
         }
 
+        val btnTracker: ImageView = findViewById(R.id.btnTracker)
+        btnTracker.setOnClickListener {
+            // Navigate to the Bookings activity
+            val intent = Intent(this, Tracker::class.java)
+            startActivity(intent) }
+
+
 
 
         btnAttendance = findViewById(R.id.imageView7)
