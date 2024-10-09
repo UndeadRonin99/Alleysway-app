@@ -20,6 +20,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.CodiaDemo">
         <activity
+            android:name=".Tracker_calender"
+            android:exported="false" />
+        <activity
             android:name=".FinalizeBookings"
             android:exported="false" />
         <activity
