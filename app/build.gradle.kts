@@ -50,6 +50,10 @@ dependencies {
     implementation(libs.kotlinx.coroutines.android)
 
 
+
+    implementation(libs.google.play.services.auth.v2040)
+    implementation(libs.google.api.client)
+    implementation(libs.google.api.services.calendar)
     implementation(libs.play.services.auth)
     // Add Firebase Realtime Database dependency
     implementation(libs.firebase.database.ktx)
@@ -62,6 +66,8 @@ dependencies {
     implementation(libs.androidx.constraintlayout)
     implementation(libs.firebase.auth.ktx)
     implementation(libs.firebase.storage.ktx)
+    implementation(libs.androidx.ui.graphics.android)
+    implementation(libs.androidx.material3.android)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
