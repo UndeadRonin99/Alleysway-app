@@ -85,7 +85,6 @@ class HomePage : AppCompatActivity() {
 
         btnAttendance = findViewById(R.id.imageView7)
         btnScan = findViewById(R.id.btnCamera)
-        btnWorkout = findViewById(R.id.btnWorkout)
         btnAttendance.setOnClickListener {
             val intent = Intent(this, ScanQRCode::class.java)
             startActivity(intent)
