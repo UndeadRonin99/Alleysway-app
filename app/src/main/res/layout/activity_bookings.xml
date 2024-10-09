@@ -68,112 +68,112 @@
                     android:id="@+id/btnMonday"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_margin="1dp"
                     android:layout_weight="1"
                     android:backgroundTint="#1E88E5"
+                    android:ellipsize="none"
+                    android:maxLines="1"
+                    android:minWidth="75dp"
+                    android:singleLine="true"
                     android:text="MON"
                     android:textColor="@android:color/white"
-                    android:layout_margin="1dp"
-                    android:textSize="16sp"
-                    android:minWidth="75dp"
-                    android:ellipsize="none"
-                    android:singleLine="true"
-                    android:maxLines="1"/>
+                    android:textSize="12sp" />
 
                 <!-- Tuesday Button -->
                 <Button
                     android:id="@+id/btnTuesday"
                     android:layout_width="0dp"
-                    android:layout_weight="1"
                     android:layout_height="wrap_content"
+                    android:layout_margin="1dp"
+                    android:layout_weight="1"
                     android:backgroundTint="#1E88E5"
+                    android:ellipsize="none"
+                    android:maxLines="1"
+                    android:minWidth="75dp"
+                    android:singleLine="true"
                     android:text="TUE"
                     android:textColor="@android:color/white"
-                    android:layout_margin="1dp"
-                    android:textSize="16sp"
-                    android:minWidth="75dp"
-                    android:ellipsize="none"
-                    android:singleLine="true"
-                    android:maxLines="1"/>
+                    android:textSize="12sp" />
 
                 <!-- Wednesday Button -->
                 <Button
                     android:id="@+id/btnWednesday"
                     android:layout_width="0dp"
-                    android:layout_weight="1"
                     android:layout_height="wrap_content"
+                    android:layout_margin="1dp"
+                    android:layout_weight="1"
                     android:backgroundTint="#1E88E5"
+                    android:ellipsize="none"
+                    android:maxLines="1"
+                    android:minWidth="75dp"
+                    android:singleLine="true"
                     android:text="WED"
                     android:textColor="@android:color/white"
-                    android:layout_margin="1dp"
-                    android:textSize="16sp"
-                    android:minWidth="75dp"
-                    android:ellipsize="none"
-                    android:singleLine="true"
-                    android:maxLines="1"/>
+                    android:textSize="12sp" />
 
                 <!-- Thursday Button -->
                 <Button
                     android:id="@+id/btnThursday"
                     android:layout_width="0dp"
-                    android:layout_weight="1"
                     android:layout_height="wrap_content"
+                    android:layout_margin="1dp"
+                    android:layout_weight="1"
                     android:backgroundTint="#1E88E5"
+                    android:ellipsize="none"
+                    android:maxLines="1"
+                    android:minWidth="75dp"
+                    android:singleLine="true"
                     android:text="THU"
                     android:textColor="@android:color/white"
-                    android:layout_margin="1dp"
-                    android:textSize="16sp"
-                    android:minWidth="75dp"
-                    android:ellipsize="none"
-                    android:singleLine="true"
-                    android:maxLines="1"/>
+                    android:textSize="12sp" />
 
                 <!-- Friday Button -->
                 <Button
                     android:id="@+id/btnFriday"
                     android:layout_width="0dp"
-                    android:layout_weight="1"
                     android:layout_height="wrap_content"
+                    android:layout_margin="1dp"
+                    android:layout_weight="1"
                     android:backgroundTint="#1E88E5"
+                    android:ellipsize="none"
+                    android:maxLines="1"
+                    android:minWidth="75dp"
+                    android:singleLine="true"
                     android:text="FRI"
                     android:textColor="@android:color/white"
-                    android:layout_margin="1dp"
-                    android:textSize="16sp"
-                    android:minWidth="75dp"
-                    android:ellipsize="none"
-                    android:singleLine="true"
-                    android:maxLines="1"/>
+                    android:textSize="12sp" />
 
                 <!-- Saturday Button -->
                 <Button
                     android:id="@+id/btnSaturday"
                     android:layout_width="0dp"
-                    android:layout_weight="1"
                     android:layout_height="wrap_content"
+                    android:layout_margin="1dp"
+                    android:layout_weight="1"
                     android:backgroundTint="#1E88E5"
+                    android:ellipsize="none"
+                    android:maxLines="1"
+                    android:minWidth="75dp"
+                    android:singleLine="true"
                     android:text="SAT"
                     android:textColor="@android:color/white"
-                    android:layout_margin="1dp"
-                    android:textSize="16sp"
-                    android:minWidth="75dp"
-                    android:ellipsize="none"
-                    android:singleLine="true"
-                    android:maxLines="1"/>
+                    android:textSize="12sp" />
 
                 <!-- Sunday Button -->
                 <Button
                     android:id="@+id/btnSunday"
                     android:layout_width="0dp"
-                    android:layout_weight="1"
                     android:layout_height="wrap_content"
+                    android:layout_margin="1dp"
+                    android:layout_weight="1"
                     android:backgroundTint="#1E88E5"
+                    android:ellipsize="none"
+                    android:maxLines="1"
+                    android:minWidth="75dp"
+                    android:singleLine="true"
                     android:text="SUN"
                     android:textColor="@android:color/white"
-                    android:layout_margin="1dp"
-                    android:textSize="16sp"
-                    android:minWidth="75dp"
-                    android:ellipsize="none"
-                    android:singleLine="true"
-                    android:maxLines="1"/>
+                    android:textSize="12sp" />
             </LinearLayout>
 
             <!-- Bar Chart with no top margin to "touch" the buttons -->

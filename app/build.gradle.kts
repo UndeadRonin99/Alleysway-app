@@ -27,6 +27,7 @@ android {
             )
         }
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
@@ -34,11 +35,7 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
-
-    
 }
-
-
 
 dependencies {
     implementation(libs.github.glide)
@@ -49,31 +46,21 @@ dependencies {
     implementation(libs.coil.video) // AVIF support
     implementation(libs.kotlinx.coroutines.android)
 
-
-
-    implementation(libs.google.play.services.auth.v2040)
-    implementation(libs.google.api.client)
-    implementation(libs.google.api.services.calendar)
     implementation(libs.play.services.auth)
-    // Add Firebase Realtime Database dependency
     implementation(libs.firebase.database.ktx)
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.analytics)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
-    implementation(libs.material)
+    implementation(libs.material) // use material here with the correct version reference
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
     implementation(libs.firebase.auth.ktx)
     implementation(libs.firebase.storage.ktx)
-    implementation(libs.androidx.ui.graphics.android)
-    implementation(libs.androidx.material3.android)
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
 
     implementation(libs.mpandroidchart.v310)
 
-
-
+    testImplementation(libs.junit)
+    androidTestImplementation(libs.androidx.junit)
+    androidTestImplementation(libs.androidx.espresso.core)
 }

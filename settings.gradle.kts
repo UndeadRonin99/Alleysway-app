@@ -25,4 +25,3 @@ dependencyResolutionManagement {
 
 rootProject.name = "Alleysway"
 include(":app")
- 

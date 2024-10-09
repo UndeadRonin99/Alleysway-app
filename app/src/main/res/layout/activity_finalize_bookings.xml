@@ -41,7 +41,6 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="28dp"
         android:backgroundTint="#FC670B"
-        android:cornerRadius="16dp"
         android:text="Book now"
         android:textColor="@android:color/white"
         app:layout_constraintEnd_toEndOf="parent"
