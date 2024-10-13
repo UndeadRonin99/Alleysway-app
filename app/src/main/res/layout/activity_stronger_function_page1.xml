@@ -1,38 +1,68 @@
-<?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#27262C"
-    tools:context=".Stronger_function_page_1">
+    android:background="#333333"
+    android:id="@+id/main">
 
-    <LinearLayout
-        android:layout_width="match_parent"
+    <!-- Back button -->
+    <ImageView
+        android:id="@+id/btnBack"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:padding="12dp">
+        android:layout_margin="16dp"
+        android:rotation="180"
+        android:src="@drawable/drawable_image_10"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-            android:id="@+id/tvCategoryName"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Category"
-            android:textColor="@android:color/white"
-            android:textSize="16sp" />
+    <!-- Search bar for exercises -->
+    <EditText
+        android:id="@+id/searchExercise"
+        android:layout_width="314dp"
+        android:layout_height="52dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:background="@drawable/image_rectangle3"
+        android:drawablePadding="8dp"
+        android:hint="        Search for an exercise"
+        android:padding="12dp"
+        android:textColor="@android:color/white"
+        android:textColorHint="@android:color/darker_gray"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/btnBack"
+        app:layout_constraintTop_toTopOf="parent" />
 
-        <ImageView
-            android:id="@+id/ivArrow"
-            android:layout_width="32dp"
-            android:layout_height="22dp"
-            android:background="@drawable/img_chevron"
-            android:contentDescription="Dropdown Arrow"
-            android:rotation="89"
-            android:src="" />
+    <!-- Expandable ListView for exercises -->
+    <ExpandableListView
+        android:id="@+id/expandableListView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_margin="16dp"
+        android:background="#333333"
+        android:divider="@android:color/darker_gray"
+        android:dividerHeight="0.5dp"
+        android:padding="8dp"
+        app:layout_constraintBottom_toTopOf="@id/addExercisesBtn"
+        app:layout_constraintTop_toBottomOf="@id/searchExercise"
+        app:layout_constraintVertical_bias="0.0" />
 
-    </LinearLayout>
-
+    <!-- Add Exercises Button -->
+    <Button
+        android:id="@+id/addExercisesBtn"
+        android:layout_width="236dp"
+        android:layout_height="43dp"
+        android:layout_margin="16dp"
+        android:background="@drawable/image_rectangle3"
+        android:backgroundTint="#FF6E40"
+        android:backgroundTintMode="src_over"
+        android:text="Add Exercises"
+        android:textColor="@android:color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
