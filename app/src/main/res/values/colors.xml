@@ -2,5 +2,9 @@
 <resources>
     <color name="defaultButtonColor">#1E88E5</color> <!-- Default blue -->
     <color name="highlightButtonColor">#FFB850</color> <!-- Highlighted color -->
+    <color name="orange">#FC670B</color>
+    <color name="white">#FFFFFF</color>
+    <color name="Gray">#27262C</color>
+    <color name="green">#15BA1B</color>
 
 </resources>

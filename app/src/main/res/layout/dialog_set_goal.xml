@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="16dp"
+    android:background="#27262C"
+    android:theme="@style/ThemeOverlay.MaterialComponents.BottomSheetDialog">
+
+    <!-- Weight Goal Label -->
+    <TextView
+        android:id="@+id/tvGoalLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Enter your weight goal"
+        android:textColor="#FFFFFF"
+        android:textSize="14sp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- Weight Goal Input Field -->
+    <EditText
+        android:id="@+id/etWeightGoal"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="Kg amount"
+        android:inputType="numberDecimal"
+        android:padding="16dp"
+        android:background="@drawable/input_field_bg"
+        android:textColor="#000000"
+        android:textColorHint="#AFAFAF"
+        android:textSize="16sp"
+        app:layout_constraintTop_toBottomOf="@+id/tvGoalLabel"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintWidth_percent="0.8" />
+
+    <!-- Save Button -->
+    <Button
+        android:id="@+id/btnSaveGoal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:backgroundTint="#FB670B"
+        android:paddingStart="32dp"
+        android:paddingEnd="32dp"
+        android:text="Save"
+        android:textColor="#FFFFFF"
+        android:textSize="16sp"
+        app:cornerRadius="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/etWeightGoal"
+        app:layout_constraintVertical_bias="0.226" />
+</androidx.constraintlayout.widget.ConstraintLayout>
