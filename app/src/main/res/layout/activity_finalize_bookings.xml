@@ -1,63 +1,65 @@
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#333333">
+    android:background="#27262C"
+    tools:context=".FinalizeBookings">
 
-    <!-- Back button -->
+    <!-- Toolbar -->
     <ImageView
-        android:id="@+id/btnBack"
+        android:id="@+id/back_arrow"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:rotation="180"
-        android:src="@drawable/drawable_image_10"
+        android:layout_marginStart="25dp"
+        android:layout_marginTop="25dp"
+        android:contentDescription="Back"
+        android:src="@drawable/image_arrow_up"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <!-- Search bar for exercises -->
-    <EditText
-        android:id="@+id/searchExercise"
-        android:layout_width="314dp"
-        android:layout_height="52dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
-        android:background="@drawable/image_rectangle3"
-        android:drawablePadding="8dp"
-        android:hint="Search for an exercise"
-        android:padding="12dp"
+    <!-- Book Now Button -->
+
+    <!-- Session Slots RecyclerView -->
+
+    <TextView
+        android:id="@+id/toolbar_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="64dp"
+        android:text="Choose Date and Time to work with"
         android:textColor="@android:color/white"
-        android:textColorHint="@android:color/darker_gray"
+        android:textSize="20sp"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/btnBack"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <!-- RecyclerView for exercise categories -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerView"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginTop="8dp"
-        android:scrollbars="vertical"
-        app:layout_constraintTop_toBottomOf="@id/searchExercise"
-        app:layout_constraintBottom_toTopOf="@id/addExercisesBtn"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
-
-    <!-- Add Exercises Button -->
     <Button
-        android:id="@+id/addExercisesBtn"
-        android:layout_width="236dp"
-        android:layout_height="43dp"
-        android:layout_margin="16dp"
-        android:background="@drawable/image_divider"
-        android:text="Add Exercises"
+        android:id="@+id/book_now_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="28dp"
+        android:backgroundTint="#FC670B"
+        android:cornerRadius="16dp"
+        android:text="Book now"
         android:textColor="@android:color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar_text" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/session_slots_recycler"
+        android:layout_width="394dp"
+        android:layout_height="621dp"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/rounded_white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/book_now_button"
+        app:layout_constraintVertical_bias="1.0" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
