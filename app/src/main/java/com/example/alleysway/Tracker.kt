@@ -27,6 +27,8 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import java.util.Calendar
+import com.google.android.material.datepicker.MaterialDatePicker
+
 
 class Tracker : AppCompatActivity() {
 
@@ -76,7 +78,6 @@ class Tracker : AppCompatActivity() {
         }
 
 
-
         // On clicking Set Goal, show the bottom sheet dialog for setting a weight goal
         btnSetGoal.setOnClickListener {
             showBottomSheetDialogForGoal()
@@ -93,15 +94,15 @@ class Tracker : AppCompatActivity() {
             val intent = Intent(this, ScanQRCode::class.java)
             startActivity(intent)
         }
-        btnWorkout.setOnClickListener{
+        btnWorkout.setOnClickListener {
             val intent = Intent(this, Workouts::class.java)
             startActivity(intent)
         }
-        btnBooking.setOnClickListener{
+        btnBooking.setOnClickListener {
             val intent = Intent(this, Bookings::class.java)
             startActivity(intent)
         }
-        btnHome.setOnClickListener{
+        btnHome.setOnClickListener {
             val intent = Intent(this, HomePage::class.java)
             startActivity(intent)
         }
@@ -130,7 +131,8 @@ class Tracker : AppCompatActivity() {
                         return
                     }
 
-                    val latestWeight = snapshot.children.firstOrNull()?.child("weight")?.getValue(String::class.java)?.toFloatOrNull()
+                    val latestWeight = snapshot.children.firstOrNull()?.child("weight")
+                        ?.getValue(String::class.java)?.toFloatOrNull()
 
                     if (latestWeight != null) {
                         tvCurrentWeight.text = "$latestWeight\nNow"
@@ -139,7 +141,8 @@ class Tracker : AppCompatActivity() {
                         databaseReference.child("users").child(userId).child("goal").child("goal")
                             .addListenerForSingleValueEvent(object : ValueEventListener {
                                 override fun onDataChange(goalSnapshot: DataSnapshot) {
-                                    val goalWeight = goalSnapshot.getValue(String::class.java)?.toFloatOrNull()
+                                    val goalWeight =
+                                        goalSnapshot.getValue(String::class.java)?.toFloatOrNull()
 
                                     if (goalWeight != null) {
                                         tvGoalWeight.text = "$goalWeight\nTarget"
@@ -152,7 +155,11 @@ class Tracker : AppCompatActivity() {
                                 }
 
                                 override fun onCancelled(error: DatabaseError) {
-                                    Toast.makeText(this@Tracker, "Error loading goal", Toast.LENGTH_SHORT).show()
+                                    Toast.makeText(
+                                        this@Tracker,
+                                        "Error loading goal",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
                                 }
                             })
                     } else {
@@ -163,10 +170,12 @@ class Tracker : AppCompatActivity() {
                 }
 
                 override fun onCancelled(error: DatabaseError) {
-                    Toast.makeText(this@Tracker, "Error loading weight data", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@Tracker, "Error loading weight data", Toast.LENGTH_SHORT)
+                        .show()
                 }
             })
     }
+
     private fun showDateRangeDialog() {
         val view = LayoutInflater.from(this).inflate(R.layout.dialog_select_dates, null)
         val bottomSheetDialog = BottomSheetDialog(this)
@@ -196,13 +205,13 @@ class Tracker : AppCompatActivity() {
                 startActivity(intent)
                 bottomSheetDialog.dismiss()
             } else {
-                Toast.makeText(this, "Please select both start and end dates", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Please select both start and end dates", Toast.LENGTH_SHORT)
+                    .show()
             }
         }
 
         bottomSheetDialog.show()
     }
-
 
 
     // Load the weight data and display it on the line chart
@@ -227,9 +236,10 @@ class Tracker : AppCompatActivity() {
 
                     var index = 0f
                     for (childSnapshot in snapshot.children) {
-                        val weight = childSnapshot.child("weight").getValue(String::class.java)?.toFloatOrNull()
+                        val weight = childSnapshot.child("weight").getValue(String::class.java)
+                            ?.toFloatOrNull()
 
-                        if (weight != null ) {
+                        if (weight != null) {
                             weightEntries.add(Entry(index, weight))
 
                             index++
@@ -266,7 +276,6 @@ class Tracker : AppCompatActivity() {
     }
 
 
-
     private fun displayLineGraph(weightEntries: List<Entry>) {
         val userId = mAuth.currentUser?.uid ?: return
         lineChart.visibility = View.VISIBLE // Ensure the graph is visible when there is data
@@ -287,7 +296,8 @@ class Tracker : AppCompatActivity() {
                     weightDataSet.setCircleColors(resources.getColor(R.color.orange))
                     weightDataSet.circleRadius = 4f  // Circle size
                     weightDataSet.setDrawValues(true)  // Show the values on the chart
-                    weightDataSet.valueTextColor = resources.getColor(R.color.white) // Set text color of the values to white
+                    weightDataSet.valueTextColor =
+                        resources.getColor(R.color.white) // Set text color of the values to white
                     weightDataSet.setDrawFilled(true)  // Optionally fill below the line
                     weightDataSet.fillColor = resources.getColor(R.color.orange)  // Fill color
 
@@ -299,10 +309,16 @@ class Tracker : AppCompatActivity() {
                         // Create entries for the goal line (a straight horizontal line)
                         val goalEntries = mutableListOf<Entry>()
                         goalEntries.add(Entry(0f, goalWeight)) // Starting point
-                        goalEntries.add(Entry(weightEntries.size.toFloat() - 1, goalWeight)) // End point at the same level
+                        goalEntries.add(
+                            Entry(
+                                weightEntries.size.toFloat() - 1,
+                                goalWeight
+                            )
+                        ) // End point at the same level
 
                         val goalDataSet = LineDataSet(goalEntries, "Goal Weight")
-                        goalDataSet.color = resources.getColor(R.color.green)  // Green color for goal line
+                        goalDataSet.color =
+                            resources.getColor(R.color.green)  // Green color for goal line
                         goalDataSet.lineWidth = 1.5f
                         goalDataSet.setDrawCircles(false)  // No circles for goal line
                         goalDataSet.setDrawValues(false)
@@ -320,7 +336,8 @@ class Tracker : AppCompatActivity() {
                     xAxis.position = XAxis.XAxisPosition.BOTTOM
                     xAxis.granularity = 1f
                     xAxis.setDrawLabels(true)
-                    xAxis.textColor = resources.getColor(R.color.white)  // Set x-axis label text color to white
+                    xAxis.textColor =
+                        resources.getColor(R.color.white)  // Set x-axis label text color to white
                     xAxis.setDrawGridLines(false)
                     xAxis.setDrawAxisLine(false)
 
@@ -333,7 +350,8 @@ class Tracker : AppCompatActivity() {
 
                     // Customize the chart's legend to change the text color of "Weight" and "Goal Weight" labels
                     val legend = lineChart.legend
-                    legend.textColor = resources.getColor(R.color.white)  // Set the legend text color to white
+                    legend.textColor =
+                        resources.getColor(R.color.white)  // Set the legend text color to white
 
                     // Customize the chart
                     lineChart.setDrawGridBackground(false)
@@ -357,7 +375,6 @@ class Tracker : AppCompatActivity() {
     }
 
 
-
     // Save user data (weight and date) to Firebase
     private fun saveUserData(weight: String, date: String) {
         val userId = mAuth.currentUser?.uid ?: return
@@ -379,7 +396,6 @@ class Tracker : AppCompatActivity() {
     }
 
     // Formatter for the x-axis to show days of the week instead of dates
-
 
 
     // Show the bottom sheet dialog for adding weight data
@@ -456,6 +472,7 @@ class Tracker : AppCompatActivity() {
     }
 
     // Show DatePickerDialog when clicking the Date TextView
+
     private fun showDatePickerDialog(tvDate: TextView) {
         val calendar = Calendar.getInstance()
         val year = calendar.get(Calendar.YEAR)
@@ -464,6 +481,7 @@ class Tracker : AppCompatActivity() {
 
         val datePickerDialog = DatePickerDialog(
             this,
+            R.style.CustomDatePickerDialogTheme, // Use the correct theme name
             { _, selectedYear, selectedMonth, selectedDay ->
                 val selectedDate = String.format("%02d.%02d.%d", selectedDay, selectedMonth + 1, selectedYear)
                 tvDate.text = selectedDate
@@ -472,5 +490,6 @@ class Tracker : AppCompatActivity() {
         )
         datePickerDialog.show()
     }
+
 
 }
