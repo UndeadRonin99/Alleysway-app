@@ -23,24 +23,33 @@ class Workouts : AppCompatActivity() {
         val btnBooking = findViewById<ImageView>(R.id.btnBooking)
         val btnTracker = findViewById<ImageView>(R.id.btnTracker)
         val btnCamera = findViewById<ImageView>(R.id.btnCamera)
+        val btnHome = findViewById<ImageView>(R.id.btnHome)
 
         // Set OnClickListeners for each button
-
+        btnCamera.setOnClickListener {
+            val intent = Intent(this, ScanQRCode::class.java)
+            startActivity(intent)
+        }
+        btnBooking.setOnClickListener{
+            val intent = Intent(this, Bookings::class.java)
+            startActivity(intent)
+        }
+        btnTracker.setOnClickListener{
+            val intent = Intent(this, Tracker::class.java)
+            startActivity(intent)
+        }
+        btnHome.setOnClickListener{
+            val intent = Intent(this, HomePage::class.java)
+            startActivity(intent)
+        }
         // Log a Workout button
         btnLog.setOnClickListener {
             // Perform the action for logging a workout
-            val intent = Intent(this, Stronger_function_page_1::class.java) // Replace with your activity
+            val intent = Intent(this, Stronger_function_page_1::class.java)
             startActivity(intent)
         }
 
 
-        val btnHome: ImageView = findViewById(R.id.btnHome)
-        btnHome.setOnClickListener {
-            // Navigate to the Bookings activity
-            val intent = Intent(this, HomePage::class.java)
-            startActivity(intent)
-
-        }
 
 
 

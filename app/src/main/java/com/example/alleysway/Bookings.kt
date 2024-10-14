@@ -55,12 +55,12 @@ class Bookings : AppCompatActivity() {
         setupDayButtons()
         setupChartValueClickListener()
 
-    // Inside onCreate method
+        // Inside onCreate method
         val btnHome: ImageView = findViewById(R.id.btnHome)
-            btnHome.setOnClickListener {
-        // Navigate to the Bookings activity
-        val intent = Intent(this, HomePage::class.java)
-        startActivity(intent) }
+        btnHome.setOnClickListener {
+            // Navigate to the Bookings activity
+            val intent = Intent(this, HomePage::class.java)
+            startActivity(intent) }
 
         val btnWorkout: ImageView = findViewById(R.id.btnWorkout)
         btnWorkout.setOnClickListener {
@@ -73,8 +73,6 @@ class Bookings : AppCompatActivity() {
             // Navigate to the Bookings activity
             val intent = Intent(this, Tracker::class.java)
             startActivity(intent) }
-
-
     }
 
     private fun loadWeeklyData() {

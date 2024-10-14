@@ -1,17 +1,17 @@
 package com.example.alleysway
 
 import android.app.DatePickerDialog
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.Entry
@@ -20,8 +20,12 @@ import com.github.mikephil.charting.data.LineDataSet
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.*
-import java.util.*
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
+import java.util.Calendar
 
 class Tracker : AppCompatActivity() {
 
@@ -29,6 +33,10 @@ class Tracker : AppCompatActivity() {
     private lateinit var mAuth: FirebaseAuth
     private lateinit var btnAddData: Button
     private lateinit var btnSetGoal: Button
+    private lateinit var btnHome: ImageView
+    private lateinit var btnWorkout: ImageView
+    private lateinit var btnCamera: ImageView
+    private lateinit var btnBooking: ImageView
 
     private lateinit var tvCurrentWeight: TextView
     private lateinit var tvGoalWeight: TextView
@@ -63,6 +71,24 @@ class Tracker : AppCompatActivity() {
         // On clicking Set Goal, show the bottom sheet dialog for setting a weight goal
         btnSetGoal.setOnClickListener {
             showBottomSheetDialogForGoal()
+        }
+
+        // Set OnClickListeners for nav bar
+        btnCamera.setOnClickListener {
+            val intent = Intent(this, ScanQRCode::class.java)
+            startActivity(intent)
+        }
+        btnWorkout.setOnClickListener{
+            val intent = Intent(this, Workouts::class.java)
+            startActivity(intent)
+        }
+        btnBooking.setOnClickListener{
+            val intent = Intent(this, Bookings::class.java)
+            startActivity(intent)
+        }
+        btnHome.setOnClickListener{
+            val intent = Intent(this, HomePage::class.java)
+            startActivity(intent)
         }
 
         // Load the current weight, goal, and calculate the difference
@@ -261,8 +287,8 @@ class Tracker : AppCompatActivity() {
                     lineChart.setTouchEnabled(true)
                     lineChart.setDragEnabled(true)
                     lineChart.setScaleEnabled(true)
-                    lineChart.setScaleXEnabled(true)
-                    lineChart.setScaleYEnabled(true)
+                    lineChart.isScaleXEnabled = true
+                    lineChart.isScaleYEnabled = true
 
                     // Refresh the chart
                     lineChart.invalidate()
