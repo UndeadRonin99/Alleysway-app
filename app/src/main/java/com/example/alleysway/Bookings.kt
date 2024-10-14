@@ -56,8 +56,8 @@ class Bookings : AppCompatActivity() {
         setupChartValueClickListener()
 
     // Inside onCreate method
-    val btnHome: ImageView = findViewById(R.id.btnHome)
-        btnHome.setOnClickListener {
+        val btnHome: ImageView = findViewById(R.id.btnHome)
+            btnHome.setOnClickListener {
         // Navigate to the Bookings activity
         val intent = Intent(this, HomePage::class.java)
         startActivity(intent) }
