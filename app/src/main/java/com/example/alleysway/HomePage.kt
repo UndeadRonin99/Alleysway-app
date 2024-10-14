@@ -53,6 +53,7 @@ class HomePage : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home_page)
         enableEdgeToEdge()
+        
 
         txtWelcome = findViewById(R.id.txtWelcome)
         getFullName { fullName ->

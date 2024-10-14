@@ -49,6 +49,7 @@ class ScanQRCode : AppCompatActivity() {
                     this.finish()
                 } else {
                     Toast.makeText(this, "Invalid QR Code", Toast.LENGTH_SHORT).show()
+                    this.finish()
                 }
             }
         } else {
