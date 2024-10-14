@@ -2,6 +2,7 @@ package com.example.alleysway
 
 import android.app.DatePickerDialog
 import android.content.Intent
+import android.content.SyncStats
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -37,6 +38,8 @@ class Tracker : AppCompatActivity() {
     private lateinit var btnWorkout: ImageView
     private lateinit var btnCamera: ImageView
     private lateinit var btnBooking: ImageView
+    private lateinit var btnStats: Button
+
 
     private lateinit var tvCurrentWeight: TextView
     private lateinit var tvGoalWeight: TextView
@@ -67,6 +70,12 @@ class Tracker : AppCompatActivity() {
         btnAddData.setOnClickListener {
             showBottomSheetDialogForData()
         }
+        btnStats = findViewById(R.id.btnStats)
+        btnStats.setOnClickListener {
+            val intent = Intent(this, Tracker_calender::class.java)
+            startActivity(intent)
+        }
+
 
         // On clicking Set Goal, show the bottom sheet dialog for setting a weight goal
         btnSetGoal.setOnClickListener {
@@ -77,6 +86,7 @@ class Tracker : AppCompatActivity() {
         btnBooking = findViewById(R.id.btnBooking)
         btnHome = findViewById(R.id.btnHome)
         btnWorkout = findViewById(R.id.btnWorkout)
+
 
         // Set OnClickListeners for nav bar
         btnCamera.setOnClickListener {
@@ -242,6 +252,7 @@ class Tracker : AppCompatActivity() {
                     weightDataSet.setCircleColors(resources.getColor(R.color.orange))
                     weightDataSet.circleRadius = 4f  // Circle size
                     weightDataSet.setDrawValues(true)  // Show the values on the chart
+                    weightDataSet.valueTextColor = resources.getColor(R.color.white) // Set text color of the values to white
                     weightDataSet.setDrawFilled(true)  // Optionally fill below the line
                     weightDataSet.fillColor = resources.getColor(R.color.orange)  // Fill color
 
@@ -273,7 +284,8 @@ class Tracker : AppCompatActivity() {
                     val xAxis = lineChart.xAxis
                     xAxis.position = XAxis.XAxisPosition.BOTTOM
                     xAxis.granularity = 1f
-                    xAxis.setDrawLabels(false)  // Disable x-axis labels
+                    xAxis.setDrawLabels(true)
+                    xAxis.textColor = resources.getColor(R.color.white)  // Set x-axis label text color to white
                     xAxis.setDrawGridLines(false)
                     xAxis.setDrawAxisLine(false)
 
@@ -284,6 +296,10 @@ class Tracker : AppCompatActivity() {
                     leftAxis.setDrawAxisLine(false)
                     lineChart.axisRight.isEnabled = false
 
+                    // Customize the chart's legend to change the text color of "Weight" and "Goal Weight" labels
+                    val legend = lineChart.legend
+                    legend.textColor = resources.getColor(R.color.white)  // Set the legend text color to white
+
                     // Customize the chart
                     lineChart.setDrawGridBackground(false)
                     lineChart.setBackgroundColor(resources.getColor(R.color.Gray))
@@ -292,8 +308,8 @@ class Tracker : AppCompatActivity() {
                     lineChart.setTouchEnabled(true)
                     lineChart.setDragEnabled(true)
                     lineChart.setScaleEnabled(true)
-                    lineChart.isScaleXEnabled = true
-                    lineChart.isScaleYEnabled = true
+                    lineChart.setScaleXEnabled(true)
+                    lineChart.setScaleYEnabled(true)
 
                     // Refresh the chart
                     lineChart.invalidate()

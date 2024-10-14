@@ -10,122 +10,136 @@
     tools:context=".Tracker">
 
     <!-- Add Data Button -->
+
+    <!-- Analytics Button -->
+
+    <!-- Line Chart -->
+
+    <!-- No Data Text View -->
+
     <Button
         android:id="@+id/AddData"
         android:layout_width="105dp"
         android:layout_height="41dp"
-        android:layout_marginTop="48dp"
+        android:layout_marginTop="16dp"
         android:backgroundTint="#FB670B"
         android:text="Add Data"
         android:textAlignment="center"
         android:textColor="#FDFDFD"
+        app:layout_constraintBottom_toTopOf="@id/lineChart"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintHorizontal_bias="0.936"
+        app:layout_constraintStart_toEndOf="@+id/btnStats"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <!-- Image Placeholder (Graph View or any visual representation) -->
+    <Button
+        android:id="@+id/btnStats"
+        android:layout_width="105dp"
+        android:layout_height="41dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="16dp"
+        android:backgroundTint="#FB670B"
+        android:text="Analytics"
+        android:textAlignment="center"
+        android:textColor="#FDFDFD"
+        app:layout_constraintBottom_toTopOf="@id/lineChart"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
+
     <com.github.mikephil.charting.charts.LineChart
         android:id="@+id/lineChart"
-        android:layout_width="375dp"
-        android:layout_height="302dp"
+        android:layout_width="363dp"
+        android:layout_height="384dp"
         android:layout_marginTop="20dp"
         android:layout_marginBottom="20dp"
         app:layout_constraintBottom_toTopOf="@id/btnGoals"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_default="wrap"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/AddData" />
-    <!-- TextView to display when no data is available -->
+        app:layout_constraintTop_toBottomOf="@id/AddData"
+        app:layout_constraintWidth_default="wrap" />
+
     <TextView
         android:id="@+id/noDataTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:layout_gravity="center"
         android:text="Please enter data to see statistics"
         android:textSize="18sp"
         android:textColor="#FFFFFF"
         android:visibility="gone"
-        app:layout_constraintTop_toBottomOf="@+id/lineChart"
+        app:layout_constraintTop_toBottomOf="@id/lineChart"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
+    <!-- Goal Button -->
 
-    <!-- Goal button -->
+    <!-- Current Weight TextView -->
+
     <Button
         android:id="@+id/btnGoals"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="172dp"
+        android:layout_marginBottom="28dp"
         android:backgroundTint="#FB670B"
         android:text="Goals"
         android:textColor="#FBF9F9"
-        app:layout_constraintBottom_toTopOf="@+id/imageView9"
+        app:layout_constraintBottom_toTopOf="@+id/tvCurrentWeight"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <!-- Current Weight (Now) -->
     <TextView
         android:id="@+id/tvCurrentWeight"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:padding="16dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginBottom="16dp"
         android:background="@drawable/weight_background"
+        android:padding="16dp"
         android:text="Now"
-        android:textColor="#FFFFFF"
         android:textAlignment="center"
+        android:textColor="#FFFFFF"
         android:textSize="18sp"
         app:layout_constraintTop_toBottomOf="@+id/btnGoals"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintHorizontal_bias="0.2"
         app:layout_constraintEnd_toStartOf="@+id/tvDifference" />
 
-    <!-- Difference (Change) -->
+    <!-- Difference TextView -->
     <TextView
         android:id="@+id/tvDifference"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
         android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:padding="16dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginBottom="16dp"
         android:background="@drawable/weight_background"
+        android:padding="16dp"
         android:text="Change"
-        android:textColor="#FFFFFF"
         android:textAlignment="center"
+        android:textColor="#FFFFFF"
         android:textSize="18sp"
-        app:layout_constraintTop_toBottomOf="@+id/btnGoals"
         app:layout_constraintStart_toEndOf="@+id/tvCurrentWeight"
         app:layout_constraintEnd_toStartOf="@+id/tvGoalWeight"
-        app:layout_constraintHorizontal_bias="0.5" />
+        app:layout_constraintTop_toBottomOf="@+id/btnGoals" />
 
-    <!-- Goal Weight (Target) -->
+    <!-- Goal Weight TextView -->
     <TextView
         android:id="@+id/tvGoalWeight"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
         android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:padding="16dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginBottom="16dp"
         android:background="@drawable/weight_background"
+        android:padding="16dp"
         android:text="Target"
-        android:textColor="#FFFFFF"
         android:textAlignment="center"
+        android:textColor="#FFFFFF"
         android:textSize="18sp"
-        app:layout_constraintTop_toBottomOf="@+id/btnGoals"
-        app:layout_constraintStart_toEndOf="@+id/tvDifference"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.8" />
-
-
-
-    <!-- NavBar  -->
-
-
+        app:layout_constraintStart_toEndOf="@+id/tvDifference"
+        app:layout_constraintTop_toBottomOf="@+id/btnGoals" />
     <ImageView
         android:id="@+id/imageView9"
         android:layout_width="425dp"
