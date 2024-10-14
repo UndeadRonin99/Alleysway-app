@@ -72,9 +72,9 @@ class Tracker : AppCompatActivity() {
         }
         btnStats = findViewById(R.id.btnStats)
         btnStats.setOnClickListener {
-            val intent = Intent(this, Tracker_calender::class.java)
-            startActivity(intent)
+            showDateRangeDialog()
         }
+
 
 
         // On clicking Set Goal, show the bottom sheet dialog for setting a weight goal
@@ -166,6 +166,41 @@ class Tracker : AppCompatActivity() {
                     Toast.makeText(this@Tracker, "Error loading weight data", Toast.LENGTH_SHORT).show()
                 }
             })
+    }
+    private fun showDateRangeDialog() {
+        val view = LayoutInflater.from(this).inflate(R.layout.dialog_select_dates, null)
+        val bottomSheetDialog = BottomSheetDialog(this)
+        bottomSheetDialog.setContentView(view)
+        bottomSheetDialog.behavior.peekHeight = BottomSheetBehavior.PEEK_HEIGHT_AUTO
+
+        val tvStartDate: TextView = view.findViewById(R.id.tvStartDate)
+        val tvEndDate: TextView = view.findViewById(R.id.tvEndDate)
+        val btnOK: Button = view.findViewById(R.id.btnOK)
+
+        tvStartDate.setOnClickListener {
+            showDatePickerDialog(tvStartDate)
+        }
+
+        tvEndDate.setOnClickListener {
+            showDatePickerDialog(tvEndDate)
+        }
+
+        btnOK.setOnClickListener {
+            val startDate = tvStartDate.text.toString().trim()
+            val endDate = tvEndDate.text.toString().trim()
+
+            if (startDate.isNotEmpty() && endDate.isNotEmpty()) {
+                val intent = Intent(this, Tracker_graph::class.java)
+                intent.putExtra("startDate", startDate)
+                intent.putExtra("endDate", endDate)
+                startActivity(intent)
+                bottomSheetDialog.dismiss()
+            } else {
+                Toast.makeText(this, "Please select both start and end dates", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        bottomSheetDialog.show()
     }
 
 
@@ -437,4 +472,5 @@ class Tracker : AppCompatActivity() {
         )
         datePickerDialog.show()
     }
+
 }
