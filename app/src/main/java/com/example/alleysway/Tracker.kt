@@ -73,6 +73,11 @@ class Tracker : AppCompatActivity() {
             showBottomSheetDialogForGoal()
         }
 
+        btnCamera = findViewById(R.id.btnCamera)
+        btnBooking = findViewById(R.id.btnBooking)
+        btnHome = findViewById(R.id.btnHome)
+        btnWorkout = findViewById(R.id.btnWorkout)
+
         // Set OnClickListeners for nav bar
         btnCamera.setOnClickListener {
             val intent = Intent(this, ScanQRCode::class.java)
