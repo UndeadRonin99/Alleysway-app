@@ -203,10 +203,12 @@ class Tracker : AppCompatActivity() {
 
                     // Create the dataset for the weight entries (this will display as a line)
                     val weightDataSet = LineDataSet(weightEntries, "Weight")
+                    weightDataSet.lineWidth = 2f
                     weightDataSet.color = resources.getColor(R.color.orange)
                     weightDataSet.lineWidth = 2f
                     weightDataSet.setDrawCircles(true)  // Keep circles on data points
                     weightDataSet.setDrawCircleHole(false)  // Remove the hole in the circles
+                    weightDataSet.setCircleColors(resources.getColor(R.color.orange))
                     weightDataSet.circleRadius = 4f  // Circle size
                     weightDataSet.setDrawValues(true)  // Show the values on the chart
                     weightDataSet.setDrawFilled(true)  // Optionally fill below the line
