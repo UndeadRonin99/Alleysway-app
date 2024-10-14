@@ -4,7 +4,7 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
-import android.util.Log.w
+import android.util.Log
 import android.view.LayoutInflater
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -55,24 +55,26 @@ class MakeBooking : AppCompatActivity() {
         usersRef.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 for (userSnapshot in snapshot.children) {
+                    val trainerID = userSnapshot.key ?: continue
                     val role = userSnapshot.child("role").getValue(String::class.java)
                     if (role == "admin") {
                         val trainerName = userSnapshot.child("firstName").getValue(String::class.java) ?: "Unknown"
                         val profileImageUrl = userSnapshot.child("profileImageUrl").getValue(String::class.java)
                         val rate = userSnapshot.child("rate").getValue(String::class.java) ?: "N/A"
 
-                        addTrainerView(trainerName, profileImageUrl, rate)
+                        addTrainerView(trainerName, profileImageUrl, rate, trainerID)
                     }
                 }
             }
 
             override fun onCancelled(error: DatabaseError) {
-                w("Firebase", "loadUser:onCancelled", error.toException())
+                Log.w("Firebase", "loadUser:onCancelled", error.toException())
             }
         })
     }
 
-    private fun addTrainerView(name: String, profileImageUrl: String?, rate: String) {
+
+    private fun addTrainerView(name: String, profileImageUrl: String?, rate: String, trainerID: String?) {
         val trainerItem = LayoutInflater.from(this).inflate(R.layout.trainer_item_layout, trainerContainer, false)
 
         val trainerNameTextView: TextView = trainerItem.findViewById(R.id.trainer_name)
@@ -95,6 +97,7 @@ class MakeBooking : AppCompatActivity() {
             intent.putExtra("trainerName", name)
             intent.putExtra("profileImageUrl", profileImageUrl)
             intent.putExtra("rate", rate)
+            intent.putExtra("trainerID", trainerID)
             startActivity(intent)
         }
 

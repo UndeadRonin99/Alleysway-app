@@ -27,7 +27,7 @@ class FinalizeBookings : AppCompatActivity() {
     private lateinit var timeSlotAdapter: SelectableTimeSlotAdapter
     private val timeSlotsList = mutableListOf<Day>()
     private val VIEW_TYPE_HEADER = 0
-
+    private var trainerID: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,6 +35,7 @@ class FinalizeBookings : AppCompatActivity() {
         setContentView(R.layout.activity_finalize_bookings)
 
         val trainerName = intent.getStringExtra("trainerName")
+        trainerID = intent.getStringExtra("trainerID")
 
         btnBack = findViewById(R.id.back_arrow)
         btnBack.setOnClickListener {
@@ -69,28 +70,31 @@ class FinalizeBookings : AppCompatActivity() {
     }
 
     private fun fetchAdminTimeSlots() {
-        val usersRef = database.child("users")
-        usersRef.addListenerForSingleValueEvent(object : ValueEventListener {
+        if (trainerID == null) {
+            Log.e("FinalizeBookings", "Trainer ID is null, cannot fetch timeslots")
+            return
+        }
+
+        val trainerRef = database.child("users").child(trainerID!!)
+        trainerRef.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 timeSlotsList.clear()
-                for (userSnapshot in snapshot.children) {
-                    val role = userSnapshot.child("role").getValue(String::class.java)
-                    if (role == "admin") {
-                        val daysSnapshot = userSnapshot.child("Days")
-                        for (daySnapshot in daysSnapshot.children) {
-                            val day = daySnapshot.key ?: continue
-                            val timeSlotsSnapshot = daySnapshot.child("TimeSlots")
-                            val dayTimeSlots = mutableListOf<TimeSlot>()
-                            for (timeSlotSnapshot in timeSlotsSnapshot.children) {
-                                val startTime = timeSlotSnapshot.child("StartTime").getValue(String::class.java)
-                                val endTime = timeSlotSnapshot.child("EndTime").getValue(String::class.java)
-                                if (startTime != null && endTime != null) {
-                                    splitTimeSlotIntoSessions(day, startTime, endTime, dayTimeSlots)
-                                }
+                val role = snapshot.child("role").getValue(String::class.java)
+                if (role == "admin") {
+                    val daysSnapshot = snapshot.child("Days")
+                    for (daySnapshot in daysSnapshot.children) {
+                        val day = daySnapshot.key ?: continue
+                        val timeSlotsSnapshot = daySnapshot.child("TimeSlots")
+                        val dayTimeSlots = mutableListOf<TimeSlot>()
+                        for (timeSlotSnapshot in timeSlotsSnapshot.children) {
+                            val startTime = timeSlotSnapshot.child("StartTime").getValue(String::class.java)
+                            val endTime = timeSlotSnapshot.child("EndTime").getValue(String::class.java)
+                            if (startTime != null && endTime != null) {
+                                splitTimeSlotIntoSessions(day, startTime, endTime, dayTimeSlots)
                             }
-                            if (dayTimeSlots.isNotEmpty()) {
-                                timeSlotsList.add(Day(day, dayTimeSlots))
-                            }
+                        }
+                        if (dayTimeSlots.isNotEmpty()) {
+                            timeSlotsList.add(Day(day, dayTimeSlots))
                         }
                     }
                 }
