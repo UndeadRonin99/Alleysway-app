@@ -1,5 +1,6 @@
 package com.example.alleysway
 
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -105,6 +106,9 @@ class FinalizeBookings : AppCompatActivity() {
         btnBookNow.setOnClickListener{
             val selectedSessions = timeSlotAdapter.getSelectedTimeSlots()
             createCalendarEvent(selectedSessions)
+            val intent = Intent(this, BookingSuccessActivity::class.java)
+            startActivity(intent)
+            finish()
         }
     }
 

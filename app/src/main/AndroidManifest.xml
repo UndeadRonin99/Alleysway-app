@@ -21,7 +21,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.CodiaDemo">
-
+        <activity
+            android:name=".BookingSuccessActivity"
+            android:exported="false" />
         <activity
             android:name=".Stronger_function_page_1"
             android:exported="false" />

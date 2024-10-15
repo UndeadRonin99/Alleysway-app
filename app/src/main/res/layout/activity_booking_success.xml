@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#27262C"
+    tools:context=".BookingSuccessActivity">
+
+    <TextView
+        android:id="@+id/contact_text"
+        android:layout_width="380dp"
+        android:layout_height="126dp"
+        android:layout_marginTop="8dp"
+        android:text="Your personal trainer will contact you soon to finalize your session"
+        android:textAlignment="center"
+        android:textColor="#B0B0B0"
+
+        android:textSize="26sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.516"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/session_details" />
+
+    <ImageView
+        android:id="@+id/success_icon"
+        android:layout_width="92dp"
+        android:layout_height="89dp"
+        android:layout_marginTop="32dp"
+        android:src="@drawable/success_icon"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/appointment_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="Appointment booked Successfully"
+        android:textAlignment="center"
+        android:textColor="@android:color/white"
+        android:textSize="30sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/success_icon" />
+
+    <TextView
+        android:id="@+id/session_details"
+        android:layout_width="368dp"
+        android:layout_height="71dp"
+        android:layout_marginTop="16dp"
+        android:text="Session synced with personal trainer's calendar and yours!"
+        android:textAlignment="center"
+        android:textColor="#B0B0B0"
+        android:textSize="26sp"
+
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.511"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/appointment_text" />
+
+    <Button
+        android:id="@+id/done_button"
+        android:layout_width="335dp"
+        android:layout_height="55dp"
+        android:layout_marginTop="32dp"
+        android:backgroundTint="#FC670B"
+        android:text="DONE"
+        android:textColor="@android:color/white"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/contact_text"
+        app:layout_constraintWidth_percent="0.8" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
