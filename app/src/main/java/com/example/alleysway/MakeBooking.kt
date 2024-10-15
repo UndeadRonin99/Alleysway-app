@@ -61,8 +61,9 @@ class MakeBooking : AppCompatActivity() {
                         val trainerName = userSnapshot.child("firstName").getValue(String::class.java) ?: "Unknown"
                         val profileImageUrl = userSnapshot.child("profileImageUrl").getValue(String::class.java)
                         val rate = userSnapshot.child("rate").getValue(String::class.java) ?: "N/A"
+                        val email = userSnapshot.child("email").getValue(String::class.java) ?: "N/A"
 
-                        addTrainerView(trainerName, profileImageUrl, rate, trainerID)
+                        addTrainerView(trainerName, profileImageUrl, rate, trainerID, email)
                     }
                 }
             }
@@ -74,7 +75,7 @@ class MakeBooking : AppCompatActivity() {
     }
 
 
-    private fun addTrainerView(name: String, profileImageUrl: String?, rate: String, trainerID: String?) {
+    private fun addTrainerView(name: String, profileImageUrl: String?, rate: String, trainerID: String?, email: String) {
         val trainerItem = LayoutInflater.from(this).inflate(R.layout.trainer_item_layout, trainerContainer, false)
 
         val trainerNameTextView: TextView = trainerItem.findViewById(R.id.trainer_name)
@@ -98,6 +99,7 @@ class MakeBooking : AppCompatActivity() {
             intent.putExtra("profileImageUrl", profileImageUrl)
             intent.putExtra("rate", rate)
             intent.putExtra("trainerID", trainerID)
+            intent.putExtra("trainerEmail", email)
             startActivity(intent)
         }
 
