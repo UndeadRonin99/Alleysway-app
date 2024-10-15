@@ -13,8 +13,10 @@
         android:id="@+id/guideline_top"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="35dp"
         android:orientation="horizontal"
-        app:layout_constraintGuide_end="770dp" />
+        app:layout_constraintGuide_begin="35dp"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <!-- Add Data and Analytics Buttons as a Chain -->
     <Button
@@ -42,8 +44,6 @@
         app:layout_constraintStart_toEndOf="@+id/AddData"
         app:layout_constraintTop_toTopOf="@id/guideline_top" />
 
-    <!-- Line Chart -->
-
     <!-- No Data TextView (occupies same space as Line Chart) -->
     <TextView
         android:id="@+id/noDataTextView"
@@ -58,8 +58,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btnStats" />
 
-
-    <!-- Goal Button -->
+    <!-- Line Chart -->
     <com.github.mikephil.charting.charts.LineChart
         android:id="@+id/lineChart"
         android:layout_width="0dp"
@@ -72,6 +71,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btnStats" />
 
+    <!-- Goal Button -->
     <Button
         android:id="@+id/btnGoals"
         android:layout_width="wrap_content"

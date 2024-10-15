@@ -2,7 +2,6 @@ package com.example.alleysway
 
 import android.app.DatePickerDialog
 import android.content.Intent
-import android.content.SyncStats
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -27,7 +26,6 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import java.util.Calendar
-import com.google.android.material.datepicker.MaterialDatePicker
 
 
 class Tracker : AppCompatActivity() {
@@ -44,6 +42,7 @@ class Tracker : AppCompatActivity() {
     private lateinit var tvCurrentWeight: TextView
     private lateinit var tvGoalWeight: TextView
     private lateinit var tvDifference: TextView
+
 
     private lateinit var lineChart: LineChart
 
@@ -359,8 +358,8 @@ class Tracker : AppCompatActivity() {
                     lineChart.setTouchEnabled(true)
                     lineChart.setDragEnabled(true)
                     lineChart.setScaleEnabled(true)
-                    lineChart.setScaleXEnabled(true)
-                    lineChart.setScaleYEnabled(true)
+                    lineChart.isScaleXEnabled = true
+                    lineChart.isScaleYEnabled = true
 
                     // Refresh the chart
                     lineChart.invalidate()
