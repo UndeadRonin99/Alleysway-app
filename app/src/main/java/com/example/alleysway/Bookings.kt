@@ -54,6 +54,8 @@ class Bookings : AppCompatActivity() {
         loadWeeklyData()
         setupDayButtons()
         setupChartValueClickListener()
+        generateSampleData()
+
 
         // Inside onCreate method
         val btnHome: ImageView = findViewById(R.id.btnHome)
@@ -289,4 +291,38 @@ class Bookings : AppCompatActivity() {
             else -> "MON"
         }
     }
+    private fun generateSampleData() {
+        val databaseReference = FirebaseDatabase.getInstance().getReference("attendance")
+        val calendar = Calendar.getInstance()
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+
+        // Generate data for today and the next 7 days
+        for (dayOffset in 0..7) {
+            val date = calendar.time
+            val dateString = dateFormat.format(date)
+
+            // Create a map to hold hourly attendance data
+            val hourlyData = mutableMapOf<String, Int>()
+
+            // Generate random attendance counts for each hour
+            for (hour in 0..23) {
+                val attendanceCount = (5..35).random() // Random count between 5 and 50
+                hourlyData[hour.toString()] = attendanceCount
+            }
+
+            // Write the hourly data to Firebase under the date key
+            databaseReference.child(dateString).setValue(hourlyData)
+                .addOnSuccessListener {
+                    // Data written successfully
+                }
+                .addOnFailureListener { exception ->
+                    // Handle any errors
+                }
+
+            // Move to the next day
+            calendar.add(Calendar.DAY_OF_YEAR, 1)
+        }
+    }
+
+
 }
