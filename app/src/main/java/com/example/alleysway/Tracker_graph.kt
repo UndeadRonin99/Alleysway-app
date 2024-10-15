@@ -49,7 +49,6 @@ class Tracker_graph : AppCompatActivity() {
         btnHome = findViewById(R.id.btnHome)
         btnWorkout = findViewById(R.id.btnWorkout)
 
-
         // Set OnClickListeners for nav bar
         btnCamera.setOnClickListener {
             val intent = Intent(this, ScanQRCode::class.java)
@@ -92,11 +91,14 @@ class Tracker_graph : AppCompatActivity() {
 
         // Load weight data and display graph
         loadGraphData()
-
     }
 
     private fun loadGraphData() {
         val userId = mAuth.currentUser?.uid ?: return
+
+        // Define date formats
+        val dateFormat = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault())
+        val labelDateFormat = SimpleDateFormat("EEE (dd)", Locale.getDefault())
 
         // Retrieve weight data from Firebase
         databaseReference.child("users").child(userId).child("weight")
@@ -117,7 +119,6 @@ class Tracker_graph : AppCompatActivity() {
                     val weightValues = mutableListOf<Float>()
 
                     var index = 0f
-                    val dateFormat = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault())
 
                     for (childSnapshot in snapshot.children) {
                         val dateString = childSnapshot.child("date").getValue(String::class.java)
@@ -130,7 +131,8 @@ class Tracker_graph : AppCompatActivity() {
                                     val weight = weightString.toFloatOrNull()
                                     if (weight != null) {
                                         weightEntries.add(Entry(index, weight))
-                                        dateLabels.add(dateString)
+                                        val labelString = labelDateFormat.format(entryDate)
+                                        dateLabels.add(labelString)
                                         weightValues.add(weight)
                                         index++
                                     }
@@ -200,16 +202,19 @@ class Tracker_graph : AppCompatActivity() {
         xAxis.granularity = 1f
         xAxis.textColor = Color.BLACK
         xAxis.setDrawGridLines(false)
-        xAxis.setDrawAxisLine(false)
+        xAxis.setDrawAxisLine(true)
+        xAxis.axisLineColor = Color.GRAY
         xAxis.valueFormatter = IndexAxisValueFormatter(dateLabels)
-        xAxis.labelRotationAngle = -45f
-        xAxis.textSize = 12f
+        xAxis.textSize = 10f
+        xAxis.setLabelCount(5, true)
+        xAxis.labelRotationAngle = -30f
 
         // Customize the y-axis
         val leftAxis = lineChart.axisLeft
         leftAxis.textColor = Color.BLACK
         leftAxis.setDrawGridLines(false)
-        leftAxis.setDrawAxisLine(false)
+        leftAxis.setDrawAxisLine(true)
+        leftAxis.axisLineColor = Color.GRAY
         leftAxis.textSize = 12f
         lineChart.axisRight.isEnabled = false
 
