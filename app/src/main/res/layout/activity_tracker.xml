@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
@@ -9,128 +8,119 @@
     android:background="@drawable/image_weight_tracker"
     tools:context=".Tracker">
 
-    <!-- Add Data Button -->
+    <!-- Horizontal Guideline for Top Buttons -->
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_top"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_end="770dp" />
 
-    <!-- Analytics Button -->
-
-    <!-- Line Chart -->
-
-    <!-- No Data Text View -->
-
+    <!-- Add Data and Analytics Buttons as a Chain -->
     <Button
         android:id="@+id/AddData"
-        android:layout_width="105dp"
+        android:layout_width="0dp"
         android:layout_height="41dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
         android:backgroundTint="#FB670B"
         android:text="Add Data"
-        android:textAlignment="center"
         android:textColor="#FDFDFD"
-        app:layout_constraintBottom_toTopOf="@id/lineChart"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.936"
-        app:layout_constraintStart_toEndOf="@+id/btnStats"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintEnd_toStartOf="@+id/btnStats"
+        app:layout_constraintHorizontal_chainStyle="spread"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/guideline_top" />
 
     <Button
         android:id="@+id/btnStats"
-        android:layout_width="105dp"
+        android:layout_width="0dp"
         android:layout_height="41dp"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="16dp"
         android:backgroundTint="#FB670B"
         android:text="Analytics"
-        android:textAlignment="center"
         android:textColor="#FDFDFD"
-        app:layout_constraintBottom_toTopOf="@id/lineChart"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0" />
-
-    <com.github.mikephil.charting.charts.LineChart
-        android:id="@+id/lineChart"
-        android:layout_width="363dp"
-        android:layout_height="384dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginBottom="20dp"
-        app:layout_constraintBottom_toTopOf="@id/btnGoals"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHeight_default="wrap"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/AddData"
-        app:layout_constraintWidth_default="wrap" />
+        app:layout_constraintStart_toEndOf="@+id/AddData"
+        app:layout_constraintTop_toTopOf="@id/guideline_top" />
 
+    <!-- Line Chart -->
+
+    <!-- No Data TextView (occupies same space as Line Chart) -->
     <TextView
         android:id="@+id/noDataTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="0dp"
+        android:layout_height="384dp"
+        android:gravity="center"
         android:text="Please enter data to see statistics"
-        android:textSize="18sp"
         android:textColor="#FFFFFF"
-        android:visibility="gone"
-        app:layout_constraintTop_toBottomOf="@id/lineChart"
+        android:textSize="18sp"
+        android:visibility="visible"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnStats" />
+
 
     <!-- Goal Button -->
-
-    <!-- Current Weight TextView -->
+    <com.github.mikephil.charting.charts.LineChart
+        android:id="@+id/lineChart"
+        android:layout_width="0dp"
+        android:layout_height="384dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnStats" />
 
     <Button
         android:id="@+id/btnGoals"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="28dp"
+        android:layout_marginTop="50dp"
         android:backgroundTint="#FB670B"
         android:text="Goals"
         android:textColor="#FBF9F9"
-        app:layout_constraintBottom_toTopOf="@+id/tvCurrentWeight"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/noDataTextView" />
 
+    <!-- Horizontal Chain for Weight TextViews -->
     <TextView
         android:id="@+id/tvCurrentWeight"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        android:layout_marginBottom="16dp"
+        android:layout_marginTop="24dp"
         android:background="@drawable/weight_background"
         android:padding="16dp"
         android:text="Now"
         android:textAlignment="center"
         android:textColor="#FFFFFF"
         android:textSize="18sp"
-        app:layout_constraintTop_toBottomOf="@+id/btnGoals"
+        app:layout_constraintEnd_toStartOf="@+id/tvDifference"
+        app:layout_constraintHorizontal_chainStyle="spread"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/tvDifference" />
+        app:layout_constraintTop_toBottomOf="@+id/btnGoals" />
 
-    <!-- Difference TextView -->
     <TextView
         android:id="@+id/tvDifference"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="32dp"
-        android:layout_marginBottom="16dp"
+        android:layout_marginTop="24dp"
         android:background="@drawable/weight_background"
         android:padding="16dp"
         android:text="Change"
         android:textAlignment="center"
         android:textColor="#FFFFFF"
         android:textSize="18sp"
-        app:layout_constraintStart_toEndOf="@+id/tvCurrentWeight"
         app:layout_constraintEnd_toStartOf="@+id/tvGoalWeight"
+        app:layout_constraintStart_toEndOf="@+id/tvCurrentWeight"
         app:layout_constraintTop_toBottomOf="@+id/btnGoals" />
 
-    <!-- Goal Weight TextView -->
     <TextView
         android:id="@+id/tvGoalWeight"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="32dp"
-        android:layout_marginBottom="16dp"
+        android:layout_marginTop="24dp"
         android:background="@drawable/weight_background"
         android:padding="16dp"
         android:text="Target"
@@ -140,31 +130,30 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/tvDifference"
         app:layout_constraintTop_toBottomOf="@+id/btnGoals" />
+
+    <!-- Bottom Navigation Bar -->
+
     <ImageView
         android:id="@+id/imageView9"
-        android:layout_width="425dp"
-        android:layout_height="65dp"
+        android:layout_width="0dp"
+        android:layout_height="69dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.571"
         app:layout_constraintStart_toStartOf="parent"
-
         app:srcCompat="@drawable/img_rectangle4" />
-
-    <!-- Home button -->
 
     <ImageView
         android:id="@+id/imageView10"
-        android:layout_width="418dp"
-        android:layout_height="25dp"
-        android:layout_marginBottom="64dp"
+        android:layout_width="0dp"
+        android:layout_height="28dp"
+        android:layout_marginBottom="60dp"
         app:layout_constraintBottom_toBottomOf="parent"
-
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.4"
+        app:layout_constraintHorizontal_bias="0.333"
         app:layout_constraintStart_toStartOf="parent"
         app:srcCompat="@drawable/img_rectangle3" />
 
+    <!-- Home button -->
     <ImageView
         android:id="@+id/btnHome"
         android:layout_width="40dp"
@@ -172,23 +161,20 @@
         android:layout_marginStart="24dp"
         android:layout_marginTop="9dp"
         android:layout_marginEnd="333dp"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/imageView9"
         app:layout_constraintStart_toStartOf="@+id/imageView9"
         app:layout_constraintTop_toTopOf="@+id/imageView9"
-        app:layout_constraintVertical_bias="0.0"
         app:srcCompat="@drawable/img_home_icon_unselected" />
 
     <ImageView
         android:id="@+id/btnBooking"
         android:layout_width="40dp"
         android:layout_height="40dp"
-
         android:layout_marginStart="101dp"
         android:layout_marginTop="9dp"
         android:layout_marginEnd="256dp"
         android:layout_marginBottom="21dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toBottomOf="@+id/imageView9"
         app:layout_constraintEnd_toEndOf="@+id/imageView9"
         app:layout_constraintStart_toStartOf="@+id/imageView9"
         app:layout_constraintTop_toTopOf="@+id/imageView9"
@@ -202,9 +188,8 @@
         android:layout_marginStart="173dp"
         android:layout_marginTop="9dp"
         android:layout_marginEnd="174dp"
-
         android:layout_marginBottom="11dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toBottomOf="@+id/imageView9"
         app:layout_constraintEnd_toEndOf="@+id/imageView9"
         app:layout_constraintStart_toStartOf="@+id/imageView9"
         app:layout_constraintTop_toTopOf="@+id/imageView9"
@@ -218,16 +203,14 @@
         android:layout_marginStart="260dp"
         android:layout_marginTop="9dp"
         android:layout_marginEnd="97dp"
-        app:layout_constraintBottom_toBottomOf="parent"
         android:layout_marginBottom="21dp"
+        app:layout_constraintBottom_toBottomOf="@+id/imageView9"
         app:layout_constraintEnd_toEndOf="@+id/imageView9"
         app:layout_constraintStart_toStartOf="@+id/imageView9"
         app:layout_constraintTop_toTopOf="@+id/imageView9"
         app:srcCompat="@drawable/img_workouts_icon" />
 
     <!-- Tracker button -->
-
-    <!-- Text for Home -->
     <ImageView
         android:id="@+id/btnTracker"
         android:layout_width="40dp"
@@ -235,18 +218,15 @@
         android:layout_marginStart="339dp"
         android:layout_marginTop="9dp"
         android:layout_marginEnd="18dp"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/imageView9"
-        app:layout_constraintHorizontal_bias="0.6"
         app:layout_constraintStart_toStartOf="@+id/imageView9"
         app:layout_constraintTop_toTopOf="@+id/imageView9"
-        app:layout_constraintVertical_bias="0.0"
         app:srcCompat="@drawable/tracker_selected" />
 
+    <!-- Text for Home -->
     <TextView
         android:id="@+id/textView8"
         android:layout_width="40dp"
-        app:layout_constraintBottom_toBottomOf="parent"
         android:layout_height="18dp"
         android:layout_marginStart="24dp"
         android:layout_marginEnd="333dp"
@@ -254,6 +234,7 @@
         android:text="Home"
         android:textAlignment="center"
         android:textColor="#676D75"
+        app:layout_constraintBottom_toBottomOf="@+id/imageView9"
         app:layout_constraintEnd_toEndOf="@+id/imageView9"
         app:layout_constraintStart_toStartOf="@+id/imageView9" />
 
@@ -263,13 +244,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="94dp"
-        app:layout_constraintBottom_toBottomOf="parent"
         android:layout_marginTop="49dp"
         android:layout_marginEnd="244dp"
         android:layout_marginBottom="2dp"
         android:text="Bookings"
-        android:textColor="#676D75"
         android:textAlignment="center"
+        android:textColor="#676D75"
+        app:layout_constraintBottom_toBottomOf="@+id/imageView9"
         app:layout_constraintEnd_toEndOf="@+id/imageView9"
         app:layout_constraintStart_toStartOf="@+id/imageView9"
         app:layout_constraintTop_toTopOf="@+id/imageView9" />
@@ -282,9 +263,9 @@
         android:layout_marginStart="250dp"
         android:layout_marginEnd="86dp"
         android:layout_marginBottom="2dp"
-        app:layout_constraintBottom_toBottomOf="parent"
         android:text="Workouts"
         android:textColor="#676D75"
+        app:layout_constraintBottom_toBottomOf="@+id/imageView9"
         app:layout_constraintEnd_toEndOf="@+id/imageView9"
         app:layout_constraintStart_toStartOf="@+id/imageView9" />
 
@@ -298,9 +279,10 @@
         android:layout_marginEnd="15dp"
         android:layout_marginBottom="2dp"
         android:text="Tracker"
-        app:layout_constraintBottom_toBottomOf="parent"
         android:textColor="#FC670B"
+        app:layout_constraintBottom_toBottomOf="@+id/imageView9"
         app:layout_constraintEnd_toEndOf="@+id/imageView9"
         app:layout_constraintStart_toStartOf="@+id/imageView9"
         app:layout_constraintTop_toTopOf="@+id/imageView9" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
