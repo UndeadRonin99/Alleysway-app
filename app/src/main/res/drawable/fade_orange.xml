@@ -1,0 +1,7 @@
+<!-- res/drawable/fade_orange.xml -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <gradient
+        android:startColor="#00FC670B"
+        android:endColor="#FFFC670B"
+        android:angle="90" />
+</shape>

@@ -41,8 +41,6 @@ class Tracker : AppCompatActivity() {
     private lateinit var btnCamera: ImageView
     private lateinit var btnBooking: ImageView
     private lateinit var btnStats: Button
-
-
     private lateinit var tvCurrentWeight: TextView
     private lateinit var tvGoalWeight: TextView
     private lateinit var tvDifference: TextView

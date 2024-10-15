@@ -57,6 +57,7 @@ dependencies {
     implementation(libs.androidx.constraintlayout)
     implementation(libs.firebase.auth.ktx)
     implementation(libs.firebase.storage.ktx)
+    implementation("androidx.cardview:cardview:1.0.0")
 
     implementation(libs.mpandroidchart.v310)
 

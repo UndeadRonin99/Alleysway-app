@@ -1,47 +1,142 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/image_weight_tracker"
-    tools:context=".Tracker">
+    android:background="@drawable/image_weight_tracker">
 
-
-    <Button
-        android:id="@+id/btnSelectDate"
-        android:layout_width="163dp"
-        android:layout_height="53dp"
-        android:layout_marginTop="64dp"
-        android:backgroundTint="#FB670B"
-        android:text="Select Date Range"
-        android:textAlignment="center"
-        android:textColor="#FDFDFD"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.411"
+    <!-- No Data TextView -->
+    <TextView
+        android:id="@+id/noDataTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="No data available"
+        android:textColor="@android:color/black"
+        android:textSize="18sp"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="@id/cardViewGraph"
+        app:layout_constraintBottom_toBottomOf="@id/cardViewGraph"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent" />
 
-    <ImageView
+    <!-- Heading CardView -->
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardViewHeading"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="16dp"
+        app:cardCornerRadius="16dp"
+        app:cardElevation="4dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <!-- Heading TextView -->
+        <TextView
+            android:id="@+id/tvHeading"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="16dp"
+            android:text="My weight from (startdate) to (enddate)"
+            android:textAlignment="center"
+            android:textColor="@android:color/black"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+    </androidx.cardview.widget.CardView>
+
+    <!-- Graph CardView -->
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardViewGraph"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="16dp"
+        app:cardCornerRadius="16dp"
+        app:cardElevation="4dp"
+        app:layout_constraintTop_toBottomOf="@id/cardViewHeading"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <!-- Container Layout -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!-- Line Chart -->
+            <!-- Adjust height as needed -->
+
+            <!-- Divider -->
+            <com.github.mikephil.charting.charts.LineChart
+                android:id="@+id/lineChart"
+                android:layout_width="match_parent"
+                android:layout_height="465dp" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#CCCCCC" />
+
+            <!-- TextViews for Best Weight and Most Recent -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="16dp">
+
+                <!-- Best Weight TextView -->
+                <TextView
+                    android:id="@+id/tvBestWeight"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Best: -- kg"
+                    android:textColor="@android:color/black"
+                    android:textSize="16sp" />
+
+                <!-- Most Recent TextView -->
+                <TextView
+                    android:id="@+id/tvMostRecent"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Most Recent: -- kg"
+                    android:textColor="@android:color/black"
+                    android:textSize="16sp"
+                    android:gravity="end" />
+
+            </LinearLayout>
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+<ImageView
         android:id="@+id/imageView9"
-        android:layout_width="397dp"
-        android:layout_height="70dp"
+        android:layout_width="425dp"
+        android:layout_height="65dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.571"
         app:layout_constraintStart_toStartOf="parent"
+
         app:srcCompat="@drawable/img_rectangle4" />
+
+    <!-- Home button -->
 
     <ImageView
         android:id="@+id/imageView10"
-        android:layout_width="0dp"
-        android:layout_height="31dp"
+        android:layout_width="418dp"
+        android:layout_height="25dp"
+        android:layout_marginBottom="64dp"
         app:layout_constraintBottom_toBottomOf="parent"
+
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="0.4"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.9"
         app:srcCompat="@drawable/img_rectangle3" />
 
     <ImageView
@@ -51,25 +146,29 @@
         android:layout_marginStart="24dp"
         android:layout_marginTop="9dp"
         android:layout_marginEnd="333dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/imageView9"
         app:layout_constraintStart_toStartOf="@+id/imageView9"
         app:layout_constraintTop_toTopOf="@+id/imageView9"
-        app:srcCompat="@drawable/img_home_icon" />
+        app:layout_constraintVertical_bias="0.0"
+        app:srcCompat="@drawable/img_home_icon_unselected" />
 
     <ImageView
         android:id="@+id/btnBooking"
         android:layout_width="40dp"
         android:layout_height="40dp"
+
         android:layout_marginStart="101dp"
         android:layout_marginTop="9dp"
         android:layout_marginEnd="256dp"
         android:layout_marginBottom="21dp"
-        app:layout_constraintBottom_toBottomOf="@+id/imageView9"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/imageView9"
         app:layout_constraintStart_toStartOf="@+id/imageView9"
         app:layout_constraintTop_toTopOf="@+id/imageView9"
         app:srcCompat="@drawable/img_bookings_icon" />
 
+    <!-- Camera button -->
     <ImageView
         android:id="@+id/btnCamera"
         android:layout_width="50dp"
@@ -77,13 +176,15 @@
         android:layout_marginStart="173dp"
         android:layout_marginTop="9dp"
         android:layout_marginEnd="174dp"
+
         android:layout_marginBottom="11dp"
-        app:layout_constraintBottom_toBottomOf="@+id/imageView9"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/imageView9"
         app:layout_constraintStart_toStartOf="@+id/imageView9"
         app:layout_constraintTop_toTopOf="@+id/imageView9"
         app:srcCompat="@drawable/img_container_icon" />
 
+    <!-- Workout button -->
     <ImageView
         android:id="@+id/btnWorkout"
         android:layout_width="40dp"
@@ -91,13 +192,16 @@
         android:layout_marginStart="260dp"
         android:layout_marginTop="9dp"
         android:layout_marginEnd="97dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         android:layout_marginBottom="21dp"
-        app:layout_constraintBottom_toBottomOf="@+id/imageView9"
         app:layout_constraintEnd_toEndOf="@+id/imageView9"
         app:layout_constraintStart_toStartOf="@+id/imageView9"
         app:layout_constraintTop_toTopOf="@+id/imageView9"
         app:srcCompat="@drawable/img_workouts_icon" />
 
+    <!-- Tracker button -->
+
+    <!-- Text for Home -->
     <ImageView
         android:id="@+id/btnTracker"
         android:layout_width="40dp"
@@ -105,41 +209,46 @@
         android:layout_marginStart="339dp"
         android:layout_marginTop="9dp"
         android:layout_marginEnd="18dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/imageView9"
+        app:layout_constraintHorizontal_bias="0.6"
         app:layout_constraintStart_toStartOf="@+id/imageView9"
         app:layout_constraintTop_toTopOf="@+id/imageView9"
-        app:srcCompat="@drawable/img_tracker_icon" />
+        app:layout_constraintVertical_bias="0.0"
+        app:srcCompat="@drawable/tracker_selected" />
 
     <TextView
         android:id="@+id/textView8"
         android:layout_width="40dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         android:layout_height="18dp"
         android:layout_marginStart="24dp"
         android:layout_marginEnd="333dp"
         android:layout_marginBottom="3dp"
         android:text="Home"
         android:textAlignment="center"
-        android:textColor="#FC670B"
-        app:layout_constraintBottom_toBottomOf="@+id/imageView9"
+        android:textColor="#676D75"
         app:layout_constraintEnd_toEndOf="@+id/imageView9"
         app:layout_constraintStart_toStartOf="@+id/imageView9" />
 
+    <!-- Text for Bookings -->
     <TextView
         android:id="@+id/textView9"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="94dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         android:layout_marginTop="49dp"
         android:layout_marginEnd="244dp"
         android:layout_marginBottom="2dp"
         android:text="Bookings"
-        android:textAlignment="center"
         android:textColor="#676D75"
-        app:layout_constraintBottom_toBottomOf="@+id/imageView9"
+        android:textAlignment="center"
         app:layout_constraintEnd_toEndOf="@+id/imageView9"
         app:layout_constraintStart_toStartOf="@+id/imageView9"
         app:layout_constraintTop_toTopOf="@+id/imageView9" />
 
+    <!-- Text for Workouts -->
     <TextView
         android:id="@+id/textView10"
         android:layout_width="wrap_content"
@@ -147,12 +256,13 @@
         android:layout_marginStart="250dp"
         android:layout_marginEnd="86dp"
         android:layout_marginBottom="2dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         android:text="Workouts"
         android:textColor="#676D75"
-        app:layout_constraintBottom_toBottomOf="@+id/imageView9"
         app:layout_constraintEnd_toEndOf="@+id/imageView9"
         app:layout_constraintStart_toStartOf="@+id/imageView9" />
 
+    <!-- Text for Tracker -->
     <TextView
         android:id="@+id/textView11"
         android:layout_width="wrap_content"
@@ -162,22 +272,12 @@
         android:layout_marginEnd="15dp"
         android:layout_marginBottom="2dp"
         android:text="Tracker"
-        android:textColor="#676D75"
-        app:layout_constraintBottom_toBottomOf="@+id/imageView9"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:textColor="#FC670B"
         app:layout_constraintEnd_toEndOf="@+id/imageView9"
         app:layout_constraintStart_toStartOf="@+id/imageView9"
         app:layout_constraintTop_toTopOf="@+id/imageView9" />
 
-    <ImageView
-        android:id="@+id/imageView13"
-        android:layout_width="306dp"
-        android:layout_height="348dp"
-        android:layout_marginBottom="100dp"
-        app:layout_constraintBottom_toTopOf="@+id/imageView10"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.495"
-        app:layout_constraintStart_toStartOf="parent"
-        app:srcCompat="@drawable/container_edit_profile" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
