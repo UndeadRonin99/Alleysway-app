@@ -35,6 +35,9 @@ class Bookings : AppCompatActivity() {
     private val todayDayOfWeek = getCurrentDayOfWeek() // Get today's day in the same format as your data (e.g., "MON", "TUE")
     private val dayLabels = arrayOf("MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN")
     private var hourlyAttendanceData = mapOf<String, List<BarEntry>>()
+    private var noDays: Int = 0
+    private lateinit var quartiles: List<Float>
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,7 +57,7 @@ class Bookings : AppCompatActivity() {
         loadWeeklyData()
         setupDayButtons()
         setupChartValueClickListener()
-        generateSampleData()
+
 
 
         // Inside onCreate method
@@ -92,7 +95,7 @@ class Bookings : AppCompatActivity() {
                         val count = hourSnapshot.getValue(Int::class.java) ?: 0
                         hourlyDataForDay.add(BarEntry(hour.toFloat(), count.toFloat()))
                     }
-
+                    noDays++
                     tempHourlyData[dayOfWeek] = hourlyDataForDay
                 }
 
@@ -107,23 +110,45 @@ class Bookings : AppCompatActivity() {
         })
     }
 
-    private fun loadHourlyDataForDay(day: String) {
-        val hourlyData = hourlyAttendanceData[day] ?: listOf()
-        val completeHourlyData = MutableList(24) { i -> BarEntry(i.toFloat(), 0f) }
-        hourlyData.forEach { entry ->
-            completeHourlyData[entry.x.toInt()] = entry
+    private fun calculateQuartiles(data: List<Float>): List<Float> {
+        val sortedData = data.sorted()
+        val quartiles = mutableListOf<Float>()
+
+        if (sortedData.isNotEmpty()) {
+            // First quartile (25th percentile)
+            quartiles.add(sortedData[(sortedData.size * 25 / 100)])
+
+            // Second quartile (50th percentile or median)
+            quartiles.add(sortedData[(sortedData.size * 50 / 100)])
+
+            // Third quartile (75th percentile)
+            quartiles.add(sortedData[(sortedData.size * 75 / 100)])
         }
+        return quartiles
+    }
+
+
+    private fun loadHourlyDataForDay(day: String) {
+        val hourlyData = hourlyAttendanceData[day]?.map { it.y } ?: listOf()
+        quartiles = calculateQuartiles(hourlyData)
+
+        val completeHourlyData = MutableList(15) { i -> BarEntry((i+6).toFloat(), 0f) }
+        hourlyData.forEachIndexed { index, value ->
+            completeHourlyData[index] = BarEntry(index.toFloat(), value)
+        }
+
+        // Now update the chart with quartile-based labels
         updateBarChart(completeHourlyData, generateHourLabels(), day)
     }
 
     private fun setupDayButtons() {
         val dayButtons = mapOf(
-            "MON" to findViewById<Button>(R.id.btnMonday),
-            "TUE" to findViewById<Button>(R.id.btnTuesday),
-            "WED" to findViewById<Button>(R.id.btnWednesday),
-            "THU" to findViewById<Button>(R.id.btnThursday),
-            "FRI" to findViewById<Button>(R.id.btnFriday),
-            "SAT" to findViewById<Button>(R.id.btnSaturday),
+            "MON" to findViewById(R.id.btnMonday),
+            "TUE" to findViewById(R.id.btnTuesday),
+            "WED" to findViewById(R.id.btnWednesday),
+            "THU" to findViewById(R.id.btnThursday),
+            "FRI" to findViewById(R.id.btnFriday),
+            "SAT" to findViewById(R.id.btnSaturday),
             "SUN" to findViewById<Button>(R.id.btnSunday)
         )
 
@@ -154,17 +179,13 @@ class Bookings : AppCompatActivity() {
     private fun updateBarChart(entries: List<BarEntry>, labels: Array<String>, currentDay: String) {
         val barDataSet = BarDataSet(entries, "Hourly Attendance")
 
-        // Customize colors based on busyness and current hour
         barDataSet.colors = entries.mapIndexed { i, entry ->
-            // Only highlight the current hour in red if it's today's data
-            if (currentDay == todayDayOfWeek && entry.x.toInt() == liveHour) {
-                Color.RED // Highlight current hour only for today's data
-            } else if (entry.y > 30) {
-                Color.parseColor("#FFA726") // Busy
-            } else if (entry.y > 15) {
-                Color.parseColor("#FB8C00") // Moderately Busy
-            } else {
-                Color.parseColor("#FFB850") // Not Busy
+            when {
+                currentDay == todayDayOfWeek && entry.x.toInt() + 6 == liveHour -> Color.parseColor("#ff0000") // Current hour
+                entry.y <= quartiles[0] -> Color.parseColor("#FFB850") // Not Busy
+                entry.y <= quartiles[1] -> Color.parseColor("#FB8C00") // Starting to get busy
+                entry.y <= quartiles[2] -> Color.parseColor("#FFA726") // Busy
+                else -> Color.parseColor("#FF6F00") // Very Busy
             }
         }
 
@@ -172,7 +193,7 @@ class Bookings : AppCompatActivity() {
         val barData = BarData(barDataSet)
 
         // Set bar width to allow spacing between bars
-        barData.barWidth = 0.9f
+        barData.barWidth = 0.5f
 
         // Apply data to the chart
         barChart.data = barData
@@ -205,7 +226,6 @@ class Bookings : AppCompatActivity() {
         // Enable dragging and horizontal scrolling
         barChart.isDragEnabled = true
         barChart.setScaleEnabled(false) // If you don't want scaling, keep it false
-        barChart.setVisibleXRangeMaximum(6f) // Show 6 bars at a time for horizontal scrolling
         barChart.setExtraOffsets(10f, 0f, 10f, 0f) // Add space to the left and right of the chart
 
         val xAxis = barChart.xAxis
@@ -233,15 +253,16 @@ class Bookings : AppCompatActivity() {
                     val selectedHour = it.x.toInt()
                     val busyCount = it.y.toInt() // how busy it is (attendance count)
 
-                    // Determine the busyness label
+                    // Determine the busyness label based on quartiles
                     val busynessLabel = when {
-                        busyCount < 12 -> "Not Busy"
-                        busyCount in 13..25 -> "Moderately Busy"
-                        else -> "Busy"
+                        busyCount <= quartiles[0] -> "Not Busy"  // 1st quartile
+                        busyCount <= quartiles[1] -> "Starting to Get Busy"  // 2nd quartile
+                        busyCount <= quartiles[2] -> "Busy"  // 3rd quartile
+                        else -> "Very Busy"  // 4th quartile
                     }
 
                     // Create the limit line label
-                    val limitLineText = "Time: ${String.format("%02d:00", selectedHour)}, $busynessLabel"
+                    val limitLineText = "Time: ${String.format("%02d:00", selectedHour + 6)}, $busynessLabel"
                     val limitLine = LimitLine(selectedHour.toFloat(), limitLineText)
 
                     // Set the appearance of the limit line
@@ -271,7 +292,7 @@ class Bookings : AppCompatActivity() {
     }
 
     private fun generateHourLabels(): Array<String> {
-        return Array(24) { i -> String.format("%02d:00", i) }
+        return Array(15) { i -> String.format("%02d:00", i + 6) }
     }
 
     private fun getDayOfWeek(dateString: String): String {
@@ -289,38 +310,6 @@ class Bookings : AppCompatActivity() {
             Calendar.SATURDAY -> "SAT"
             Calendar.SUNDAY -> "SUN"
             else -> "MON"
-        }
-    }
-    private fun generateSampleData() {
-        val databaseReference = FirebaseDatabase.getInstance().getReference("attendance")
-        val calendar = Calendar.getInstance()
-        val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-
-        // Generate data for today and the next 7 days
-        for (dayOffset in 0..7) {
-            val date = calendar.time
-            val dateString = dateFormat.format(date)
-
-            // Create a map to hold hourly attendance data
-            val hourlyData = mutableMapOf<String, Int>()
-
-            // Generate random attendance counts for each hour
-            for (hour in 0..23) {
-                val attendanceCount = (5..35).random() // Random count between 5 and 50
-                hourlyData[hour.toString()] = attendanceCount
-            }
-
-            // Write the hourly data to Firebase under the date key
-            databaseReference.child(dateString).setValue(hourlyData)
-                .addOnSuccessListener {
-                    // Data written successfully
-                }
-                .addOnFailureListener { exception ->
-                    // Handle any errors
-                }
-
-            // Move to the next day
-            calendar.add(Calendar.DAY_OF_YEAR, 1)
         }
     }
 
