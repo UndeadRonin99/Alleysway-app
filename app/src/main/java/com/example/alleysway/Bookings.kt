@@ -6,6 +6,7 @@ import android.icu.util.Calendar
 import android.os.Bundle
 import android.widget.Button
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import com.github.mikephil.charting.charts.BarChart
@@ -30,6 +31,7 @@ class Bookings : AppCompatActivity() {
     private lateinit var barChart: BarChart
     private lateinit var databaseReference: DatabaseReference
     private lateinit var btnMakeBooking: ImageView
+    private lateinit var txtNumberOfPTs: TextView
 
     private val liveHour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY)
     private val todayDayOfWeek = getCurrentDayOfWeek() // Get today's day in the same format as your data (e.g., "MON", "TUE")
@@ -44,9 +46,13 @@ class Bookings : AppCompatActivity() {
         setContentView(R.layout.activity_bookings)
         enableEdgeToEdge()
 
+        txtNumberOfPTs = findViewById(R.id.txtnumberOfPTs)
+
+        txtNumberOfPTs.text = "${getNoPTs()} PTs available"
         barChart = findViewById(R.id.popularTimesChart)
         databaseReference = FirebaseDatabase.getInstance().getReference("attendance")
         btnMakeBooking = findViewById(R.id.ptImage)
+
 
         btnMakeBooking.setOnClickListener {
             val intent = Intent(this, MakeBooking::class.java)
@@ -78,6 +84,29 @@ class Bookings : AppCompatActivity() {
             // Navigate to the Bookings activity
             val intent = Intent(this, Tracker::class.java)
             startActivity(intent) }
+    }
+
+    private fun getNoPTs(): Int {
+        var noPts = 0
+
+        databaseReference = FirebaseDatabase.getInstance().getReference("users")
+        databaseReference.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                for (userSnapshot in snapshot.children) {
+                    val role = userSnapshot.child("role").getValue(String::class.java)
+                    if (role == "admin") {
+                        noPts++
+                    }
+                }
+                txtNumberOfPTs.text = "$noPts PTs available"
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                // Error handling
+            }
+        })
+
+        return noPts
     }
 
     private fun loadWeeklyData() {

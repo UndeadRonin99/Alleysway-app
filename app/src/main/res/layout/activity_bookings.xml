@@ -32,25 +32,64 @@
             android:padding="16dp">
 
             <!-- "Find an Expert" Text -->
-            <TextView
-                android:id="@+id/findExpertText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Find an Expert"
-                android:textSize="24sp"
-                android:textStyle="bold"
-                android:textColor="@android:color/white"
-                android:layout_marginTop="24dp" />
 
             <!-- Personal Trainer Image -->
-            <ImageView
-                android:id="@+id/ptImage"
-                android:layout_width="200dp"
-                android:layout_height="300dp"
-                android:layout_marginTop="16dp"
-                android:scaleType="centerCrop"
-                android:src="@drawable/pt_bookings"
-                android:contentDescription="Personal Trainer Image" />
+
+            <TextView
+                android:id="@+id/findAnExpert"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Find an Expert"
+                android:textAlignment="center"
+                android:textColor="@android:color/white"
+                android:textSize="24sp"
+                android:textStyle="bold" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="364dp">
+
+                <ImageView
+                    android:id="@+id/ptImage"
+                    android:layout_width="200dp"
+                    android:layout_height="300dp"
+                    android:contentDescription="Personal Trainer Image"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/pt_bookings"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/txtnumberOfPTs"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginTop="261dp"
+                    android:layout_marginEnd="18dp"
+                    android:layout_marginBottom="7dp"
+                    android:text="0 PTs available"
+                    android:textColor="@android:color/white"
+                    android:textSize="24sp"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="@+id/ptImage"
+                    app:layout_constraintEnd_toEndOf="@+id/ptImage"
+                    app:layout_constraintHorizontal_bias="1.0"
+                    app:layout_constraintStart_toStartOf="@+id/ptImage"
+                    app:layout_constraintTop_toTopOf="@+id/ptImage"
+                    app:layout_constraintVertical_bias="0.0" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <TextView
+                android:id="@+id/busyTimes"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:text="Busy Times"
+                android:textColor="@android:color/white"
+                android:textSize="24sp"
+                android:textStyle="bold" />
 
             <LinearLayout
                 android:id="@+id/daySelectionLayout"
@@ -177,13 +216,15 @@
             </LinearLayout>
 
             <!-- Bar Chart with no top margin to "touch" the buttons -->
-        <com.github.mikephil.charting.charts.BarChart
+
+            <com.github.mikephil.charting.charts.BarChart
             android:id="@+id/popularTimesChart"
             android:layout_width="match_parent"
             android:layout_height="400dp"
             android:layout_marginTop="0dp"
             android:layout_marginBottom="24dp" />
-    </LinearLayout>
+
+        </LinearLayout>
 </ScrollView>
 
     <!-- Bottom Navigation Bar -->
