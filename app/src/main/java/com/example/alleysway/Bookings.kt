@@ -67,6 +67,12 @@ class Bookings : AppCompatActivity() {
 
 
         // Inside onCreate method
+        val btnScan: ImageView = findViewById(R.id.btnCamera)
+        btnScan.setOnClickListener {
+            // Navigate to the Bookings activity
+            val intent = Intent(this, ScanQRCode::class.java)
+            startActivity(intent) }
+
         val btnHome: ImageView = findViewById(R.id.btnHome)
         btnHome.setOnClickListener {
             // Navigate to the Bookings activity
