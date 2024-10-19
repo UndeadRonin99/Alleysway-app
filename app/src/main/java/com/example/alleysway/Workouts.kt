@@ -18,6 +18,7 @@ class Workouts : AppCompatActivity() {
         val btnLog = findViewById<Button>(R.id.btnLog)
         val btnStreak = findViewById<Button>(R.id.btnStreak)
         val btnPastWorkouts = findViewById<Button>(R.id.btnPastWorkouts)
+        val btnViewExcercises = findViewById<Button>(R.id.btnViewExcercises)
 
         val btnWorkout = findViewById<ImageView>(R.id.btnWorkout)
         val btnBooking = findViewById<ImageView>(R.id.btnBooking)
@@ -48,14 +49,11 @@ class Workouts : AppCompatActivity() {
             val intent = Intent(this, Stronger_function_page_1::class.java)
             startActivity(intent)
         }
-
-
-
-
-
-
-
-
-
+        // View Excercises button
+        btnViewExcercises.setOnClickListener {
+            // Perform the action for viewing excercises
+            val intent = Intent(this, ViewExcercises::class.java)
+            startActivity(intent)
+        }
     }
 }

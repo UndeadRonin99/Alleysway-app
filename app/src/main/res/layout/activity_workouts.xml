@@ -154,36 +154,53 @@
         android:layout_width="300dp"
         android:layout_height="49dp"
         android:layout_marginTop="15dp"
-        android:layout_marginBottom="21dp"
+        android:layout_marginBottom="16dp"
         android:background="@drawable/card_background"
         android:text="Log a workout"
         android:textColor="#ffff"
-        app:layout_constraintBottom_toTopOf="@+id/btnStreak"
+        app:layout_constraintBottom_toTopOf="@+id/btnViewExcercises"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.505"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/leaderboard_card" />
 
     <Button
-        android:id="@+id/btnStreak"
+        android:id="@+id/btnViewExcercises"
         android:layout_width="300dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="21dp"
+        android:layout_height="49dp"
+        android:layout_marginTop="16dp"
         android:background="@drawable/card_background"
-        android:text="Weekly Streak"
+        android:text="View Excercises"
         android:textColor="#ffff"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btnLog" />
 
     <Button
+        android:id="@+id/btnStreak"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"
+        android:background="@drawable/card_background"
+        android:text="Weekly Streak"
+        android:textColor="#ffff"
+        app:layout_constraintBottom_toTopOf="@+id/btnPastWorkouts"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.505"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnViewExcercises" />
+
+    <Button
         android:id="@+id/btnPastWorkouts"
         android:layout_width="300dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="17dp"
+        android:layout_marginTop="16dp"
         android:background="@drawable/card_background"
         android:text="View past workouts"
         android:textColor="#ffff"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.505"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btnStreak" />
 
