@@ -77,19 +77,8 @@ class Stronger_function_page_1 : AppCompatActivity() {
                 val intent = Intent(this, log_workout::class.java)
                 intent.putParcelableArrayListExtra(log_workout.EXTRA_SELECTED_EXERCISES, ArrayList(selectedExercises))
 
-                // Check if log_workout is running by looking at a flag (we can track the state)
-                if (!logWorkoutStarted) {
-                    // This is the first time, so we start the log_workout activity
-                    startActivity(intent)
-
-                    // Set a flag to know that the log_workout activity has been started
-                    logWorkoutStarted = true
-                } else {
-                    // If log_workout is already running, just pass the data back and finish this activity
-                    setResult(Activity.RESULT_OK, intent)
-                    finish() // This will take the user back to the log_workout without closing it
-                }
-
+                setResult(Activity.RESULT_OK, intent)
+                finish() // This will take the user back to the log_workout without closing it
             } else {
                 Toast.makeText(this, "No exercises selected", Toast.LENGTH_SHORT).show()
             }

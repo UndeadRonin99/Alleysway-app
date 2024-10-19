@@ -46,7 +46,7 @@ class Workouts : AppCompatActivity() {
         // Log a Workout button
         btnLog.setOnClickListener {
             // Perform the action for logging a workout
-            val intent = Intent(this, Stronger_function_page_1::class.java)
+            val intent = Intent(this, log_workout::class.java)
             startActivity(intent)
         }
         // View Excercises button

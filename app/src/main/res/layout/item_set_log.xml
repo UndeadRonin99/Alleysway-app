@@ -1,9 +1,18 @@
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
     android:padding="8dp">
+
+    <TextView
+        android:id="@+id/SetNumber"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_weight="0.1"
+        android:gravity="center"
+        android:text="TextView"
+        android:textAlignment="center"
+        android:textSize="18sp" />
 
     <EditText
         android:id="@+id/repsEditText"
@@ -22,4 +31,12 @@
         android:hint="Weight (kg)"
         android:textColor="@color/white"
         android:inputType="numberDecimal" />
+
+    <ImageButton
+        android:id="@+id/deleteSetButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.1"
+        android:src="@android:drawable/ic_input_delete"
+        android:padding="8dp"/>
 </LinearLayout>
