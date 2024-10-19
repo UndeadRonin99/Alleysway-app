@@ -1,7 +1,9 @@
 package com.example.alleysway
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.ExpandableListView
 import android.widget.Toast
@@ -68,15 +70,33 @@ class Stronger_function_page_1 : AppCompatActivity() {
         // Handle "Add Exercises" button click
         addButton.setOnClickListener {
             val selectedExercises = exerciseAdapter.getSelectedExercises()
-            // Add selected exercises to the workout
-            // (You can handle how to store or use the selected exercises here)
-            if(selectedExercises.isNotEmpty()){
-                Toast.makeText(this, "${selectedExercises.size} exercises added to the workout!", Toast.LENGTH_SHORT).show()
-                val intent = Intent(this, Stronger_function_page_1::class.java)
-                startActivity(intent)
-            }else{
+            if (selectedExercises.isNotEmpty()) {
+                // Log selected exercises
+                Log.d("Stronger_function_page_1", "Selected exercises: ${selectedExercises.size}")
+
+                val intent = Intent(this, log_workout::class.java)
+                intent.putParcelableArrayListExtra(log_workout.EXTRA_SELECTED_EXERCISES, ArrayList(selectedExercises))
+
+                // Check if log_workout is running by looking at a flag (we can track the state)
+                if (!logWorkoutStarted) {
+                    // This is the first time, so we start the log_workout activity
+                    startActivity(intent)
+
+                    // Set a flag to know that the log_workout activity has been started
+                    logWorkoutStarted = true
+                } else {
+                    // If log_workout is already running, just pass the data back and finish this activity
+                    setResult(Activity.RESULT_OK, intent)
+                    finish() // This will take the user back to the log_workout without closing it
+                }
+
+            } else {
                 Toast.makeText(this, "No exercises selected", Toast.LENGTH_SHORT).show()
             }
         }
+    }
+
+    companion object {
+        var logWorkoutStarted = false // This tracks whether log_workout has been started
     }
 }
