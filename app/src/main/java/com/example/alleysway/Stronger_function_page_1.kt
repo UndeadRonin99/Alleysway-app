@@ -1,59 +1,82 @@
 package com.example.alleysway
 
+import android.content.Intent
 import android.os.Bundle
+import android.widget.Button
 import android.widget.ExpandableListView
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 
 class Stronger_function_page_1 : AppCompatActivity() {
 
     private lateinit var expandableListView: ExpandableListView
-    private lateinit var listGroup: List<String>
-    private lateinit var listItem: HashMap<String, List<String>>
-    private lateinit var adapter: ExpandableListAdapter
+    private lateinit var exerciseAdapter: SelectableExerciseAdapter
+    private lateinit var addButton: Button
+    private val exerciseMap: MutableMap<String, MutableList<Exercise>> = mutableMapOf()
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_stronger_function_page1)
 
-        // Adjust layout insets to fit properly within the system bars
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
-        }
-
-        // Initialize the expandable list view
         expandableListView = findViewById(R.id.expandableListView)
+        addButton = findViewById(R.id.addExercisesBtn)
 
-        // Initialize the data for the expandable list
-        listGroup = listOf(
-            "Shoulders", "Back", "Chest", "Biceps", "Triceps",
-            "Forearms", "Core", "Quads", "Hamstrings", "Glutes",
-            "Calves", "Cardio", "Other"
-        )
+        // Fetch exercises from Firebase
+        val database = FirebaseDatabase.getInstance().getReference("exercises")
+        database.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                exerciseMap.clear()
+                for (exerciseSnapshot in snapshot.children) {
+                    val exercise = exerciseSnapshot.getValue(Exercise::class.java)
+                    if (exercise != null) {
+                        val muscleGroup = exercise.mainMuscle
+                        if (exerciseMap.containsKey(muscleGroup)) {
+                            exerciseMap[muscleGroup]?.add(exercise)
+                        } else {
+                            exerciseMap[muscleGroup] = mutableListOf(exercise)
+                        }
+                    }
+                }
 
-        listItem = hashMapOf(
-            "Shoulders" to listOf("Overhead Press", "Lateral Raise", "Arnold Press"),
-            "Back" to listOf("Pull-ups", "Deadlifts", "Bent-over Row"),
-            "Chest" to listOf("Bench Press", "Chest Fly", "Push-ups"),
-            "Biceps" to listOf("Barbell Curl", "Hammer Curl", "Concentration Curl"),
-            "Triceps" to listOf("Triceps Dip", "Skull Crushers", "Triceps Pushdown"),
-            "Forearms" to listOf("Wrist Curl", "Reverse Wrist Curl"),
-            "Core" to listOf("Crunches", "Leg Raises", "Plank"),
-            "Quads" to listOf("Squats", "Leg Press", "Lunges"),
-            "Hamstrings" to listOf("Romanian Deadlift", "Leg Curl", "Glute Ham Raise"),
-            "Glutes" to listOf("Hip Thrust", "Glute Bridge", "Bulgarian Split Squat"),
-            "Calves" to listOf("Calf Raise", "Seated Calf Raise"),
-            "Cardio" to listOf("Running", "Cycling", "Jump Rope"),
-            "Other" to listOf("Stretching", "Mobility Drills", "Foam Rolling")
-        )
+                // Set adapter for ExpandableListView
+                exerciseAdapter = SelectableExerciseAdapter(this@Stronger_function_page_1, exerciseMap)
+                expandableListView.setAdapter(exerciseAdapter)
 
-        // Set up the expandable list adapter
-        adapter = ExpandableListAdapter(this, listGroup, listItem)
-        expandableListView.setAdapter(adapter)
+                // Handle item click to select/unselect exercises
+                expandableListView.setOnChildClickListener { parent, v, groupPosition, childPosition, id ->
+                    val muscleGroup = exerciseAdapter.getGroup(groupPosition) as String
+                    val exercise = exerciseMap[muscleGroup]?.get(childPosition)
+                    if (exercise != null) {
+                        exerciseAdapter.toggleSelection(exercise)
+                    }
+                    true
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Toast.makeText(this@Stronger_function_page_1, "Failed to load exercises", Toast.LENGTH_SHORT).show()
+            }
+        })
+
+        // Handle "Add Exercises" button click
+        addButton.setOnClickListener {
+            val selectedExercises = exerciseAdapter.getSelectedExercises()
+            // Add selected exercises to the workout
+            // (You can handle how to store or use the selected exercises here)
+            if(selectedExercises.isNotEmpty()){
+                Toast.makeText(this, "${selectedExercises.size} exercises added to the workout!", Toast.LENGTH_SHORT).show()
+                val intent = Intent(this, Stronger_function_page_1::class.java)
+                startActivity(intent)
+            }else{
+                Toast.makeText(this, "No exercises selected", Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 }
