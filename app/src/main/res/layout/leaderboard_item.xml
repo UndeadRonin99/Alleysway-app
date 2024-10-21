@@ -3,38 +3,61 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:padding="16dp">
+    android:padding="16dp"
+    android:background="@drawable/rounded_default_background"
+    android:gravity="center_vertical">
+
+    <!-- Rank Indicator as a TextView -->
+    <TextView
+        android:id="@+id/rank_indicator"
+        android:layout_width="32dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:text="▲"
+        android:textSize="20sp"
+        android:textColor="#4CAF50"
+    android:gravity="center" />
 
     <TextView
         android:id="@+id/rank"
-        android:layout_width="wrap_content"
+        android:layout_width="32dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
         android:text="Rank"
         android:textColor="#FFFFFF"
-        android:textSize="16sp" />
+        android:textSize="16sp"
+        android:gravity="center" />
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/profileImage"
-        android:layout_width="64dp"
-        android:layout_height="64dp"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:layout_marginStart="16dp"
         android:src="@drawable/placeholder_profile" />
 
-    <TextView
-        android:id="@+id/name"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:text="Name"
-        android:textColor="#FFFFFF"
-        android:textSize="16sp" />
+        android:layout_weight="1"
+        android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/points"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:text="Points"
-        android:textColor="#FFFFFF"
-        android:textSize="16sp" />
+        <TextView
+            android:id="@+id/name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Name"
+            android:textColor="#FFFFFF"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/points"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Points"
+            android:textColor="#FFFFFF"
+            android:textSize="14sp" />
+    </LinearLayout>
+
 </LinearLayout>
