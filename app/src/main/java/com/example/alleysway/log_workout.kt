@@ -5,15 +5,24 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.ktx.Firebase
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.UUID
 
 class log_workout : AppCompatActivity() {
 
     private lateinit var exerciseAdapter: WorkoutAdapter
     private lateinit var totalWeight: TextView
+    private lateinit var SaveWorkout: Button
     private val exerciseList = mutableListOf<ExerciseData>() // stores excercise data for logging sets
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -24,6 +33,7 @@ class log_workout : AppCompatActivity() {
         val recyclerView: RecyclerView = findViewById(R.id.exerciseRecyclerView)
         recyclerView.layoutManager = LinearLayoutManager(this)
         totalWeight = findViewById(R.id.totalWeight)
+        SaveWorkout = findViewById(R.id.btnSaveWorkout)
 
         // Initialize adapter for exercises
         exerciseAdapter = WorkoutAdapter(exerciseList, { exercise ->
@@ -50,6 +60,64 @@ class log_workout : AppCompatActivity() {
             val intent = Intent(this, Stronger_function_page_1::class.java)
             startActivityForResult(intent, REQUEST_CODE_ADD_EXERCISES)
         }
+
+        SaveWorkout.setOnClickListener{
+            val user = Firebase.auth.currentUser
+            if (user != null) {
+                saveWorkoutToFirebase(user.uid, FirebaseDatabase.getInstance().reference)
+            }
+            finish()
+        }
+    }
+
+    // Function to save the workout to Firebase
+    private fun saveWorkoutToFirebase(userId: String, database: DatabaseReference) {
+        // Create a unique ID for the workout
+        val workoutId = UUID.randomUUID().toString()
+
+        // Calculate total weight
+        var totalWeight = 0.0
+        exerciseList.forEach { exercise ->
+            exercise.sets.forEach { set ->
+                totalWeight += set.reps * set.weight
+            }
+        }
+        val currentDate = Date()
+        val dateFormat = SimpleDateFormat("dd-MM-yyyy")
+        val formattedDate = dateFormat.format(currentDate)
+
+        // Create a workout map
+        val workoutMap = hashMapOf<String, Any>(
+            "totalWeight" to totalWeight,
+            "date" to formattedDate,
+            "workout" to exerciseList.associate { exercise ->
+                exercise.name to mapOf(
+                    "sets" to exercise.sets.mapIndexed { index, set ->
+                        "Set ${index + 1}" to mapOf(
+                            "reps" to set.reps,
+                            "weight" to set.weight
+                        )
+                    }
+                )
+            }
+        )
+
+        // Save workout under the user's profile
+        database.child("users").child(userId).child("workouts").child(workoutId)
+            .setValue(workoutMap)
+            .addOnSuccessListener {
+                // Successfully saved the workout
+                showToast("Workout saved successfully")
+            }
+            .addOnFailureListener { e ->
+                // Failed to save the workout
+                showToast("Failed to save workout: ${e.message}")
+            }
+    }
+
+    // Helper function to show a toast message
+    private fun showToast(message: String) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
 
     // Receive exercises from Stronger_function_page_1
