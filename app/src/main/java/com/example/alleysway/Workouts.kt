@@ -119,7 +119,10 @@ class Workouts : AppCompatActivity() {
             // First Place
             val firstNameView = findViewById<TextView>(R.id.firstName)
             val firstPFP = findViewById<ImageView>(R.id.firstPFP)
+            val firstTotalView = findViewById<TextView>(R.id.firstTotal)
+
             firstNameView.text = leaderboardData[0].firstName
+            firstTotalView.text = "${leaderboardData[0].totalWeight} kg" // Set total weight for first place
             Glide.with(this)
                 .load(leaderboardData[0].profileUrl)
                 .placeholder(R.drawable.placeholder_profile) // Set placeholder
@@ -129,7 +132,10 @@ class Workouts : AppCompatActivity() {
             if (leaderboardData.size > 1) {
                 val secondNameView = findViewById<TextView>(R.id.secondName)
                 val secondPFP = findViewById<ImageView>(R.id.secondPFP)
+                val secondTotalView = findViewById<TextView>(R.id.secondTotal)
+
                 secondNameView.text = leaderboardData[1].firstName
+                secondTotalView.text = "${leaderboardData[1].totalWeight} kg" // Set total weight for second place
                 Glide.with(this)
                     .load(leaderboardData[1].profileUrl)
                     .placeholder(R.drawable.placeholder_profile) // Set placeholder
@@ -140,7 +146,10 @@ class Workouts : AppCompatActivity() {
             if (leaderboardData.size > 2) {
                 val thirdNameView = findViewById<TextView>(R.id.thirdName)
                 val thirdPFP = findViewById<ImageView>(R.id.thirdPFP)
+                val thirdTotalView = findViewById<TextView>(R.id.thirdTotal)
+
                 thirdNameView.text = leaderboardData[2].firstName
+                thirdTotalView.text = "${leaderboardData[2].totalWeight} kg" // Set total weight for third place
                 Glide.with(this)
                     .load(leaderboardData[2].profileUrl)
                     .placeholder(R.drawable.placeholder_profile) // Set placeholder
@@ -148,6 +157,5 @@ class Workouts : AppCompatActivity() {
             }
         }
     }
-
 
 }
