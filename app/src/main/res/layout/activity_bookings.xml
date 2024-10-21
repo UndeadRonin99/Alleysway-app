@@ -224,7 +224,31 @@
             android:layout_marginTop="0dp"
             android:layout_marginBottom="24dp" />
 
+            <!-- Opening Times Box -->
+            <TextView
+                android:id="@+id/openingTimesTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:text="Opening Times"
+                android:textColor="@android:color/white"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:gravity="center" />
+
+            <TextView
+                android:id="@+id/openingTimesDetails"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Monday - Thursday: 5AM - 8PM\nFriday: 5AM - 7PM\nSaturday: 7AM - 12PM\nSunday: Closed\nPublic Holidays: 7AM - 12PM"
+                android:textColor="@android:color/white"
+                android:textSize="16sp"
+
+                android:background="#27262C"
+                android:gravity="center"
+                android:padding="16dp" />
         </LinearLayout>
+
 </ScrollView>
 
     <!-- Bottom Navigation Bar -->
