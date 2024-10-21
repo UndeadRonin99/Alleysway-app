@@ -22,6 +22,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.CodiaDemo">
         <activity
+            android:name=".Leaderboard"
+            android:exported="false" />
+        <activity
             android:name=".log_workout"
             android:exported="false" />
         <activity

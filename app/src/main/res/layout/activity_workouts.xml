@@ -1,4 +1,5 @@
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/linearLayout2"
     android:layout_width="match_parent"
@@ -6,10 +7,25 @@
     android:background="@drawable/container_image"
     android:orientation="vertical">
 
+    <!-- Leaderboard Title -->
+    <TextView
+        android:id="@+id/leaderboard_title"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="39dp"
+        android:background="@drawable/unrounded_bottoms"
+        android:text="Leaderboard"
+        android:textAlignment="center"
+        android:textColor="@android:color/white"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/leaderboard_card"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <!-- Leaderboard Card -->
-
-    <!-- Workout Buttons -->
-
     <LinearLayout
         android:id="@+id/leaderboard_card"
         android:layout_width="300dp"
@@ -24,10 +40,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/leaderboard_title">
 
-        <!-- Leaderboard Title -->
-
         <!-- Top 3 Users -->
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -35,18 +48,21 @@
             android:gravity="center"
             android:orientation="horizontal">
 
-            <!-- User 1 -->
+            <!-- Second Place User -->
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:orientation="vertical">
 
-                <ImageView
+                <!-- Circular ImageView with Silver Border -->
+                <de.hdodenhof.circleimageview.CircleImageView
                     android:id="@+id/secondPFP"
                     android:layout_width="64dp"
                     android:layout_height="64dp"
-                    android:src="@drawable/container_mask_group" /> <!-- Replace with user image -->
+                    app:civ_border_color="#C0C0C0"
+                app:civ_border_width="6dp"
+                android:src="@drawable/placeholder_profile" />
 
                 <TextView
                     android:id="@+id/secondName"
@@ -64,6 +80,8 @@
             </LinearLayout>
 
             <!-- Crown Icon and Top User -->
+
+            <!-- Third Place User -->
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -72,17 +90,19 @@
                 android:orientation="vertical">
 
                 <!-- Crown image -->
-
                 <ImageView
                     android:layout_width="32dp"
                     android:layout_height="32dp"
                     android:src="@drawable/ic_crown" />
 
-                <ImageView
+                <!-- Circular ImageView with Gold Border -->
+                <de.hdodenhof.circleimageview.CircleImageView
                     android:id="@+id/firstPFP"
-                    android:layout_width="64dp"
-                    android:layout_height="64dp"
-                    android:src="@drawable/container_mask_group" /> <!-- Replace with top user image -->
+                    android:layout_width="70dp"
+                    android:layout_height="65dp"
+                    android:src="@drawable/placeholder_profile"
+                    app:civ_border_color="#FFD700"
+                    app:civ_border_width="6dp" />
 
                 <TextView
                     android:id="@+id/firstName"
@@ -99,18 +119,20 @@
                     android:textColor="@android:color/white" />
             </LinearLayout>
 
-            <!-- User 3 -->
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:orientation="vertical">
 
-                <ImageView
+                <!-- Circular ImageView with Bronze Border -->
+                <de.hdodenhof.circleimageview.CircleImageView
                     android:id="@+id/thirdPFP"
                     android:layout_width="64dp"
                     android:layout_height="64dp"
-                    android:src="@drawable/container_mask_group" /> <!-- Replace with user image -->
+                    app:civ_border_color="#CD7F32"
+                app:civ_border_width="6dp"
+                android:src="@drawable/placeholder_profile" />
 
                 <TextView
                     android:id="@+id/thirdName"
@@ -129,25 +151,9 @@
         </LinearLayout>
     </LinearLayout>
 
-
     <!-- Bottom Navigation Bar -->
 
-    <TextView
-        android:id="@+id/leaderboard_title"
-        android:layout_width="300dp"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="39dp"
-        android:background="@drawable/unrounded_bottoms"
-        android:text="Leader board"
-        android:textAlignment="center"
-        android:textColor="@android:color/white"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/leaderboard_card"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+
 
     <Button
         android:id="@+id/btnLog"
