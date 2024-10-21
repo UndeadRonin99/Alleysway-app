@@ -2,67 +2,88 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#333333"
-    android:id="@+id/main">
+    android:background="#27262C">
 
-    <!-- Back button -->
+
+
     <ImageView
         android:id="@+id/btnBack"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:rotation="180"
-        android:src="@drawable/drawable_image_10"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="32dp"
+        android:src="@android:drawable/ic_media_previous"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:tint="@android:color/white" />
 
-    <!-- Search bar for exercises -->
     <EditText
         android:id="@+id/searchExercise"
-        android:layout_width="314dp"
-        android:layout_height="52dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
+        android:layout_width="0dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="32dp"
         android:layout_marginEnd="16dp"
-        android:background="@drawable/image_rectangle3"
-        android:drawablePadding="8dp"
-        android:hint="        Search for an exercise"
-        android:padding="12dp"
+        android:background="@android:drawable/edit_text"
+        android:backgroundTint="#424242"
+        android:drawableLeft="@android:drawable/ic_menu_search"
+        android:drawablePadding="12dp"
+        android:hint="Search for an exercise"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
         android:textColor="@android:color/white"
         android:textColorHint="@android:color/darker_gray"
+        android:singleLine="true"
+        android:ellipsize="end"
+        android:maxLines="1"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@id/btnBack"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <!-- Expandable ListView for exercises -->
-    <ExpandableListView
-        android:id="@+id/expandableListView"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_margin="16dp"
-        android:background="#333333"
-        android:divider="@android:color/darker_gray"
-        android:dividerHeight="0.5dp"
-        android:padding="8dp"
-        app:layout_constraintBottom_toTopOf="@id/addExercisesBtn"
-        app:layout_constraintTop_toBottomOf="@id/searchExercise"
-        app:layout_constraintVertical_bias="0.0" />
 
-    <!-- Add Exercises Button -->
     <Button
         android:id="@+id/addExercisesBtn"
-        android:layout_width="236dp"
-        android:layout_height="43dp"
-        android:layout_margin="16dp"
-        android:background="@drawable/image_rectangle3"
-        android:backgroundTint="#FF6E40"
-        android:backgroundTintMode="src_over"
+        android:layout_width="0dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="16dp"
+        android:backgroundTint="#FC670B"
+        android:elevation="4dp"
+        android:padding="12dp"
         android:text="Add Exercises"
+        android:textAllCaps="false"
         android:textColor="@android:color/white"
+        android:textSize="16sp"
+        app:cornerRadius="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/searchExercise" />
+
+    <ExpandableListView
+        android:id="@+id/expandableListView"
+        android:layout_width="376dp"
+        android:layout_height="548dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="1dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:background="#27262C"
+        android:childDivider="@android:color/transparent"
+        android:divider="@android:color/transparent"
+        android:dividerHeight="0dp"
+        android:groupIndicator="@null"
+        android:padding="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/addExercisesBtn"
+        app:layout_constraintVertical_bias="0.0" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

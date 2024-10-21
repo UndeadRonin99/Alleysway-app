@@ -10,11 +10,11 @@ import android.widget.TextView
 
 class SelectableExerciseAdapter(
     private val context: Context,
-    private val exerciseMap: Map<String, List<Exercise>>
+    private var exerciseMap: Map<String, List<Exercise>> // Make exerciseMap mutable
 ) : BaseExpandableListAdapter() {
 
     private val selectedExercises = mutableSetOf<Exercise>()  // Track selected exercises
-    private val muscleGroups = exerciseMap.keys.toList()
+    private val muscleGroups get() = exerciseMap.keys.toList()  // Dynamic list of muscle groups
 
     // Toggle selection for an exercise
     fun toggleSelection(exercise: Exercise) {
@@ -29,6 +29,12 @@ class SelectableExerciseAdapter(
     // Get selected exercises
     fun getSelectedExercises(): List<Exercise> {
         return selectedExercises.toList()
+    }
+
+    // Update the dataset in the adapter and refresh the ExpandableListView
+    fun updateData(newExerciseMap: Map<String, List<Exercise>>) {
+        exerciseMap = newExerciseMap
+        notifyDataSetChanged()
     }
 
     // Get the group view (main muscle group)
@@ -66,7 +72,6 @@ class SelectableExerciseAdapter(
         } else {
             convertView.setBackgroundColor(Color.TRANSPARENT)  // Reset background for unselected exercises
             childTitle.setTextColor(Color.WHITE)
-
         }
 
         return convertView
