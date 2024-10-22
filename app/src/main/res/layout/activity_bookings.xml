@@ -276,12 +276,11 @@
 
     <ImageView
         android:id="@+id/imageView10"
-        android:layout_width="417dp"
-        android:layout_height="28dp"
-        android:layout_marginBottom="60dp"
+        android:layout_width="0dp"
+        android:layout_height="31dp"
+        android:layout_marginBottom="70dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.333"
         app:layout_constraintStart_toStartOf="parent"
         app:srcCompat="@drawable/img_rectangle3" />
 
