@@ -152,9 +152,9 @@ class HomePage : AppCompatActivity() {
         }
 
         btnFAQ.setOnClickListener {
-            // Handle FAQ button click
-            Toast.makeText(this, "FAQ clicked", Toast.LENGTH_SHORT).show()
-            // Implement FAQ functionality
+            // Navigate to the FAQ page
+            val intent = Intent(this, faqPage::class.java)
+            startActivity(intent)
         }
 
         btnDelAccount.setOnClickListener {
