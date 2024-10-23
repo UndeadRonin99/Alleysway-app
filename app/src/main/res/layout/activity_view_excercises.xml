@@ -2,51 +2,56 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#27262C">
 
-    <!-- Back button -->
-
-    <!-- Search bar for exercises -->
-    <ImageView
-        android:id="@+id/btnBack"
+    <!-- Horizontal Guideline -->
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/top_guideline"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="36dp"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_begin="36dp" />
+
+    <!-- Search bar -->
+    <ImageView
+        android:id="@+id/btnBack"
+        android:layout_width="47dp"
+        android:layout_height="54dp"
+        android:layout_marginStart="4dp"
         android:rotation="180"
         android:src="@drawable/drawable_image_10"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="@id/top_guideline" />
 
+    <!-- Add Exercises Button -->
     <EditText
         android:id="@+id/searchExercise"
         android:layout_width="0dp"
         android:layout_height="48dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="16dp"
         android:background="@android:drawable/edit_text"
         android:backgroundTint="#424242"
         android:drawableLeft="@android:drawable/ic_menu_search"
         android:drawablePadding="12dp"
+        android:ellipsize="end"
         android:hint="Search for an exercise"
+        android:maxLines="1"
         android:paddingStart="16dp"
         android:paddingEnd="16dp"
+        android:singleLine="true"
         android:textColor="@android:color/white"
         android:textColorHint="@android:color/darker_gray"
-        android:singleLine="true"
-        android:ellipsize="end"
-        android:maxLines="1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@id/btnBack"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="@id/top_guideline" />
 
-    <!-- Expandable ListView for exercises -->
     <ExpandableListView
         android:id="@+id/expandableListView"
         android:layout_width="0dp"
