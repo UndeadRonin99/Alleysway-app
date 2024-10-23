@@ -112,12 +112,58 @@ class Leaderboard : AppCompatActivity() {
 
         if (leaderboardData.isEmpty()) return
 
-        // Populate all users in the scroll view
+        // Update top 3 users outside the scroll view
+        if (leaderboardData.size >= 1) {
+            val firstNameView = findViewById<TextView>(R.id.firstPlaceName)
+            val firstPFP = findViewById<CircleImageView>(R.id.firstPlaceImage)
+            val firstPointsView = findViewById<TextView>(R.id.firstPlacePoints)
+
+            firstNameView.text = leaderboardData[0].firstName
+            firstPointsView.text = if (currentFilter == "weight") {
+                "${leaderboardData[0].totalWeight} kg"
+            } else {
+                "${leaderboardData[0].totalReps} reps"
+            }
+            loadProfileImage(firstPFP, leaderboardData[0].profileUrl)
+        }
+
+        if (leaderboardData.size >= 2) {
+            val secondNameView = findViewById<TextView>(R.id.secondPlaceName)
+            val secondPFP = findViewById<CircleImageView>(R.id.secondPlaceImage)
+            val secondPointsView = findViewById<TextView>(R.id.secondPlacePoints)
+
+            secondNameView.text = leaderboardData[1].firstName
+            secondPointsView.text = if (currentFilter == "weight") {
+                "${leaderboardData[1].totalWeight} kg"
+            } else {
+                "${leaderboardData[1].totalReps} reps"
+            }
+            loadProfileImage(secondPFP, leaderboardData[1].profileUrl)
+        }
+
+        if (leaderboardData.size >= 3) {
+            val thirdNameView = findViewById<TextView>(R.id.thirdPlaceName)
+            val thirdPFP = findViewById<CircleImageView>(R.id.thirdPlaceImage)
+            val thirdPointsView = findViewById<TextView>(R.id.thirdPlacePoints)
+
+            thirdNameView.text = leaderboardData[2].firstName
+            thirdPointsView.text = if (currentFilter == "weight") {
+                "${leaderboardData[2].totalWeight} kg"
+            } else {
+                "${leaderboardData[2].totalReps} reps"
+            }
+            loadProfileImage(thirdPFP, leaderboardData[2].profileUrl)
+        }
+
+        // Remove the top 3 users from the list to avoid duplication in the scroll view
+        val restOfLeaderboard = if (leaderboardData.size > 3) leaderboardData.subList(3, leaderboardData.size) else emptyList()
+
+        // Populate other users in the scroll view
         val leaderboardContainer = findViewById<LinearLayout>(R.id.leaderboardContainer)
         leaderboardContainer.removeAllViews()
 
-        for (i in leaderboardData.indices) {
-            val entry = leaderboardData[i]
+        for (i in restOfLeaderboard.indices) {
+            val entry = restOfLeaderboard[i]
             val leaderboardItem = layoutInflater.inflate(R.layout.leaderboard_item, null)
 
             // Set rank, name, points, and profile image
@@ -126,7 +172,7 @@ class Leaderboard : AppCompatActivity() {
             val pointsView = leaderboardItem.findViewById<TextView>(R.id.points)
             val profileImageView = leaderboardItem.findViewById<CircleImageView>(R.id.profileImage)
 
-            rankView.text = "${i + 1}"
+            rankView.text = "${i + 4}" // Adjust rank number since top 3 are displayed separately
             nameView.text = entry.firstName
             pointsView.text = if (currentFilter == "weight") {
                 "${entry.totalWeight} kg"
@@ -152,19 +198,11 @@ class Leaderboard : AppCompatActivity() {
                 }
             }
 
-            // Set the background based on the rank
-            val backgroundDrawable = when (i) {
-                0 -> R.drawable.rounded_gold_background
-                1 -> R.drawable.rounded_silver_background
-                2 -> R.drawable.rounded_bronze_background
-                else -> R.drawable.rounded_default_background
-            }
-            leaderboardItem.background = resources.getDrawable(backgroundDrawable, null)
-
             // Add the leaderboard item to the container
             leaderboardContainer.addView(leaderboardItem)
         }
     }
+
 
     private fun loadProfileImage(imageView: CircleImageView, profileUrl: String) {
         if (profileUrl.isNotEmpty()) {
