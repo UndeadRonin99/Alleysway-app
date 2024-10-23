@@ -8,40 +8,47 @@ import android.widget.BaseExpandableListAdapter
 import android.widget.TextView
 
 class GroupedExerciseAdapter(
-private val context: Context,
-private val exerciseMap: Map<String, List<Exercise>>
+    private val context: Context,
+    private var exerciseMap: MutableMap<String, MutableList<Exercise>>
 ) : BaseExpandableListAdapter() {
 
-    private val muscleGroups = exerciseMap.keys.toList()
+    private var muscleGroups = exerciseMap.keys.toList()
+
+    // Method to update data and refresh the list
+    fun updateData(newExerciseMap: MutableMap<String, MutableList<Exercise>>) {
+        exerciseMap = newExerciseMap
+        muscleGroups = exerciseMap.keys.toList()
+        notifyDataSetChanged()
+    }
 
     // Get the group view (main muscle group)
     override fun getGroupView(
         listPosition: Int, isExpanded: Boolean, convertView: View?, parent: ViewGroup
     ): View {
-        var convertView = convertView
-        if (convertView == null) {
+        var view = convertView
+        if (view == null) {
             val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-            convertView = inflater.inflate(R.layout.group_item, null)  // Use custom group layout
+            view = inflater.inflate(R.layout.group_item, null)  // Use your custom group layout
         }
-        val groupTitle = convertView!!.findViewById<TextView>(R.id.groupTitle)
+        val groupTitle = view!!.findViewById<TextView>(R.id.groupTitle)
         val muscleGroup = getGroup(listPosition) as String
         groupTitle.text = muscleGroup
-        return convertView
+        return view
     }
 
     // Get the child view (exercises under each group)
     override fun getChildView(
         groupPosition: Int, childPosition: Int, isLastChild: Boolean, convertView: View?, parent: ViewGroup
     ): View {
-        var convertView = convertView
-        if (convertView == null) {
+        var view = convertView
+        if (view == null) {
             val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-            convertView = inflater.inflate(R.layout.child_item, null)  // Use custom child layout
+            view = inflater.inflate(R.layout.child_item, null)  // Use your custom child layout
         }
-        val childTitle = convertView!!.findViewById<TextView>(R.id.childTitle)
+        val childTitle = view!!.findViewById<TextView>(R.id.childTitle)
         val exercise = getChild(groupPosition, childPosition) as Exercise
         childTitle.text = exercise.name
-        return convertView
+        return view
     }
 
     override fun getGroup(listPosition: Int): Any {

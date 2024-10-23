@@ -1,9 +1,9 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#333333"
-    android:id="@+id/main">
+    android:background="#333333">
 
     <!-- Back button -->
     <ImageView
@@ -19,14 +19,14 @@
     <!-- Search bar for exercises -->
     <EditText
         android:id="@+id/searchExercise"
-        android:layout_width="314dp"
+        android:layout_width="0dp"
         android:layout_height="52dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
         android:background="@drawable/image_rectangle3"
         android:drawablePadding="8dp"
-        android:hint="        Search for an exercise"
+        android:hint="Search for an exercise"
         android:padding="12dp"
         android:textColor="@android:color/white"
         android:textColorHint="@android:color/darker_gray"
@@ -37,19 +37,16 @@
     <!-- Expandable ListView for exercises -->
     <ExpandableListView
         android:id="@+id/expandableListView"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_margin="16dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
         android:background="#333333"
         android:divider="@color/white"
         android:dividerHeight="0.5dp"
         android:padding="8dp"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/searchExercise"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/searchExercise" />
-
-    <!-- Add Exercises Button -->
+        app:layout_constraintEnd_toEndOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
