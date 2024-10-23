@@ -14,9 +14,8 @@
         android:orientation="horizontal"
         app:layout_constraintGuide_begin="36dp" />
 
-    <!-- Back button -->
 
-    <!-- Search bar -->
+
     <ImageView
         android:id="@+id/btnBack"
         android:layout_width="47dp"
@@ -27,7 +26,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@id/top_guideline" />
 
-    <!-- Add Exercises Button -->
     <EditText
         android:id="@+id/searchExercise"
         android:layout_width="0dp"

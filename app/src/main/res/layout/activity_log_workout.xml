@@ -1,11 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/Gray"
-    tools:context=".log_workout">
+    android:background="@color/Gray">
 
     <!-- Title and total weight -->
     <TextView
@@ -24,7 +24,7 @@
         android:id="@+id/totalWeight"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Total: 0kg"
+        android:text="Total Weight: 0kg\nTotal Reps: 0"
         android:textColor="@android:color/holo_red_light"
         app:layout_constraintTop_toBottomOf="@id/logWorkoutTitle"
         app:layout_constraintStart_toStartOf="parent"
@@ -47,29 +47,22 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
         android:backgroundTint="#FB670B"
         android:text="Add Exercises"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/btnSaveWorkout"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/exerciseRecyclerView" />
+        app:layout_constraintStart_toStartOf="parent" />
 
+    <!-- Save Workout Button -->
     <Button
         android:id="@+id/btnSaveWorkout"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="93dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="35dp"
+        android:layout_margin="16dp"
         android:backgroundTint="#FB670B"
         android:text="Save Workout"
-        app:layout_constraintBottom_toTopOf="@+id/exerciseRecyclerView"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/logWorkoutTitle"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

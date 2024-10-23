@@ -1,4 +1,3 @@
-<!-- activity_view_excercises.xml -->
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -16,7 +15,6 @@
         android:orientation="horizontal"
         app:layout_constraintGuide_begin="36dp" />
 
-    <!-- Search bar -->
     <ImageView
         android:id="@+id/btnBack"
         android:layout_width="47dp"
@@ -27,7 +25,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@id/top_guideline" />
 
-    <!-- Add Exercises Button -->
     <EditText
         android:id="@+id/searchExercise"
         android:layout_width="0dp"

@@ -23,7 +23,7 @@ class log_workout : AppCompatActivity() {
     private lateinit var exerciseAdapter: WorkoutAdapter
     private lateinit var totalWeight: TextView
     private lateinit var SaveWorkout: Button
-    private val exerciseList = mutableListOf<ExerciseData>() // stores excercise data for logging sets
+    private val exerciseList = mutableListOf<ExerciseData>() // stores exercise data for logging sets
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,7 +44,7 @@ class log_workout : AppCompatActivity() {
             exerciseList.remove(exercise)
             exerciseAdapter.notifyDataSetChanged()
             updateTotalWeight()
-        }, {updateTotalWeight() })
+        }, { updateTotalWeight() })
 
         recyclerView.adapter = exerciseAdapter
 
@@ -55,13 +55,13 @@ class log_workout : AppCompatActivity() {
             startActivityForResult(intent, REQUEST_CODE_ADD_EXERCISES)
         }
 
-        if(!strongerFunctionStarted){
+        if (!strongerFunctionStarted) {
             // Start Stronger_function_page_1 to select exercises
             val intent = Intent(this, Stronger_function_page_1::class.java)
             startActivityForResult(intent, REQUEST_CODE_ADD_EXERCISES)
         }
 
-        SaveWorkout.setOnClickListener{
+        SaveWorkout.setOnClickListener {
             val user = Firebase.auth.currentUser
             if (user != null) {
                 saveWorkoutToFirebase(user.uid, FirebaseDatabase.getInstance().reference)
@@ -75,11 +75,13 @@ class log_workout : AppCompatActivity() {
         // Create a unique ID for the workout
         val workoutId = UUID.randomUUID().toString()
 
-        // Calculate total weight
+        // Calculate total weight and total reps
         var totalWeight = 0.0
+        var totalReps = 0
         exerciseList.forEach { exercise ->
             exercise.sets.forEach { set ->
                 totalWeight += set.reps * set.weight
+                totalReps += set.reps
             }
         }
         val currentDate = Date()
@@ -89,6 +91,7 @@ class log_workout : AppCompatActivity() {
         // Create a workout map
         val workoutMap = hashMapOf<String, Any>(
             "totalWeight" to totalWeight,
+            "totalReps" to totalReps,
             "date" to formattedDate,
             "workout" to exerciseList.associate { exercise ->
                 exercise.name to mapOf(
@@ -134,19 +137,21 @@ class log_workout : AppCompatActivity() {
         }
     }
 
-    // Function to calculate and update the total weight
+    // Function to calculate and update the total weight and total reps
     private fun updateTotalWeight() {
         var totalWeightValue = 0.0
+        var totalRepsValue = 0
 
         // Iterate through all exercises and sets
         exerciseList.forEach { exercise ->
             exercise.sets.forEach { set ->
-                totalWeightValue += set.reps * set.weight  // Calculate total reps * weight for each set
+                totalWeightValue += set.reps * set.weight  // Calculate total weight
+                totalRepsValue += set.reps                 // Sum up total reps
             }
         }
 
-        // Update the totalWeight TextView with the calculated value
-        totalWeight.text = "Total: ${totalWeightValue}kg"
+        // Update the totalWeight TextView with the calculated values
+        totalWeight.text = "Total Weight: ${totalWeightValue}kg\nTotal Reps: $totalRepsValue"
     }
 
     companion object {
