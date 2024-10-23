@@ -1,22 +1,19 @@
 package com.example.alleysway
 
+import android.graphics.Color
 import android.os.Bundle
-
-import com.example.alleysway.models.LeaderboardEntry
-
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
+import com.example.alleysway.models.LeaderboardEntry
+import com.google.firebase.database.*
 import de.hdodenhof.circleimageview.CircleImageView
 
 class Leaderboard : AppCompatActivity() {
+
+    private var currentFilter = "weight" // Default filter is "Total Weight"
+    private lateinit var leaderboardData: MutableList<LeaderboardEntry>
+    private var previousLeaderboardData: List<LeaderboardEntry> = listOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,36 +21,61 @@ class Leaderboard : AppCompatActivity() {
 
         // Back button functionality
         findViewById<ImageView>(R.id.btnBack).setOnClickListener {
-            finish()  // Close the leaderboard activity
+            finish()
         }
+
+        // Initialize the leaderboard data list
+        leaderboardData = mutableListOf()
 
         // Fetch leaderboard data from Firebase
         fetchLeaderboardData()
+
+        // Handle filter selection
+        val filterRadioGroup = findViewById<RadioGroup>(R.id.filterRadioGroup)
+        filterRadioGroup.setOnCheckedChangeListener { _, checkedId ->
+            when (checkedId) {
+                R.id.radioTotalWeight -> {
+                    currentFilter = "weight"
+                    sortAndDisplayLeaderboard()
+                }
+                R.id.radioTotalReps -> {
+                    currentFilter = "reps"
+                    sortAndDisplayLeaderboard()
+                }
+            }
+        }
     }
 
     private fun fetchLeaderboardData() {
         val database = FirebaseDatabase.getInstance().getReference("users")
 
-        database.addListenerForSingleValueEvent(object : ValueEventListener {
+        database.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                val leaderboardData = mutableListOf<LeaderboardEntry>()
+                previousLeaderboardData = leaderboardData.map { it.copy() }
+                leaderboardData.clear()
 
                 for (userSnapshot in snapshot.children) {
                     var totalWeight = 0.0
+                    var totalReps = 0
                     val firstName = userSnapshot.child("firstName").getValue(String::class.java) ?: "Unknown"
                     val profileUrl = userSnapshot.child("profileImageUrl").getValue(String::class.java) ?: ""
                     val workoutsSnapshot = userSnapshot.child("workouts")
 
                     for (workoutSnapshot in workoutsSnapshot.children) {
                         val workoutWeight = workoutSnapshot.child("totalWeight").getValue(Double::class.java) ?: 0.0
+                        val workoutReps = workoutSnapshot.child("totalReps").getValue(Int::class.java) ?: 0
                         totalWeight += workoutWeight
+                        totalReps += workoutReps
                     }
 
-                    leaderboardData.add(LeaderboardEntry(firstName, totalWeight, profileUrl))
+                    leaderboardData.add(LeaderboardEntry(firstName, totalWeight, totalReps, profileUrl))
                 }
 
-                leaderboardData.sortByDescending { it.totalWeight }
-                updateLeaderboardUI(leaderboardData)
+                // Sort and display the leaderboard based on the current filter
+                sortAndDisplayLeaderboard()
+
+                // Calculate rank changes
+                calculateRankChanges()
             }
 
             override fun onCancelled(error: DatabaseError) {
@@ -62,40 +84,35 @@ class Leaderboard : AppCompatActivity() {
         })
     }
 
-    private fun updateLeaderboardUI(leaderboardData: List<LeaderboardEntry>) { if (leaderboardData.isEmpty()) return
+    private fun calculateRankChanges() {
+        val previousRanks = previousLeaderboardData.sortedWith(compareByDescending<LeaderboardEntry> {
+            if (currentFilter == "weight") it.totalWeight else it.totalReps.toDouble()
+        }).mapIndexed { index, entry ->
+            entry.firstName to index + 1
+        }.toMap()
 
-        // Update top 3 users outside the scroll view
-        if (leaderboardData.size >= 1) {
-            val firstNameView = findViewById<TextView>(R.id.firstPlaceName)
-            val firstPFP = findViewById<CircleImageView>(R.id.firstPlaceImage)
-            val firstPointsView = findViewById<TextView>(R.id.firstPlacePoints)
-
-            firstNameView.text = leaderboardData[0].firstName
-            firstPointsView.text = "${leaderboardData[0].totalWeight} kg"
-            loadProfileImage(firstPFP, leaderboardData[0].profileUrl)
+        leaderboardData.forEachIndexed { index, entry ->
+            val currentRank = index + 1
+            val previousRank = previousRanks[entry.firstName] ?: currentRank
+            entry.rankChange = previousRank - currentRank
         }
 
-        if (leaderboardData.size >= 2) {
-            val secondNameView = findViewById<TextView>(R.id.secondPlaceName)
-            val secondPFP = findViewById<CircleImageView>(R.id.secondPlaceImage)
-            val secondPointsView = findViewById<TextView>(R.id.secondPlacePoints)
+        // Update the UI with the new rank changes
+        updateLeaderboardUI(leaderboardData)
+    }
 
-            secondNameView.text = leaderboardData[1].firstName
-            secondPointsView.text = "${leaderboardData[1].totalWeight} kg"
-            loadProfileImage(secondPFP, leaderboardData[1].profileUrl)
-        }
+    private fun sortAndDisplayLeaderboard() {
+        leaderboardData.sortWith(compareByDescending<LeaderboardEntry> {
+            if (currentFilter == "weight") it.totalWeight else it.totalReps.toDouble()
+        })
+        updateLeaderboardUI(leaderboardData)
+    }
 
-        if (leaderboardData.size >= 3) {
-            val thirdNameView = findViewById<TextView>(R.id.thirdPlaceName)
-            val thirdPFP = findViewById<CircleImageView>(R.id.thirdPlaceImage)
-            val thirdPointsView = findViewById<TextView>(R.id.thirdPlacePoints)
+    private fun updateLeaderboardUI(leaderboardData: List<LeaderboardEntry>) {
 
-            thirdNameView.text = leaderboardData[2].firstName
-            thirdPointsView.text = "${leaderboardData[2].totalWeight} kg"
-            loadProfileImage(thirdPFP, leaderboardData[2].profileUrl)
-        }
+        if (leaderboardData.isEmpty()) return
 
-        // Populate other users in the scroll view
+        // Populate all users in the scroll view
         val leaderboardContainer = findViewById<LinearLayout>(R.id.leaderboardContainer)
         leaderboardContainer.removeAllViews()
 
@@ -108,12 +125,32 @@ class Leaderboard : AppCompatActivity() {
             val nameView = leaderboardItem.findViewById<TextView>(R.id.name)
             val pointsView = leaderboardItem.findViewById<TextView>(R.id.points)
             val profileImageView = leaderboardItem.findViewById<CircleImageView>(R.id.profileImage)
-            val rankIndicator = leaderboardItem.findViewById<TextView>(R.id.rank_indicator)
 
             rankView.text = "${i + 1}"
             nameView.text = entry.firstName
-            pointsView.text = "${entry.totalWeight} kg"
+            pointsView.text = if (currentFilter == "weight") {
+                "${entry.totalWeight} kg"
+            } else {
+                "${entry.totalReps} reps"
+            }
             loadProfileImage(profileImageView, entry.profileUrl)
+
+            // Update rank indicator
+            val rankIndicator = leaderboardItem.findViewById<TextView>(R.id.rank_indicator)
+            when {
+                entry.rankChange > 0 -> {
+                    rankIndicator.text = "▲${entry.rankChange}"
+                    rankIndicator.setTextColor(Color.GREEN)
+                }
+                entry.rankChange < 0 -> {
+                    rankIndicator.text = "▼${-entry.rankChange}"
+                    rankIndicator.setTextColor(Color.RED)
+                }
+                else -> {
+                    rankIndicator.text = "•"
+                    rankIndicator.setTextColor(Color.GRAY)
+                }
+            }
 
             // Set the background based on the rank
             val backgroundDrawable = when (i) {
@@ -123,17 +160,6 @@ class Leaderboard : AppCompatActivity() {
                 else -> R.drawable.rounded_default_background
             }
             leaderboardItem.background = resources.getDrawable(backgroundDrawable, null)
-
-            // Set the rank indicator (▲ for up, ▼ for down, and color it green/red)
-            if (i % 2 == 0) {
-                // Example for an increase in rank
-                rankIndicator.text = "▲"
-                rankIndicator.setTextColor(resources.getColor(R.color.green, null)) // Green color
-            } else {
-                // Example for a decrease in rank
-                rankIndicator.text = "▼"
-                rankIndicator.setTextColor(resources.getColor(R.color.red, null)) // Red color
-            }
 
             // Add the leaderboard item to the container
             leaderboardContainer.addView(leaderboardItem)
@@ -150,5 +176,4 @@ class Leaderboard : AppCompatActivity() {
             imageView.setImageResource(R.drawable.placeholder_profile)
         }
     }
-
 }

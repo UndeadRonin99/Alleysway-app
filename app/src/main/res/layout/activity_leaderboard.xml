@@ -30,26 +30,54 @@
         android:textSize="30sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+    <RadioGroup
+        android:id="@+id/filterRadioGroup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@id/txtLeaderboard"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="8dp"
+        android:layout_marginStart="16dp">
+
+        <RadioButton
+            android:id="@+id/radioTotalWeight"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Total Weight"
+            android:textColor="#FFFFFF"
+            android:checked="true"
+            android:buttonTint="#FFFFFF" />
+
+        <RadioButton
+            android:id="@+id/radioTotalReps"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Total Reps"
+            android:textColor="#FFFFFF"
+            android:layout_marginStart="16dp"
+            android:buttonTint="#FFFFFF" />
+    </RadioGroup>
 
     <!-- Top Three Users Container (outside scroll view) -->
     <LinearLayout
         android:id="@+id/topThreeContainer"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
+        android:layout_width="406dp"
+        android:layout_height="273dp"
         android:gravity="center"
+        android:orientation="horizontal"
         android:padding="16dp"
-        app:layout_constraintTop_toBottomOf="@id/txtLeaderboard"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintTop_toBottomOf="@id/txtLeaderboard">
 
         <!-- Second Place User -->
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:orientation="vertical"
-            android:gravity="center">
+            android:gravity="center"
+            android:orientation="vertical">
 
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/secondPlaceImage"
@@ -79,8 +107,8 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:orientation="vertical"
-            android:gravity="center">
+            android:gravity="center"
+            android:orientation="vertical">
 
             <!-- Crown Icon -->
             <ImageView
@@ -117,8 +145,8 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:orientation="vertical"
-            android:gravity="center">
+            android:gravity="center"
+            android:orientation="vertical">
 
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/thirdPlaceImage"

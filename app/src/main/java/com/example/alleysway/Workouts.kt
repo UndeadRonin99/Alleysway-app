@@ -91,16 +91,20 @@ class Workouts : AppCompatActivity() {
 
                 for (userSnapshot in snapshot.children) {
                     var totalWeight = 0.0
+                    var totalReps = 0
                     val firstName = userSnapshot.child("firstName").getValue(String::class.java) ?: "Unknown"
                     val profileUrl = userSnapshot.child("profileImageUrl").getValue(String::class.java) ?: ""
                     val workoutsSnapshot = userSnapshot.child("workouts")
 
                     for (workoutSnapshot in workoutsSnapshot.children) {
                         val weight = workoutSnapshot.child("totalWeight").getValue(Double::class.java) ?: 0.0
+                        val reps = workoutSnapshot.child("totalReps").getValue(Int::class.java) ?: 0
                         totalWeight += weight
+                        totalReps += reps
                     }
 
-                    leaderboardData.add(LeaderboardEntry(firstName, totalWeight, profileUrl))
+                    // Pass the correct parameters to LeaderboardEntry constructor
+                    leaderboardData.add(LeaderboardEntry(firstName, totalWeight, totalReps, profileUrl))
                 }
 
                 leaderboardData.sortByDescending { it.totalWeight }
@@ -113,6 +117,7 @@ class Workouts : AppCompatActivity() {
             }
         })
     }
+
 
     private fun updateTopThreeUI(leaderboardData: List<LeaderboardEntry>) {
         if (leaderboardData.isNotEmpty()) {
