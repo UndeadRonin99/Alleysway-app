@@ -12,7 +12,6 @@ import com.bumptech.glide.Glide
 import com.google.firebase.database.*
 import com.example.alleysway.models.LeaderboardEntry
 
-
 class Workouts : AppCompatActivity() {
 
     private lateinit var database: DatabaseReference
@@ -43,7 +42,7 @@ class Workouts : AppCompatActivity() {
         val btnLog = findViewById<Button>(R.id.btnLog)
         val btnStreak = findViewById<Button>(R.id.btnStreak)
         val btnPastWorkouts = findViewById<Button>(R.id.btnPastWorkouts)
-        val btnViewExcercises = findViewById<Button>(R.id.btnViewExcercises)
+        val btnViewExercises = findViewById<Button>(R.id.btnViewExcercises)
 
         val btnWorkout = findViewById<ImageView>(R.id.btnWorkout)
         val btnBooking = findViewById<ImageView>(R.id.btnBooking)
@@ -56,15 +55,15 @@ class Workouts : AppCompatActivity() {
             val intent = Intent(this, ScanQRCode::class.java)
             startActivity(intent)
         }
-        btnBooking.setOnClickListener{
+        btnBooking.setOnClickListener {
             val intent = Intent(this, Bookings::class.java)
             startActivity(intent)
         }
-        btnTracker.setOnClickListener{
+        btnTracker.setOnClickListener {
             val intent = Intent(this, Tracker::class.java)
             startActivity(intent)
         }
-        btnHome.setOnClickListener{
+        btnHome.setOnClickListener {
             val intent = Intent(this, HomePage::class.java)
             startActivity(intent)
         }
@@ -75,8 +74,8 @@ class Workouts : AppCompatActivity() {
             startActivity(intent)
         }
 
-        // View Excercises button
-        btnViewExcercises.setOnClickListener {
+        // View Exercises button
+        btnViewExercises.setOnClickListener {
             val intent = Intent(this, ViewExcercises::class.java)
             startActivity(intent)
         }
@@ -90,21 +89,59 @@ class Workouts : AppCompatActivity() {
                 val leaderboardData = mutableListOf<LeaderboardEntry>()
 
                 for (userSnapshot in snapshot.children) {
+                    val userId = userSnapshot.key ?: continue
                     var totalWeight = 0.0
                     var totalReps = 0
-                    val firstName = userSnapshot.child("firstName").getValue(String::class.java) ?: "Unknown"
-                    val profileUrl = userSnapshot.child("profileImageUrl").getValue(String::class.java) ?: ""
+
+                    // Fetch firstName
+                    val firstNameValue = userSnapshot.child("firstName").getValue()
+                    val firstName = when (firstNameValue) {
+                        is String -> firstNameValue
+                        else -> "Unknown"
+                    }
+
+                    // Fetch profileUrl
+                    val profileUrlValue = userSnapshot.child("profileImageUrl").getValue()
+                    val profileUrl = when (profileUrlValue) {
+                        is String -> profileUrlValue
+                        else -> ""
+                    }
+
                     val workoutsSnapshot = userSnapshot.child("workouts")
 
                     for (workoutSnapshot in workoutsSnapshot.children) {
-                        val weight = workoutSnapshot.child("totalWeight").getValue(Double::class.java) ?: 0.0
-                        val reps = workoutSnapshot.child("totalReps").getValue(Int::class.java) ?: 0
+                        // Fetch totalWeight
+                        val weightValue = workoutSnapshot.child("totalWeight").getValue()
+                        val weight = when (weightValue) {
+                            is Double -> weightValue
+                            is Long -> weightValue.toDouble()
+                            is Int -> weightValue.toDouble()
+                            is String -> weightValue.toDoubleOrNull() ?: 0.0
+                            else -> 0.0
+                        }
+
+                        // Fetch totalReps
+                        val repsValue = workoutSnapshot.child("totalReps").getValue()
+                        val reps = when (repsValue) {
+                            is Int -> repsValue
+                            is Long -> repsValue.toInt()
+                            is String -> repsValue.toIntOrNull() ?: 0
+                            is Double -> repsValue.toInt()
+                            else -> 0
+                        }
+
                         totalWeight += weight
                         totalReps += reps
                     }
 
-                    // Pass the correct parameters to LeaderboardEntry constructor
-                    leaderboardData.add(LeaderboardEntry(firstName, totalWeight, totalReps, profileUrl))
+                    // Create LeaderboardEntry with correct parameters
+                    leaderboardData.add(LeaderboardEntry(
+                        userId = userId,
+                        firstName = firstName,
+                        totalWeight = totalWeight,
+                        totalReps = totalReps,
+                        profileUrl = profileUrl
+                    ))
                 }
 
                 leaderboardData.sortByDescending { it.totalWeight }
@@ -117,7 +154,6 @@ class Workouts : AppCompatActivity() {
             }
         })
     }
-
 
     private fun updateTopThreeUI(leaderboardData: List<LeaderboardEntry>) {
         if (leaderboardData.isNotEmpty()) {
@@ -162,5 +198,4 @@ class Workouts : AppCompatActivity() {
             }
         }
     }
-
 }
