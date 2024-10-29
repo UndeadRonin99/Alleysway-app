@@ -25,13 +25,13 @@
         <!-- Heading TextView -->
         <TextView
             android:id="@+id/tvHeading"
-            android:layout_width="392dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="16dp"
             android:text="My weight from (startdate) to (enddate)"
             android:textAlignment="center"
             android:textColor="@android:color/black"
-            android:textSize="16sp"
+            android:textSize="20sp"
             android:textStyle="bold" />
     </androidx.cardview.widget.CardView>
 
@@ -60,9 +60,6 @@
 
             <!-- Divider -->
             <!-- No Data TextView (occupies same space as Line Chart) -->
-
-            <!-- Line Chart -->
-
             <TextView
                 android:id="@+id/noDataTextView"
                 android:layout_width="match_parent"
@@ -73,35 +70,7 @@
                 android:textSize="18sp"
                 android:visibility="visible" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:padding="16dp">
-
-                <!-- Best Weight TextView -->
-                <TextView
-                    android:id="@+id/tvBestWeight"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Best: -- kg"
-                    android:textColor="@android:color/black"
-                    android:textSize="16sp" />
-
-                <!-- Most Recent TextView -->
-                <TextView
-                    android:id="@+id/tvMostRecent"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="end"
-                    android:text="Most Recent: -- kg"
-                    android:textColor="@android:color/black"
-                    android:textSize="16sp" />
-
-            </LinearLayout>
-
+            <!-- Line Chart -->
             <com.github.mikephil.charting.charts.LineChart
                 android:id="@+id/lineChart"
                 android:layout_width="match_parent"
@@ -117,6 +86,36 @@
                 android:background="#CCCCCC" />
 
             <!-- TextViews for Best Weight and Most Recent -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="16dp">
+
+                <!-- Best Weight TextView -->
+                <TextView
+                    android:id="@+id/tvBestWeight"
+                    android:layout_width="15dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Best: -- kg"
+                    android:textColor="@android:color/black"
+                    android:textSize="16sp" />
+
+                <!-- Most Recent TextView -->
+                <TextView
+                    android:id="@+id/tvMostRecent"
+                    android:layout_width="30dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+
+                    android:gravity="end"
+                    android:text="Most Recent: -- kg"
+                    android:textAlignment="viewStart"
+                    android:textColor="@android:color/black"
+                    android:textSize="16sp" />
+
+            </LinearLayout>
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 
