@@ -1,15 +1,16 @@
+// File: log_workout.kt
 package com.example.alleysway
 
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.button.MaterialButton
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
@@ -22,7 +23,7 @@ class log_workout : AppCompatActivity() {
 
     private lateinit var exerciseAdapter: WorkoutAdapter
     private lateinit var totalWeight: TextView
-    private lateinit var SaveWorkout: Button
+    private lateinit var saveWorkout: MaterialButton
     private val exerciseList = mutableListOf<ExerciseData>() // stores exercise data for logging sets
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -33,7 +34,7 @@ class log_workout : AppCompatActivity() {
         val recyclerView: RecyclerView = findViewById(R.id.exerciseRecyclerView)
         recyclerView.layoutManager = LinearLayoutManager(this)
         totalWeight = findViewById(R.id.totalWeight)
-        SaveWorkout = findViewById(R.id.btnSaveWorkout)
+        saveWorkout = findViewById(R.id.btnSaveWorkout)
 
         // Initialize adapter for exercises
         exerciseAdapter = WorkoutAdapter(exerciseList, { exercise ->
@@ -48,7 +49,7 @@ class log_workout : AppCompatActivity() {
 
         recyclerView.adapter = exerciseAdapter
 
-        val addExerciseButton: Button = findViewById(R.id.addExerciseButton)
+        val addExerciseButton: MaterialButton = findViewById(R.id.addExerciseButton)
         addExerciseButton.setOnClickListener {
             // Start Stronger_function_page_1 to select exercises
             val intent = Intent(this, Stronger_function_page_1::class.java)
@@ -61,7 +62,7 @@ class log_workout : AppCompatActivity() {
             startActivityForResult(intent, REQUEST_CODE_ADD_EXERCISES)
         }
 
-        SaveWorkout.setOnClickListener {
+        saveWorkout.setOnClickListener {
             val user = Firebase.auth.currentUser
             if (user != null) {
                 saveWorkoutToFirebase(user.uid, FirebaseDatabase.getInstance().reference)
@@ -76,12 +77,12 @@ class log_workout : AppCompatActivity() {
         val workoutId = UUID.randomUUID().toString()
 
         // Calculate total weight and total reps
-        var totalWeight = 0.0
-        var totalReps = 0
+        var totalWeightValue = 0.0
+        var totalRepsValue = 0
         exerciseList.forEach { exercise ->
             exercise.sets.forEach { set ->
-                totalWeight += set.reps * set.weight
-                totalReps += set.reps
+                totalWeightValue += set.reps * set.weight
+                totalRepsValue += set.reps
             }
         }
         val currentDate = Date()
@@ -90,8 +91,8 @@ class log_workout : AppCompatActivity() {
 
         // Create a workout map
         val workoutMap = hashMapOf<String, Any>(
-            "totalWeight" to totalWeight,
-            "totalReps" to totalReps,
+            "totalWeight" to totalWeightValue,
+            "totalReps" to totalRepsValue,
             "date" to formattedDate,
             "workout" to exerciseList.associate { exercise ->
                 exercise.name to mapOf(
@@ -100,7 +101,7 @@ class log_workout : AppCompatActivity() {
                             "reps" to set.reps,
                             "weight" to set.weight
                         )
-                    }
+                    }.toMap()
                 )
             }
         )
@@ -151,7 +152,7 @@ class log_workout : AppCompatActivity() {
         }
 
         // Update the totalWeight TextView with the calculated values
-        totalWeight.text = "Total Weight: ${totalWeightValue}kg\nTotal Reps: $totalRepsValue"
+        totalWeight.text = "Total Weight: ${totalWeightValue}kg   Total Reps: $totalRepsValue"
     }
 
     companion object {

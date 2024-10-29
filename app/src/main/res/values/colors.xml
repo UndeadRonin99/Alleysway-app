@@ -7,6 +7,19 @@
     <color name="Gray">#27262C</color>
     <color name="green">#15BA1B</color>
     <color name="red">#FF0909</color>
+    <!-- Primary Colors -->
+    <color name="primaryColor">#FC670B</color> <!-- Bright Orange -->
+    <color name="primaryDarkColor">#27262C</color> <!-- Dark Gray/Black -->
+
+    <!-- Secondary Colors -->
+    <color name="secondaryColor">#FFB850</color> <!-- Highlighted color -->
+    <color name="accentColor">#FFC107</color> <!-- Optional accent color -->
+
+    <!-- Background and Text Colors -->
+    <color name="backgroundColor">#F5F5F5</color> <!-- Light Gray for backgrounds -->
+    <color name="textColorPrimary">#FFFFFF</color> <!-- White text for dark backgrounds -->
+    <color name="textColorSecondary">#000000</color> <!-- Black text for light backgrounds -->
+
 
 
 </resources>

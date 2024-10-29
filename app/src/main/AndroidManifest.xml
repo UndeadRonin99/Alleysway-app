@@ -32,6 +32,7 @@
             android:exported="false" />
         <activity
             android:name=".log_workout"
+            android:theme="@style/Theme.CodiaDemo.LogWorkout"
             android:exported="false" />
         <activity
             android:name=".ViewExcercises"

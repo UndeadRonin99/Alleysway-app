@@ -12,4 +12,19 @@
         <item name="android:headerBackground">@color/orange</item>
         <item name="android:textColorPrimary">@color/white</item>
     </style>
+    <!-- Base application theme. -->
+    <style name="Theme.CodiaDemo.LogWorkout" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <!-- Customize your theme here -->
+        <!-- Primary branding colors -->
+        <item name="colorPrimary">@color/primaryColor</item>
+        <item name="colorPrimaryVariant">@color/primaryColor</item>
+        <!-- Secondary branding colors -->
+        <item name="colorSecondary">@color/primaryDarkColor</item>
+        <item name="colorSecondaryVariant">@color/primaryDarkColor</item>
+        <!-- Status bar color -->
+        <item name="android:statusBarColor">@color/primaryDarkColor</item>
+        <!-- Text colors -->
+        <item name="android:textColorPrimary">@color/textColorSecondary</item>
+        <item name="android:textColorSecondary">@color/textColorSecondary</item>
+    </style>
 </resources>
