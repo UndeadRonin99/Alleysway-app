@@ -22,23 +22,25 @@
         app:layout_constraintEnd_toEndOf="parent" />
 
     <!-- Weight Goal Input Field -->
+
+    <!-- Save Button -->
     <EditText
         android:id="@+id/etWeightGoal"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="28dp"
+        android:background="@drawable/input_field_bg"
         android:hint="Kg amount"
         android:inputType="numberDecimal"
         android:padding="16dp"
-        android:background="@drawable/input_field_bg"
         android:textColor="#000000"
         android:textColorHint="#AFAFAF"
         android:textSize="16sp"
-        app:layout_constraintTop_toBottomOf="@+id/tvGoalLabel"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvGoalLabel"
         app:layout_constraintWidth_percent="0.8" />
 
-    <!-- Save Button -->
     <Button
         android:id="@+id/btnSaveGoal"
         android:layout_width="wrap_content"
