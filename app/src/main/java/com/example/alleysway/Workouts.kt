@@ -9,8 +9,12 @@ import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
-import com.google.firebase.database.*
 import com.example.alleysway.models.LeaderboardEntry
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 
 class Workouts : AppCompatActivity() {
 
@@ -79,7 +83,13 @@ class Workouts : AppCompatActivity() {
             val intent = Intent(this, ViewExcercises::class.java)
             startActivity(intent)
         }
+
+        btnStreak.setOnClickListener{
+            val intent = Intent(this, Attendance::class.java)
+            startActivity(intent)
+        }
     }
+
 
     private fun loadTopThreeUsers() {
         val usersRef = database.child("users")
@@ -94,14 +104,14 @@ class Workouts : AppCompatActivity() {
                     var totalReps = 0
 
                     // Fetch firstName
-                    val firstNameValue = userSnapshot.child("firstName").getValue()
+                    val firstNameValue = userSnapshot.child("firstName").value
                     val firstName = when (firstNameValue) {
                         is String -> firstNameValue
                         else -> "Unknown"
                     }
 
                     // Fetch profileUrl
-                    val profileUrlValue = userSnapshot.child("profileImageUrl").getValue()
+                    val profileUrlValue = userSnapshot.child("profileImageUrl").value
                     val profileUrl = when (profileUrlValue) {
                         is String -> profileUrlValue
                         else -> ""
@@ -111,7 +121,7 @@ class Workouts : AppCompatActivity() {
 
                     for (workoutSnapshot in workoutsSnapshot.children) {
                         // Fetch totalWeight
-                        val weightValue = workoutSnapshot.child("totalWeight").getValue()
+                        val weightValue = workoutSnapshot.child("totalWeight").value
                         val weight = when (weightValue) {
                             is Double -> weightValue
                             is Long -> weightValue.toDouble()
@@ -121,7 +131,7 @@ class Workouts : AppCompatActivity() {
                         }
 
                         // Fetch totalReps
-                        val repsValue = workoutSnapshot.child("totalReps").getValue()
+                        val repsValue = workoutSnapshot.child("totalReps").value
                         val reps = when (repsValue) {
                             is Int -> repsValue
                             is Long -> repsValue.toInt()

@@ -1,0 +1,4 @@
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <solid android:color="#EEEEEE" /> <!-- Default background color for absent days -->
+    <corners android:radius="4dp" /> <!-- Rounded corners for each cell -->
+</shape>

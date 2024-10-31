@@ -22,6 +22,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.CodiaDemo">
         <activity
+            android:name=".Attendance"
+            android:exported="false" />
+        <activity
             android:name=".faqPage"
             android:exported="false" />
         <activity
@@ -32,8 +35,8 @@
             android:exported="false" />
         <activity
             android:name=".log_workout"
-            android:theme="@style/Theme.CodiaDemo.LogWorkout"
-            android:exported="false" />
+            android:exported="false"
+            android:theme="@style/Theme.CodiaDemo.LogWorkout" />
         <activity
             android:name=".ViewExcercises"
             android:exported="false" />

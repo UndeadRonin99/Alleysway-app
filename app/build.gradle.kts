@@ -10,7 +10,7 @@ android {
 
     defaultConfig {
         applicationId = "com.example.alleysway"
-        minSdk = 24
+        minSdk = 26
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
@@ -26,6 +26,10 @@ android {
                 "proguard-rules.pro"
             )
         }
+    }
+
+    buildFeatures {
+        viewBinding = true
     }
 
     packagingOptions {
@@ -74,13 +78,13 @@ dependencies {
     implementation("com.google.oauth-client:google-oauth-client-jetty:1.23.0")
     implementation("com.google.apis:google-api-services-calendar:v3-rev305-1.23.0")
 
-//for the pfp on leaderboard page
+    //for the pfp on leaderboard page
     implementation("de.hdodenhof:circleimageview:3.1.0")
     implementation("com.github.bumptech.glide:glide:4.12.0")
+    implementation(libs.androidx.ui.android)
+    implementation(libs.androidx.material3.android)
 
-    implementation("androidx.recyclerview:recyclerview:1.2.1")
-    implementation("androidx.cardview:cardview:1.0.0")
-
+    //for graphs
     implementation(libs.mpandroidchart.v310)
     implementation("com.google.android.material:material:1.8.0")
 
