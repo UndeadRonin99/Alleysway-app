@@ -1,5 +1,4 @@
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/linearLayout2"
     android:layout_width="match_parent"
@@ -37,8 +36,7 @@
         android:padding="16dp"
         app:layout_constraintBottom_toTopOf="@+id/btnLog"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/leaderboard_title">
+        app:layout_constraintStart_toStartOf="parent">
 
         <!-- Top 3 Users -->
         <LinearLayout
@@ -60,9 +58,9 @@
                     android:id="@+id/secondPFP"
                     android:layout_width="64dp"
                     android:layout_height="64dp"
+                    android:src="@drawable/placeholder_profile"
                     app:civ_border_color="#C0C0C0"
-                app:civ_border_width="6dp"
-                android:src="@drawable/placeholder_profile" />
+                    app:civ_border_width="6dp" />
 
                 <TextView
                     android:id="@+id/secondName"
@@ -130,9 +128,9 @@
                     android:id="@+id/thirdPFP"
                     android:layout_width="64dp"
                     android:layout_height="64dp"
+                    android:src="@drawable/placeholder_profile"
                     app:civ_border_color="#CD7F32"
-                app:civ_border_width="6dp"
-                android:src="@drawable/placeholder_profile" />
+                    app:civ_border_width="6dp" />
 
                 <TextView
                     android:id="@+id/thirdName"
@@ -151,8 +149,49 @@
         </LinearLayout>
     </LinearLayout>
 
-    <!-- Bottom Navigation Bar -->
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="15dp"
+        android:layout_marginEnd="5dp"
+        android:layout_marginBottom="16dp"
+        android:background="@drawable/rounded_background"
+        android:orientation="vertical"
+        android:paddingHorizontal="20dp"
+        android:paddingVertical="20dp"
+        app:layout_constraintBottom_toTopOf="@+id/btnLog"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/leaderboard_card">
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center"
+            android:text="Attendance"
+            android:textColor="@color/white"
+            android:textSize="16sp" />
+
+        <!-- Month Headers RecyclerView -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/monthHeaderRecyclerView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="4dp"
+            android:orientation="horizontal" />
+
+        <!-- RecyclerView for the calendar -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/calendarRecyclerView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:scrollbars="horizontal" />
+    </LinearLayout>
+
+    <!-- Bottom Navigation Bar -->
 
 
     <Button
@@ -183,21 +222,6 @@
         app:layout_constraintTop_toBottomOf="@+id/btnLog" />
 
     <Button
-        android:id="@+id/btnStreak"
-        android:layout_width="300dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:layout_marginBottom="16dp"
-        android:background="@drawable/card_background"
-        android:text="Weekly Streak"
-        android:textColor="#ffff"
-        app:layout_constraintBottom_toTopOf="@+id/btnPastWorkouts"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.505"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnViewExcercises" />
-
-    <Button
         android:id="@+id/btnPastWorkouts"
         android:layout_width="300dp"
         android:layout_height="wrap_content"
@@ -208,7 +232,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.505"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnStreak" />
+        app:layout_constraintTop_toBottomOf="@+id/btnViewExcercises" />
 
     <ImageView
         android:id="@+id/imageView10"
