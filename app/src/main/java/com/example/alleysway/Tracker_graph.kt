@@ -116,11 +116,7 @@ class Tracker_graph : AppCompatActivity() {
                         return
                     }
 
-                    val weightEntries = mutableListOf<Entry>()
-                    val dateLabels = mutableListOf<String>()
-                    val weightValues = mutableListOf<Float>()
-
-                    var index = 0f
+                    val dataList = mutableListOf<Pair<Date, Float>>() // List of pairs (date, weight)
 
                     for (childSnapshot in snapshot.children) {
                         val dateString = childSnapshot.child("date").getValue(String::class.java)
@@ -132,17 +128,30 @@ class Tracker_graph : AppCompatActivity() {
                                 if (entryDate != null && isDateInRange(entryDate)) {
                                     val weight = weightString.toFloatOrNull()
                                     if (weight != null) {
-                                        weightEntries.add(Entry(index, weight))
-                                        val labelString = labelDateFormat.format(entryDate)
-                                        dateLabels.add(labelString)
-                                        weightValues.add(weight)
-                                        index++
+                                        dataList.add(Pair(entryDate, weight))
                                     }
                                 }
                             } catch (e: Exception) {
                                 e.printStackTrace()
                             }
                         }
+                    }
+
+                    // Sort the dataList by date in ascending order
+                    dataList.sortBy { it.first }
+
+                    val weightEntries = mutableListOf<Entry>()
+                    val dateLabels = mutableListOf<String>()
+                    val weightValues = mutableListOf<Float>()
+
+                    var index = 0f
+
+                    for ((entryDate, weight) in dataList) {
+                        weightEntries.add(Entry(index, weight))
+                        val labelString = labelDateFormat.format(entryDate)
+                        dateLabels.add(labelString)
+                        weightValues.add(weight)
+                        index++
                     }
 
                     // Display the line chart with the weight data if entries exist
