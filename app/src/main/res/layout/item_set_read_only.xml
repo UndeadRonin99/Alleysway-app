@@ -1,0 +1,39 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/setItemLayout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:paddingVertical="4dp">
+
+    <!-- Set Number -->
+    <TextView
+        android:id="@+id/setNumber"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="Set 1"
+        android:gravity="center"
+        android:textColor="@color/primaryDarkColor"
+        android:textStyle="bold" />
+
+    <!-- Reps Text -->
+    <TextView
+        android:id="@+id/repsTextView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="Reps: 10"
+        android:gravity="center"
+        android:textColor="@color/primaryDarkColor" />
+
+    <!-- Weight Text -->
+    <TextView
+        android:id="@+id/weightTextView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="Weight: 50 kg"
+        android:gravity="center"
+        android:textColor="@color/primaryDarkColor" />
+</LinearLayout>

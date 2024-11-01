@@ -22,6 +22,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.CodiaDemo">
         <activity
+            android:name=".PastWorkoutsActivity"
+            android:exported="false" />
+        <activity
             android:name=".faqPage"
             android:exported="false" />
         <activity

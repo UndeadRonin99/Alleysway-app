@@ -182,6 +182,10 @@ class Workouts : AppCompatActivity() {
         val btnCamera = findViewById<ImageView>(R.id.btnCamera)
         val btnHome = findViewById<ImageView>(R.id.btnHome)
 
+        btnPastWorkouts.setOnClickListener {
+            val intent = Intent(this, PastWorkoutsActivity::class.java)
+            startActivity(intent)
+        }
         // Set OnClickListeners for each button
         btnCamera.setOnClickListener {
             val intent = Intent(this, ScanQRCode::class.java)

@@ -64,3 +64,10 @@ data class ExerciseData(
         }
     }
 }
+data class WorkoutData(
+    val name: String,
+    val date: String,
+    val totalWeight: Double,
+    val totalReps: Int,
+    val exercises: MutableList<ExerciseData>
+)

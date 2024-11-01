@@ -1,4 +1,3 @@
-// File: log_workout.kt
 package com.example.alleysway
 
 import android.app.Activity
@@ -39,15 +38,21 @@ class log_workout : AppCompatActivity() {
         saveWorkout = findViewById(R.id.btnSaveWorkout)
 
         // Initialize adapter for exercises
-        exerciseAdapter = WorkoutAdapter(exerciseList, { exercise ->
-            exercise.sets.add(SetData())
-            exerciseAdapter.notifyDataSetChanged()
-            updateTotalWeight()
-        }, { exercise ->
-            exerciseList.remove(exercise)
-            exerciseAdapter.notifyDataSetChanged()
-            updateTotalWeight()
-        }, { updateTotalWeight() })
+        exerciseAdapter = WorkoutAdapter(
+            exercises = exerciseList,
+            onAddSet = { exercise ->
+                exercise.sets.add(SetData())
+                exerciseAdapter.notifyDataSetChanged()
+                updateTotalWeight()
+            },
+            onDeleteExercise = { exercise ->
+                exerciseList.remove(exercise)
+                exerciseAdapter.notifyDataSetChanged()
+                updateTotalWeight()
+            },
+            onUpdateTotalWeight = { updateTotalWeight() },
+            isLogging = true
+        )
 
         recyclerView.adapter = exerciseAdapter
 
@@ -58,8 +63,8 @@ class log_workout : AppCompatActivity() {
             startActivityForResult(intent, REQUEST_CODE_ADD_EXERCISES)
         }
 
+        // Automatically start exercise selection if not started before
         if (!strongerFunctionStarted) {
-            // Start Stronger_function_page_1 to select exercises
             val intent = Intent(this, Stronger_function_page_1::class.java)
             startActivityForResult(intent, REQUEST_CODE_ADD_EXERCISES)
         }
