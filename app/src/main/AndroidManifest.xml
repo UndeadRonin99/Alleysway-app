@@ -36,6 +36,7 @@
         <activity
             android:name=".log_workout"
             android:exported="false"
+            android:windowSoftInputMode="adjustResize"
             android:theme="@style/Theme.CodiaDemo.LogWorkout" />
         <activity
             android:name=".ViewExcercises"

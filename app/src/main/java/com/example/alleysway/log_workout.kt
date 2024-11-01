@@ -4,6 +4,7 @@ import android.app.Activity
 import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
+import android.view.WindowManager
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
@@ -30,6 +31,8 @@ class log_workout : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
+
         setContentView(R.layout.activity_log_workout)
 
         val recyclerView: RecyclerView = findViewById(R.id.exerciseRecyclerView)
