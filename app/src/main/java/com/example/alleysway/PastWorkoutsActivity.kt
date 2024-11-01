@@ -1,4 +1,3 @@
-// File: app/src/main/java/com/example/alleysway/PastWorkoutsActivity.kt
 package com.example.alleysway
 
 import android.os.Bundle
@@ -46,6 +45,10 @@ class PastWorkoutsActivity : AppCompatActivity() {
                     val workoutData = parseWorkoutSnapshot(workoutSnapshot)
                     workoutsList.add(workoutData)
                 }
+
+                // Sort the workoutsList by timestamp in descending order
+                workoutsList.sortByDescending { it.timestamp }
+
                 pastWorkoutsAdapter.notifyDataSetChanged()
                 progressBar.visibility = View.GONE
             }
@@ -62,6 +65,7 @@ class PastWorkoutsActivity : AppCompatActivity() {
         val date = workoutSnapshot.child("date").getValue(String::class.java) ?: ""
         val totalWeight = workoutSnapshot.child("totalWeight").getValue(Double::class.java) ?: 0.0
         val totalReps = workoutSnapshot.child("totalReps").getValue(Int::class.java) ?: 0
+        val timestamp = workoutSnapshot.child("timestamp").getValue(Long::class.java) ?: 0L
 
         val exercisesList = mutableListOf<ExerciseData>()
 
@@ -83,6 +87,6 @@ class PastWorkoutsActivity : AppCompatActivity() {
             exercisesList.add(exerciseData)
         }
 
-        return WorkoutData(name, date, totalWeight, totalReps, exercisesList)
+        return WorkoutData(name, date, totalWeight, totalReps, exercisesList, timestamp)
     }
 }

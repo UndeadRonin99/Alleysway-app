@@ -69,5 +69,33 @@ data class WorkoutData(
     val date: String,
     val totalWeight: Double,
     val totalReps: Int,
-    val exercises: MutableList<ExerciseData>
-)
+    val exercises: MutableList<ExerciseData>,
+    val timestamp: Long = 0L // Add the timestamp field with a default value
+) : Parcelable {
+    constructor(parcel: Parcel) : this(
+        parcel.readString() ?: "",
+        parcel.readString() ?: "",
+        parcel.readDouble(),
+        parcel.readInt(),
+        mutableListOf<ExerciseData>().apply {
+            parcel.readList(this, ExerciseData::class.java.classLoader)
+        },
+        parcel.readLong() // Read the timestamp from the parcel
+    )
+
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeString(name)
+        parcel.writeString(date)
+        parcel.writeDouble(totalWeight)
+        parcel.writeInt(totalReps)
+        parcel.writeList(exercises)
+        parcel.writeLong(timestamp) // Write the timestamp to the parcel
+    }
+
+    override fun describeContents(): Int = 0
+
+    companion object CREATOR : Parcelable.Creator<WorkoutData> {
+        override fun createFromParcel(parcel: Parcel): WorkoutData = WorkoutData(parcel)
+        override fun newArray(size: Int): Array<WorkoutData?> = arrayOfNulls(size)
+    }
+}

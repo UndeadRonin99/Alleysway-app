@@ -116,16 +116,19 @@ class log_workout : AppCompatActivity() {
                 totalRepsValue += set.reps
             }
         }
+
         val currentDate = Date()
         val dateFormat = SimpleDateFormat("dd-MM-yyyy")
         val formattedDate = dateFormat.format(currentDate)
+        val timestamp = System.currentTimeMillis() // Add this line to get the current timestamp
 
         // Create a workout map
         val workoutMap = hashMapOf<String, Any>(
-            "name" to workoutName,  // Include the workout name here
+            "name" to workoutName,
             "totalWeight" to totalWeightValue,
             "totalReps" to totalRepsValue,
             "date" to formattedDate,
+            "timestamp" to timestamp, // Include the timestamp here
             "workout" to exerciseList.associate { exercise ->
                 exercise.name to mapOf(
                     "sets" to exercise.sets.mapIndexed { index, set ->
@@ -150,7 +153,6 @@ class log_workout : AppCompatActivity() {
                 showToast("Failed to save workout: ${e.message}")
             }
     }
-
     // Helper function to show a toast message
     private fun showToast(message: String) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
