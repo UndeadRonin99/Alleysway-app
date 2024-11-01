@@ -68,14 +68,14 @@
                     android:id="@+id/secondName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Nicholas"
+                    android:text=""
                     android:textColor="@android:color/white" />
 
                 <TextView
                     android:id="@+id/secondTotal"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="915,191 kg"
+                    android:text=""
                     android:textColor="@android:color/white" />
             </LinearLayout>
 
@@ -108,14 +108,14 @@
                     android:id="@+id/firstName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Daniel"
+                    android:text=""
                     android:textColor="@android:color/white" />
 
                 <TextView
                     android:id="@+id/firstTotal"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="1,419,532 kg"
+                    android:text=""
                     android:textColor="@android:color/white" />
             </LinearLayout>
 
@@ -138,14 +138,14 @@
                     android:id="@+id/thirdName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Matteo"
+                    android:text=""
                     android:textColor="@android:color/white" />
 
                 <TextView
                     android:id="@+id/thirdTotal"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="577,932.89 kg"
+                    android:text=""
                     android:textColor="@android:color/white" />
             </LinearLayout>
         </LinearLayout>
