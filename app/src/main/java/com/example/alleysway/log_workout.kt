@@ -2,8 +2,10 @@
 package com.example.alleysway
 
 import android.app.Activity
+import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
+import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
@@ -63,16 +65,40 @@ class log_workout : AppCompatActivity() {
         }
 
         saveWorkout.setOnClickListener {
-            val user = Firebase.auth.currentUser
-            if (user != null) {
-                saveWorkoutToFirebase(user.uid, FirebaseDatabase.getInstance().reference)
+            // Create an AlertDialog.Builder
+            val builder = AlertDialog.Builder(this)
+            builder.setTitle("Enter Workout Name")
+
+            // Set up the input
+            val input = EditText(this)
+            input.hint = "Workout Name"
+
+            // Specify the type of input expected
+            builder.setView(input)
+
+            // Set up the buttons
+            builder.setPositiveButton("OK") { dialog, which ->
+                val workoutName = input.text.toString().trim()
+                if (workoutName.isEmpty()) {
+                    showToast("Please enter a workout name.")
+                } else {
+                    val user = Firebase.auth.currentUser
+                    if (user != null) {
+                        saveWorkoutToFirebase(user.uid, FirebaseDatabase.getInstance().reference, workoutName)
+                    }
+                    finish()
+                }
             }
-            finish()
+            builder.setNegativeButton("Cancel") { dialog, which ->
+                dialog.cancel()
+            }
+
+            builder.show()
         }
     }
 
     // Function to save the workout to Firebase
-    private fun saveWorkoutToFirebase(userId: String, database: DatabaseReference) {
+    private fun saveWorkoutToFirebase(userId: String, database: DatabaseReference, workoutName: String) {
         // Create a unique ID for the workout
         val workoutId = UUID.randomUUID().toString()
 
@@ -91,6 +117,7 @@ class log_workout : AppCompatActivity() {
 
         // Create a workout map
         val workoutMap = hashMapOf<String, Any>(
+            "name" to workoutName,  // Include the workout name here
             "totalWeight" to totalWeightValue,
             "totalReps" to totalRepsValue,
             "date" to formattedDate,
