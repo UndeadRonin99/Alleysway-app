@@ -7,6 +7,7 @@
     <color name="Gray">#27262C</color>
     <color name="green">#15BA1B</color>
     <color name="red">#FF0909</color>
+    <color name="blue">#3E1CEA</color>
     <!-- Primary Colors -->
     <color name="primaryColor">#FC670B</color> <!-- Bright Orange -->
     <color name="primaryDarkColor">#27262C</color> <!-- Dark Gray/Black -->

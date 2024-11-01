@@ -50,9 +50,7 @@
         <activity
             android:name=".Tracker_graph"
             android:exported="false" />
-        <activity
-            android:name=".Tracker_calender"
-            android:exported="false" />
+
         <activity
             android:name=".FinalizeBookings"
             android:exported="false" />

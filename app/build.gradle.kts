@@ -87,6 +87,7 @@ dependencies {
     //for graphs
     implementation(libs.mpandroidchart.v310)
     implementation("com.google.android.material:material:1.8.0")
+    implementation(libs.androidx.foundation.layout.android)
 
 
     testImplementation(libs.junit)

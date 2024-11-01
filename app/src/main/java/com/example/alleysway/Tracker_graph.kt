@@ -21,6 +21,8 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import java.text.SimpleDateFormat
 import java.util.*
+import com.github.mikephil.charting.interfaces.datasets.ILineDataSet
+
 
 class Tracker_graph : AppCompatActivity() {
 
@@ -172,7 +174,7 @@ class Tracker_graph : AppCompatActivity() {
         dateLabels: List<String>,
         weightValues: List<Float>
     ) {
-        // Create the dataset for the weight entries
+        // Create the dataset for the actual weight entries
         val weightDataSet = LineDataSet(weightEntries, "Weight")
         weightDataSet.lineWidth = 2f
         weightDataSet.color = resources.getColor(R.color.orange)
@@ -180,23 +182,58 @@ class Tracker_graph : AppCompatActivity() {
         weightDataSet.setDrawCircleHole(false)
         weightDataSet.setCircleColors(resources.getColor(R.color.orange))
         weightDataSet.circleRadius = 4f
-        weightDataSet.setDrawValues(true)
-        weightDataSet.valueTextColor = Color.BLACK
+        weightDataSet.setDrawValues(false)
         weightDataSet.setDrawFilled(true)
-        // Set gradient fill
+        // Set gradient fill for actual data
         val drawable = ContextCompat.getDrawable(this, R.drawable.fade_orange)
         weightDataSet.fillDrawable = drawable
-        // Set mode to cubic bezier for smooth lines
         weightDataSet.mode = LineDataSet.Mode.CUBIC_BEZIER
 
-        val dataSets = mutableListOf<LineDataSet>()
+        // Perform linear regression on the existing data
+        val (slope, intercept) = calculateLinearRegression(weightEntries)
+
+        // Generate predicted entries for the next month
+        val predictedEntries = generatePredictedEntries(weightEntries, slope, intercept)
+
+        // Ensure the predicted data starts from the last actual data point
+        if (weightEntries.isNotEmpty() && predictedEntries.isNotEmpty()) {
+            predictedEntries.add(0, weightEntries.last())
+        }
+
+
+        // Create the dataset for the predicted weight entries
+        val predictedDataSet = LineDataSet(predictedEntries, "Predicted Weight")
+        predictedDataSet.lineWidth = 2f
+        predictedDataSet.color = resources.getColor(R.color.blue)
+        predictedDataSet.setDrawCircles(false)
+        predictedDataSet.setDrawValues(false)
+        predictedDataSet.setDrawFilled(true)
+        // Set gradient fill for predicted data
+        val predictedDrawable = ContextCompat.getDrawable(this, R.drawable.fade_blue)
+        predictedDataSet.fillDrawable = predictedDrawable
+        predictedDataSet.mode = LineDataSet.Mode.CUBIC_BEZIER
+
+        // Combine the datasets
+        val dataSets = mutableListOf<ILineDataSet>()
         dataSets.add(weightDataSet)
+        dataSets.add(predictedDataSet)
 
         // Create line data and set it to the chart
-        val lineData = LineData(dataSets as List<LineDataSet>)
+        val lineData = LineData(dataSets)
         lineChart.data = lineData
 
-        // Customize the x-axis to display date labels
+        // Update dateLabels to include labels for predicted dates
+        val extendedDateLabels = dateLabels.toMutableList()
+        val dateFormat = SimpleDateFormat("EEE (dd)", Locale.getDefault())
+        val calendar = Calendar.getInstance()
+        calendar.time = endDate ?: Date()
+        for (i in 1 until predictedEntries.size) {
+            calendar.add(Calendar.DAY_OF_YEAR, 1)
+            val label = dateFormat.format(calendar.time)
+            extendedDateLabels.add(label)
+        }
+
+        // Customize the x-axis
         val xAxis = lineChart.xAxis
         xAxis.position = XAxis.XAxisPosition.BOTTOM
         xAxis.granularity = 1f
@@ -204,7 +241,7 @@ class Tracker_graph : AppCompatActivity() {
         xAxis.setDrawGridLines(false)
         xAxis.setDrawAxisLine(true)
         xAxis.axisLineColor = Color.GRAY
-        xAxis.valueFormatter = IndexAxisValueFormatter(dateLabels)
+        xAxis.valueFormatter = IndexAxisValueFormatter(extendedDateLabels)
         xAxis.textSize = 10f
         xAxis.setLabelCount(5, true)
         xAxis.labelRotationAngle = -30f
@@ -247,7 +284,7 @@ class Tracker_graph : AppCompatActivity() {
                         // Add goal line
                         val goalEntries = listOf(
                             Entry(0f, goalWeight),
-                            Entry(weightEntries.size - 1f, goalWeight)
+                            Entry((weightEntries.size + predictedEntries.size - 1).toFloat(), goalWeight)
                         )
                         val goalDataSet = LineDataSet(goalEntries, "Goal Weight")
                         goalDataSet.color = Color.GREEN
@@ -255,12 +292,13 @@ class Tracker_graph : AppCompatActivity() {
                         goalDataSet.setDrawCircles(false)
                         goalDataSet.setDrawValues(false)
                         goalDataSet.enableDashedLine(10f, 5f, 0f)
-                        dataSets.add(goalDataSet)
-                        lineChart.data = LineData(dataSets as List<LineDataSet>)
+                        lineData.addDataSet(goalDataSet)
+                        lineChart.data = lineData
                         lineChart.invalidate()
 
                         // Calculate best weight
-                        val bestWeight = weightEntries.minByOrNull { entry ->
+                        val combinedEntries = weightEntries + predictedEntries.subList(1, predictedEntries.size)
+                        val bestWeight = combinedEntries.minByOrNull { entry ->
                             kotlin.math.abs(entry.y - goalWeight)
                         }?.y
 
@@ -284,4 +322,51 @@ class Tracker_graph : AppCompatActivity() {
         // Refresh the chart
         lineChart.invalidate()
     }
+
+
+    // Linear Regression Function
+    private fun calculateLinearRegression(entries: List<Entry>): Pair<Float, Float> {
+        val n = entries.size
+        if (n == 0) return Pair(0f, 0f)
+
+        var sumX = 0f
+        var sumY = 0f
+        var sumXY = 0f
+        var sumXSquare = 0f
+
+        for (entry in entries) {
+            val x = entry.x
+            val y = entry.y
+            sumX += x
+            sumY += y
+            sumXY += x * y
+            sumXSquare += x * x
+        }
+
+        val slope = (n * sumXY - sumX * sumY) / (n * sumXSquare - sumX * sumX)
+        val intercept = (sumY - slope * sumX) / n
+
+        return Pair(slope, intercept)
+    }
+
+    // Generate Predicted Entries
+    private fun generatePredictedEntries(
+        entries: List<Entry>,
+        slope: Float,
+        intercept: Float
+    ): MutableList<Entry> {
+        val predictedEntries = mutableListOf<Entry>()
+        if (entries.isEmpty()) return predictedEntries
+
+        val lastX = entries.last().x
+        val numberOfPredictedPoints = 14 // Predict for the next x days
+        for (i in 1..numberOfPredictedPoints) {
+            val x = lastX + i
+            val y = slope * x + intercept
+            predictedEntries.add(Entry(x, y))
+        }
+        return predictedEntries
+    }
+
+
 }
