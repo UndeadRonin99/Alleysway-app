@@ -1,7 +1,12 @@
+// File: app/src/main/java/com/example/alleysway/PastWorkoutsActivity.kt
 package com.example.alleysway
 
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.View
+import android.widget.EditText
+import android.widget.ImageView
 import android.widget.ProgressBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -15,18 +20,43 @@ class PastWorkoutsActivity : AppCompatActivity() {
     private lateinit var workoutsRecyclerView: RecyclerView
     private lateinit var pastWorkoutsAdapter: PastWorkoutsAdapter
     private lateinit var progressBar: ProgressBar
+    private lateinit var btnBack: ImageView
+    private lateinit var searchExercise: EditText
+
     private val workoutsList = mutableListOf<WorkoutData>()
+    private val filteredWorkoutsList = mutableListOf<WorkoutData>() // For filtering
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_past_workouts)
 
+        // Initialize UI components
         workoutsRecyclerView = findViewById(R.id.workoutsRecyclerView)
         progressBar = findViewById(R.id.progressBar)
+        btnBack = findViewById(R.id.btnBack)
+        searchExercise = findViewById(R.id.searchExercise)
 
         workoutsRecyclerView.layoutManager = LinearLayoutManager(this)
-        pastWorkoutsAdapter = PastWorkoutsAdapter(workoutsList)
+        pastWorkoutsAdapter = PastWorkoutsAdapter(filteredWorkoutsList)
         workoutsRecyclerView.adapter = pastWorkoutsAdapter
+
+        // Set up back button
+        btnBack.setOnClickListener {
+            finish()
+        }
+
+        // Set up search functionality
+        searchExercise.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {
+                filterWorkouts(s.toString())
+            }
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                // Do nothing
+            }
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                // Do nothing
+            }
+        })
 
         fetchUserWorkouts()
     }
@@ -49,6 +79,10 @@ class PastWorkoutsActivity : AppCompatActivity() {
                 // Sort the workoutsList by timestamp in descending order
                 workoutsList.sortByDescending { it.timestamp }
 
+                // Copy the workoutsList to filteredWorkoutsList
+                filteredWorkoutsList.clear()
+                filteredWorkoutsList.addAll(workoutsList)
+
                 pastWorkoutsAdapter.notifyDataSetChanged()
                 progressBar.visibility = View.GONE
             }
@@ -58,6 +92,21 @@ class PastWorkoutsActivity : AppCompatActivity() {
                 progressBar.visibility = View.GONE
             }
         })
+    }
+
+    private fun filterWorkouts(query: String) {
+        val lowerCaseQuery = query.toLowerCase()
+        filteredWorkoutsList.clear()
+        if (lowerCaseQuery.isEmpty()) {
+            filteredWorkoutsList.addAll(workoutsList)
+        } else {
+            for (workout in workoutsList) {
+                if (workout.name.toLowerCase().contains(lowerCaseQuery)) {
+                    filteredWorkoutsList.add(workout)
+                }
+            }
+        }
+        pastWorkoutsAdapter.notifyDataSetChanged()
     }
 
     private fun parseWorkoutSnapshot(workoutSnapshot: DataSnapshot): WorkoutData {
