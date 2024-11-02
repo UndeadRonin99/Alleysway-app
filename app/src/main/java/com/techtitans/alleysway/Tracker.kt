@@ -29,6 +29,8 @@ import com.google.firebase.database.ValueEventListener
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
+import java.util.Date
+
 
 
 class Tracker : AppCompatActivity() {
@@ -445,6 +447,7 @@ class Tracker : AppCompatActivity() {
     }
 
     // Show the date range dialog for selecting start and end dates
+    // Show the date range dialog for selecting start and end dates
     private fun showDateRangeDialog() {
         val view = LayoutInflater.from(this).inflate(R.layout.dialog_select_dates, null)
         val bottomSheetDialog = BottomSheetDialog(this)
@@ -455,30 +458,77 @@ class Tracker : AppCompatActivity() {
         val tvEndDate: TextView = view.findViewById(R.id.tvEndDate)
         val btnOK: Button = view.findViewById(R.id.btnOK)
 
+        var startDate: Date? = null
+        var endDate: Date? = null
+
         tvStartDate.setOnClickListener {
-            showDatePickerDialog(tvStartDate)
+            val calendar = Calendar.getInstance()
+            val year = calendar.get(Calendar.YEAR)
+            val month = calendar.get(Calendar.MONTH)
+            val day = calendar.get(Calendar.DAY_OF_MONTH)
+
+            val datePickerDialog = DatePickerDialog(
+                this,
+                R.style.CustomDatePickerDialogTheme,
+                { _, selectedYear, selectedMonth, selectedDay ->
+                    val selectedDateStr = String.format("%02d.%02d.%d", selectedDay, selectedMonth + 1, selectedYear)
+                    tvStartDate.text = selectedDateStr
+                    startDate = dateFormat.parse(selectedDateStr)
+
+                    // Check if start date is after end date
+                    if (endDate != null && startDate != null && startDate!!.after(endDate)) {
+                        Toast.makeText(this, "Start date cannot be after end date", Toast.LENGTH_SHORT).show()
+                        tvStartDate.text = "" // Clear invalid start date
+                        startDate = null
+                    }
+                },
+                year, month, day
+            )
+            datePickerDialog.show()
         }
 
         tvEndDate.setOnClickListener {
-            showDatePickerDialog(tvEndDate)
+            val calendar = Calendar.getInstance()
+            val year = calendar.get(Calendar.YEAR)
+            val month = calendar.get(Calendar.MONTH)
+            val day = calendar.get(Calendar.DAY_OF_MONTH)
+
+            val datePickerDialog = DatePickerDialog(
+                this,
+                R.style.CustomDatePickerDialogTheme,
+                { _, selectedYear, selectedMonth, selectedDay ->
+                    val selectedDateStr = String.format("%02d.%02d.%d", selectedDay, selectedMonth + 1, selectedYear)
+                    tvEndDate.text = selectedDateStr
+                    endDate = dateFormat.parse(selectedDateStr)
+
+                    // Check if end date is before start date
+                    if (startDate != null && endDate != null && endDate!!.before(startDate)) {
+                        Toast.makeText(this, "End date cannot be before start date", Toast.LENGTH_SHORT).show()
+                        tvEndDate.text = "" // Clear invalid end date
+                        endDate = null
+                    }
+                },
+                year, month, day
+            )
+            datePickerDialog.show()
         }
 
         btnOK.setOnClickListener {
-            val startDate = tvStartDate.text.toString().trim()
-            val endDate = tvEndDate.text.toString().trim()
+            val startDateStr = tvStartDate.text.toString().trim()
+            val endDateStr = tvEndDate.text.toString().trim()
 
-            if (startDate.isNotEmpty() && endDate.isNotEmpty()) {
+            if (startDateStr.isNotEmpty() && endDateStr.isNotEmpty()) {
                 val intent = Intent(this, Tracker_graph::class.java)
-                intent.putExtra("startDate", startDate)
-                intent.putExtra("endDate", endDate)
+                intent.putExtra("startDate", startDateStr)
+                intent.putExtra("endDate", endDateStr)
                 startActivity(intent)
                 bottomSheetDialog.dismiss()
             } else {
-                Toast.makeText(this, "Please select both start and end dates", Toast.LENGTH_SHORT)
-                    .show()
+                Toast.makeText(this, "Please select both start and end dates", Toast.LENGTH_SHORT).show()
             }
         }
 
         bottomSheetDialog.show()
     }
+
 }
