@@ -17,18 +17,11 @@ import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
-import com.github.mikephil.charting.interfaces.datasets.ILineDataSet
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
+import com.google.firebase.database.*
 import java.text.SimpleDateFormat
-import java.util.Calendar
-import java.util.Date
-import java.util.Locale
-
+import java.util.*
+import com.github.mikephil.charting.interfaces.datasets.ILineDataSet
 
 class Tracker_graph : AppCompatActivity() {
 
@@ -74,6 +67,7 @@ class Tracker_graph : AppCompatActivity() {
             val intent = Intent(this, HomePage::class.java)
             startActivity(intent)
         }
+
         // Initialize LineChart
         lineChart = findViewById(R.id.lineChart)
         noDataTextView = findViewById(R.id.noDataTextView)
@@ -113,17 +107,14 @@ class Tracker_graph : AppCompatActivity() {
             .orderByChild("date")
             .addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
-                    // Check if snapshot exists
                     if (!snapshot.exists()) {
-                        // Hide the chart and show a message
                         lineChart.visibility = View.GONE
                         noDataTextView.visibility = View.VISIBLE
                         noDataTextView.text = "No data available for the selected date range"
                         return
                     }
 
-                    val dataList = mutableListOf<Pair<Date, Float>>() // List of pairs (date, weight)
-
+                    val dataList = mutableListOf<Pair<Date, Float>>()
                     for (childSnapshot in snapshot.children) {
                         val dateString = childSnapshot.child("date").getValue(String::class.java)
                         val weightString = childSnapshot.child("weight").getValue(String::class.java)
@@ -143,30 +134,24 @@ class Tracker_graph : AppCompatActivity() {
                         }
                     }
 
-                    // Sort the dataList by date in ascending order
                     dataList.sortBy { it.first }
-
                     val weightEntries = mutableListOf<Entry>()
                     val dateLabels = mutableListOf<String>()
                     val weightValues = mutableListOf<Float>()
 
                     var index = 0f
-
                     for ((entryDate, weight) in dataList) {
                         weightEntries.add(Entry(index, weight))
-                        val labelString = labelDateFormat.format(entryDate)
-                        dateLabels.add(labelString)
+                        dateLabels.add(labelDateFormat.format(entryDate))
                         weightValues.add(weight)
                         index++
                     }
 
-                    // Display the line chart with the weight data if entries exist
                     if (weightEntries.isNotEmpty()) {
-                        lineChart.visibility = View.VISIBLE // Show the chart
-                        noDataTextView.visibility = View.GONE // Hide the "no data" message
+                        lineChart.visibility = View.VISIBLE
+                        noDataTextView.visibility = View.GONE
                         displayLineGraph(weightEntries, dateLabels, weightValues)
                     } else {
-                        // Hide the chart and show a message
                         lineChart.visibility = View.GONE
                         noDataTextView.visibility = View.VISIBLE
                         noDataTextView.text = "No data available for the selected date range"
@@ -189,8 +174,15 @@ class Tracker_graph : AppCompatActivity() {
         dateLabels: List<String>,
         weightValues: List<Float>
     ) {
-        // Create the dataset for the actual weight entries
-        val weightDataSet = LineDataSet(weightEntries, "Weight")
+        // Apply exponential smoothing
+        val alpha = 0.5f
+        val smoothedWeights = applyExponentialSmoothing(weightValues, alpha)
+        val smoothedEntries = smoothedWeights.mapIndexed { index, weight ->
+            Entry(index.toFloat(), weight)
+        }
+
+        // Create dataset for smoothed actual weight
+        val weightDataSet = LineDataSet(smoothedEntries, "Weight")
         weightDataSet.lineWidth = 2f
         weightDataSet.color = resources.getColor(R.color.orange)
         weightDataSet.setDrawCircles(true)
@@ -199,31 +191,26 @@ class Tracker_graph : AppCompatActivity() {
         weightDataSet.circleRadius = 4f
         weightDataSet.setDrawValues(false)
         weightDataSet.setDrawFilled(true)
-        // Set gradient fill for actual data
         val drawable = ContextCompat.getDrawable(this, R.drawable.fade_orange)
         weightDataSet.fillDrawable = drawable
         weightDataSet.mode = LineDataSet.Mode.CUBIC_BEZIER
 
-        // Perform linear regression on the existing data
-        val (slope, intercept) = calculateLinearRegression(weightEntries)
+        // Perform linear regression on smoothed data for prediction
+        val (slope, intercept) = calculateLinearRegression(smoothedEntries)
+        val predictedEntries = generatePredictedEntries(smoothedEntries, slope, intercept)
 
-        // Generate predicted entries for the next month
-        val predictedEntries = generatePredictedEntries(weightEntries, slope, intercept)
-
-        // Ensure the predicted data starts from the last actual data point
-        if (weightEntries.isNotEmpty() && predictedEntries.isNotEmpty()) {
-            predictedEntries.add(0, weightEntries.last())
+        // Ensure the predicted data starts from the last smoothed data point
+        if (smoothedEntries.isNotEmpty() && predictedEntries.isNotEmpty()) {
+            predictedEntries.add(0, smoothedEntries.last())
         }
 
-
-        // Create the dataset for the predicted weight entries
+        // Create dataset for predicted weight
         val predictedDataSet = LineDataSet(predictedEntries, "Predicted Weight")
         predictedDataSet.lineWidth = 2f
         predictedDataSet.color = resources.getColor(R.color.blue)
         predictedDataSet.setDrawCircles(false)
         predictedDataSet.setDrawValues(false)
         predictedDataSet.setDrawFilled(true)
-        // Set gradient fill for predicted data
         val predictedDrawable = ContextCompat.getDrawable(this, R.drawable.fade_blue)
         predictedDataSet.fillDrawable = predictedDrawable
         predictedDataSet.mode = LineDataSet.Mode.CUBIC_BEZIER
@@ -238,108 +225,32 @@ class Tracker_graph : AppCompatActivity() {
         lineChart.data = lineData
 
         // Update dateLabels to include labels for predicted dates
-        val extendedDateLabels = dateLabels.toMutableList()
-        val dateFormat = SimpleDateFormat("EEE (dd)", Locale.getDefault())
-        val calendar = Calendar.getInstance()
-        calendar.time = endDate ?: Date()
-        for (i in 1 until predictedEntries.size) {
-            calendar.add(Calendar.DAY_OF_YEAR, 1)
-            val label = dateFormat.format(calendar.time)
-            extendedDateLabels.add(label)
-        }
+        val extendedDateLabels = updateDateLabels(dateLabels, predictedEntries.size)
 
-        // Customize the x-axis
-        val xAxis = lineChart.xAxis
-        xAxis.position = XAxis.XAxisPosition.BOTTOM
-        xAxis.granularity = 1f
-        xAxis.textColor = Color.BLACK
-        xAxis.setDrawGridLines(false)
-        xAxis.setDrawAxisLine(true)
-        xAxis.axisLineColor = Color.GRAY
-        xAxis.valueFormatter = IndexAxisValueFormatter(extendedDateLabels)
-        xAxis.textSize = 10f
-        xAxis.setLabelCount(5, true)
-        xAxis.labelRotationAngle = -30f
+        // Customize chart appearance
+        configureChartAppearance(extendedDateLabels)
 
-        // Customize the y-axis
-        val leftAxis = lineChart.axisLeft
-        leftAxis.textColor = Color.BLACK
-        leftAxis.setDrawGridLines(false)
-        leftAxis.setDrawAxisLine(true)
-        leftAxis.axisLineColor = Color.GRAY
-        leftAxis.textSize = 12f
-        lineChart.axisRight.isEnabled = false
+        // Display goal weight and best weight
+        displayGoalWeight(weightEntries, lineData)
+        displayMostRecentWeight(weightValues)
 
-        // Customize the chart's legend
-        val legend = lineChart.legend
-        legend.textColor = Color.BLACK
-        legend.textSize = 14f
-        legend.verticalAlignment = Legend.LegendVerticalAlignment.TOP
-        legend.horizontalAlignment = Legend.LegendHorizontalAlignment.CENTER
-        legend.orientation = Legend.LegendOrientation.HORIZONTAL
-        legend.setDrawInside(false)
-
-        // Customize the chart
-        lineChart.setDrawGridBackground(false)
-        lineChart.setBackgroundColor(Color.WHITE)
-        lineChart.description.isEnabled = false
-        lineChart.setTouchEnabled(true)
-        lineChart.setDragEnabled(true)
-        lineChart.setScaleEnabled(true)
-        lineChart.isScaleXEnabled = true
-        lineChart.isScaleYEnabled = true
-
-        // Fetch and display the goal weight, and calculate the best weight
-        val userId = mAuth.currentUser?.uid ?: return
-        databaseReference.child("users").child(userId).child("goal").child("goal")
-            .addListenerForSingleValueEvent(object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    val goalWeight = snapshot.getValue(String::class.java)?.toFloatOrNull()
-                    if (goalWeight != null) {
-                        // Add goal line
-                        val goalEntries = listOf(
-                            Entry(0f, goalWeight),
-                            Entry((weightEntries.size + predictedEntries.size - 1).toFloat(), goalWeight)
-                        )
-                        val goalDataSet = LineDataSet(goalEntries, "Goal Weight")
-                        goalDataSet.color = Color.GREEN
-                        goalDataSet.lineWidth = 1.5f
-                        goalDataSet.setDrawCircles(false)
-                        goalDataSet.setDrawValues(false)
-                        goalDataSet.enableDashedLine(10f, 5f, 0f)
-                        lineData.addDataSet(goalDataSet)
-                        lineChart.data = lineData
-                        lineChart.invalidate()
-
-                        // Calculate best weight
-                        val combinedEntries = weightEntries + predictedEntries.subList(1, predictedEntries.size)
-                        val bestWeight = combinedEntries.minByOrNull { entry ->
-                            kotlin.math.abs(entry.y - goalWeight)
-                        }?.y
-
-                        // Update Best weight TextView
-                        val tvBestWeight: TextView = findViewById(R.id.tvBestWeight)
-                        tvBestWeight.text = "Best: ${bestWeight ?: "--"} kg"
-                    }
-                }
-
-                override fun onCancelled(error: DatabaseError) {
-                    Toast.makeText(this@Tracker_graph, "Error loading goal", Toast.LENGTH_SHORT)
-                        .show()
-                }
-            })
-
-        // Update Most Recent weight entry
-        val mostRecentWeight = weightValues.lastOrNull()
-        val tvMostRecent: TextView = findViewById(R.id.tvMostRecent)
-        tvMostRecent.text = "Most Recent: ${mostRecentWeight ?: "--"} kg"
 
         // Refresh the chart
         lineChart.invalidate()
     }
 
+    private fun applyExponentialSmoothing(data: List<Float>, alpha: Float): List<Float> {
+        val smoothedData = mutableListOf<Float>()
+        if (data.isNotEmpty()) {
+            smoothedData.add(data[0])
+            for (i in 1 until data.size) {
+                val smoothedValue = alpha * data[i] + (1 - alpha) * smoothedData[i - 1]
+                smoothedData.add(smoothedValue)
+            }
+        }
+        return smoothedData
+    }
 
-    // Linear Regression Function
     private fun calculateLinearRegression(entries: List<Entry>): Pair<Float, Float> {
         val n = entries.size
         if (n == 0) return Pair(0f, 0f)
@@ -364,7 +275,6 @@ class Tracker_graph : AppCompatActivity() {
         return Pair(slope, intercept)
     }
 
-    // Generate Predicted Entries
     private fun generatePredictedEntries(
         entries: List<Entry>,
         slope: Float,
@@ -374,7 +284,7 @@ class Tracker_graph : AppCompatActivity() {
         if (entries.isEmpty()) return predictedEntries
 
         val lastX = entries.last().x
-        val numberOfPredictedPoints = 14 // Predict for the next x days
+        val numberOfPredictedPoints = 14
         for (i in 1..numberOfPredictedPoints) {
             val x = lastX + i
             val y = slope * x + intercept
@@ -383,5 +293,104 @@ class Tracker_graph : AppCompatActivity() {
         return predictedEntries
     }
 
+    private fun updateDateLabels(originalLabels: List<String>, predictionSize: Int): List<String> {
+        val extendedLabels = originalLabels.toMutableList()
+        val dateFormat = SimpleDateFormat("EEE (dd)", Locale.getDefault())
+        val calendar = Calendar.getInstance()
+        calendar.time = endDate ?: Date()
+        for (i in 1 until predictionSize) {
+            calendar.add(Calendar.DAY_OF_YEAR, 1)
+            extendedLabels.add(dateFormat.format(calendar.time))
+        }
+        return extendedLabels
+    }
 
+    private fun configureChartAppearance(extendedDateLabels: List<String>) {
+        val xAxis = lineChart.xAxis
+        xAxis.position = XAxis.XAxisPosition.BOTTOM
+        xAxis.granularity = 1f
+        xAxis.textColor = Color.BLACK
+        xAxis.setDrawGridLines(false)
+        xAxis.setDrawAxisLine(true)
+        xAxis.axisLineColor = Color.GRAY
+        xAxis.valueFormatter = IndexAxisValueFormatter(extendedDateLabels)
+        xAxis.textSize = 10f
+        xAxis.setLabelCount(5, true)
+        xAxis.labelRotationAngle = -30f
+
+        val leftAxis = lineChart.axisLeft
+        leftAxis.textColor = Color.BLACK
+        leftAxis.setDrawGridLines(false)
+        leftAxis.setDrawAxisLine(true)
+        leftAxis.axisLineColor = Color.GRAY
+        leftAxis.textSize = 12f
+        lineChart.axisRight.isEnabled = false
+
+        val legend = lineChart.legend
+        legend.textColor = Color.BLACK
+        legend.textSize = 14f
+        legend.verticalAlignment = Legend.LegendVerticalAlignment.TOP
+        legend.horizontalAlignment = Legend.LegendHorizontalAlignment.CENTER
+        legend.orientation = Legend.LegendOrientation.HORIZONTAL
+        legend.setDrawInside(false)
+
+        lineChart.setDrawGridBackground(false)
+        lineChart.setBackgroundColor(Color.WHITE)
+        lineChart.description.isEnabled = false
+        lineChart.setTouchEnabled(true)
+        lineChart.setDragEnabled(true)
+        lineChart.setScaleEnabled(true)
+        lineChart.setScaleXEnabled(true)
+        lineChart.setScaleYEnabled(true)
+    }
+
+    private fun displayGoalWeight(weightEntries: List<Entry>, lineData: LineData) {
+        val userId = mAuth.currentUser?.uid ?: return
+        databaseReference.child("users").child(userId).child("goal").child("goal")
+            .addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    val goalWeight = snapshot.getValue(String::class.java)?.toFloatOrNull()
+                    if (goalWeight != null) {
+                        // Calculate the maximum X value based on actual and predicted entries
+                        val maxX = (weightEntries.size - 1).toFloat() + 14 // Extends for the predicted range
+
+                        // Add goal line across the chart
+                        val goalEntries = listOf(
+                            Entry(0f, goalWeight),
+                            Entry(maxX, goalWeight)
+                        )
+                        val goalDataSet = LineDataSet(goalEntries, "Goal")
+                        goalDataSet.color = Color.GREEN
+                        goalDataSet.lineWidth = 1.5f
+                        goalDataSet.setDrawCircles(false)
+                        goalDataSet.setDrawValues(false)
+                        goalDataSet.enableDashedLine(10f, 5f, 0f)
+                        lineData.addDataSet(goalDataSet)
+                        lineChart.data = lineData
+                        lineChart.invalidate()
+
+                        // Calculate the closest weight to the goal from actual Firebase data only
+                        val bestWeight = weightEntries.minByOrNull { entry ->
+                            kotlin.math.abs(entry.y - goalWeight)
+                        }?.y
+
+                        // Update Best weight TextView
+                        val tvBestWeight: TextView = findViewById(R.id.tvBestWeight)
+                        tvBestWeight.text = "Best: ${bestWeight ?: "--"} kg"
+                    }
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    Toast.makeText(this@Tracker_graph, "Error loading goal", Toast.LENGTH_SHORT).show()
+                }
+            })
+    }
+
+
+
+    private fun displayMostRecentWeight(weightValues: List<Float>) {
+        val mostRecentWeight = weightValues.lastOrNull()
+        val tvMostRecent: TextView = findViewById(R.id.tvMostRecent)
+        tvMostRecent.text = "Most Recent: ${mostRecentWeight ?: "--"} kg"
+    }
 }
