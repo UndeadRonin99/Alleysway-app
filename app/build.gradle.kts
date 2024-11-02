@@ -5,11 +5,11 @@ plugins {
 }
 
 android {
-    namespace = "com.example.alleysway"
+    namespace = "com.techtitans.alleysway"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.example.alleysway"
+        applicationId = "com.techtitans.alleysway"
         minSdk = 26
         targetSdk = 34
         versionCode = 1
