@@ -23,76 +23,45 @@ class Leaderboard : AppCompatActivity() {
 
     private var currentFilter = "weight" // Default filter is "Total Weight"
     private lateinit var leaderboardData: MutableList<LeaderboardEntry>
-    private var previousLeaderboardData: List<LeaderboardEntry> = listOf()
+    private val weightRankChangeMap = mutableMapOf<String, Int>() // Rank changes for weight
+    private val repsRankChangeMap = mutableMapOf<String, Int>()   // Rank changes for reps
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_leaderboard)
 
         // Back button functionality
-        findViewById<ImageView>(R.id.btnBack).setOnClickListener {
-            finish()
-        }
+        findViewById<ImageView>(R.id.btnBack).setOnClickListener { finish() }
 
-        // Initialize the leaderboard data list
-        leaderboardData = mutableListOf()
-
-        // Fetch leaderboard data from Firebase
-        fetchLeaderboardData()
+        leaderboardData = mutableListOf() // Initialize leaderboard data
+        loadRankChanges() // Load cumulative rank changes from previous sessions
+        fetchLeaderboardData() // Initial data load
 
         // Handle filter selection
         val filterRadioGroup = findViewById<RadioGroup>(R.id.filterRadioGroup)
         filterRadioGroup.setOnCheckedChangeListener { _, checkedId ->
-            when (checkedId) {
-                R.id.radioTotalWeight -> {
-                    currentFilter = "weight"
-                    fetchLeaderboardData()
-                }
-                R.id.radioTotalReps -> {
-                    currentFilter = "reps"
-                    fetchLeaderboardData()
-                }
-            }
+            currentFilter = if (checkedId == R.id.radioTotalWeight) "weight" else "reps"
+            fetchLeaderboardData() // Refetch and recalculate on filter change
         }
     }
 
     private fun fetchLeaderboardData() {
         val database = FirebaseDatabase.getInstance().getReference("users")
-
         database.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                // Load previous leaderboard data from SharedPreferences
-                loadPreviousLeaderboardData()
-
                 leaderboardData.clear()
 
                 for (userSnapshot in snapshot.children) {
-                    val userId = userSnapshot.key ?: continue // Use userId as a unique identifier
+                    val userId = userSnapshot.key ?: continue
                     var totalWeight = 0.0
                     var totalReps = 0
                     val firstName = userSnapshot.child("firstName").getValue(String::class.java) ?: "Unknown"
                     val profileUrl = userSnapshot.child("profileImageUrl").getValue(String::class.java) ?: ""
+
                     val workoutsSnapshot = userSnapshot.child("workouts")
-
                     for (workoutSnapshot in workoutsSnapshot.children) {
-                        // Fetch totalWeight
-                        val workoutWeightValue = workoutSnapshot.child("totalWeight").value
-                        val workoutWeight = when (workoutWeightValue) {
-                            is Double -> workoutWeightValue
-                            is Long -> workoutWeightValue.toDouble()
-                            is String -> workoutWeightValue.toDoubleOrNull() ?: 0.0
-                            else -> 0.0
-                        }
-
-                        // Fetch totalReps
-                        val workoutRepsValue = workoutSnapshot.child("totalReps").value
-                        val workoutReps = when (workoutRepsValue) {
-                            is Int -> workoutRepsValue
-                            is Long -> workoutRepsValue.toInt()
-                            is String -> workoutRepsValue.toIntOrNull() ?: 0
-                            else -> 0
-                        }
-
+                        val workoutWeight = workoutSnapshot.child("totalWeight").getValue(Double::class.java) ?: 0.0
+                        val workoutReps = workoutSnapshot.child("totalReps").getValue(Int::class.java) ?: 0
                         totalWeight += workoutWeight
                         totalReps += workoutReps
                     }
@@ -100,17 +69,10 @@ class Leaderboard : AppCompatActivity() {
                     leaderboardData.add(LeaderboardEntry(userId, firstName, totalWeight, totalReps, profileUrl))
                 }
 
-                // Sort the leaderboard data
                 sortLeaderboardData()
-
-                // Calculate rank changes
-                calculateRankChanges()
-
-                // Update the UI with the new rank changes
+                calculateRankChanges() // Choose appropriate rank calculation based on currentFilter
                 updateLeaderboardUI(leaderboardData)
-
-                // Save the current leaderboard data to SharedPreferences
-                saveCurrentLeaderboardData()
+                saveCurrentRanks()
             }
 
             override fun onCancelled(error: DatabaseError) {
@@ -119,41 +81,99 @@ class Leaderboard : AppCompatActivity() {
         })
     }
 
-    private fun loadPreviousLeaderboardData() {
+    private fun loadPreviousRanks(filter: String): Map<String, Int> {
         val sharedPreferences = getSharedPreferences("LeaderboardPrefs", Context.MODE_PRIVATE)
         val gson = Gson()
-        val key = "previousLeaderboardData_$currentFilter"
+        val key = "rankHistory_$filter" // Key varies by filter
         val json = sharedPreferences.getString(key, null)
-        if (json != null) {
-            val type = object : TypeToken<List<LeaderboardEntry>>() {}.type
-            previousLeaderboardData = gson.fromJson(json, type)
+        return if (json != null) {
+            val type = object : TypeToken<Map<String, Int>>() {}.type
+            gson.fromJson(json, type)
         } else {
-            previousLeaderboardData = listOf()
+            leaderboardData.mapIndexed { index, entry -> entry.userId to (index + 1) }.toMap()
         }
     }
 
-    private fun saveCurrentLeaderboardData() {
+    private fun saveCurrentRanks() {
         val sharedPreferences = getSharedPreferences("LeaderboardPrefs", Context.MODE_PRIVATE)
         val editor = sharedPreferences.edit()
         val gson = Gson()
-        val json = gson.toJson(leaderboardData)
-        val key = "previousLeaderboardData_$currentFilter"
-        editor.putString(key, json)
+        val currentRanks = leaderboardData.mapIndexed { index, entry -> entry.userId to (index + 1) }.toMap()
+        editor.putString("rankHistory_$currentFilter", gson.toJson(currentRanks))
         editor.apply()
     }
 
+    private fun loadRankChanges() {
+        val sharedPreferences = getSharedPreferences("LeaderboardPrefs", Context.MODE_PRIVATE)
+        val gson = Gson()
+
+        // Load rank changes for "weight" and "reps"
+        val weightJson = sharedPreferences.getString("rankChanges_weight", null)
+        if (weightJson != null) {
+            val type = object : TypeToken<MutableMap<String, Int>>() {}.type
+            weightRankChangeMap.putAll(gson.fromJson(weightJson, type))
+        }
+
+        val repsJson = sharedPreferences.getString("rankChanges_reps", null)
+        if (repsJson != null) {
+            val type = object : TypeToken<MutableMap<String, Int>>() {}.type
+            repsRankChangeMap.putAll(gson.fromJson(repsJson, type))
+        }
+    }
+
+    private fun saveRankChanges(filter: String) {
+        val sharedPreferences = getSharedPreferences("LeaderboardPrefs", Context.MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
+        val gson = Gson()
+
+        // Save rank changes separately for each filter
+        if (filter == "weight") {
+            editor.putString("rankChanges_weight", gson.toJson(weightRankChangeMap))
+        } else {
+            editor.putString("rankChanges_reps", gson.toJson(repsRankChangeMap))
+        }
+        editor.apply()
+    }
+
+    // Main calculateRankChanges method, delegates to specific methods
     private fun calculateRankChanges() {
-        val previousRanks = previousLeaderboardData.sortedWith(compareByDescending<LeaderboardEntry> {
-            if (currentFilter == "weight") it.totalWeight else it.totalReps.toDouble()
-        }).mapIndexed { index, entry ->
-            entry.userId to index + 1
-        }.toMap()
+        if (currentFilter == "weight") {
+            calculateWeightRankChanges()
+        } else {
+            calculateRepsRankChanges()
+        }
+    }
+
+    // Calculate rank changes for weight
+    private fun calculateWeightRankChanges() {
+        val previousRanks = loadPreviousRanks("weight")
 
         leaderboardData.forEachIndexed { index, entry ->
             val currentRank = index + 1
             val previousRank = previousRanks[entry.userId] ?: currentRank
-            entry.rankChange = previousRank - currentRank
+            val rankChange = previousRank - currentRank
+
+            if (rankChange != 0) {
+                weightRankChangeMap[entry.userId] = rankChange
+            }
         }
+        saveRankChanges("weight")
+    }
+
+    // Calculate rank changes for reps
+    private fun calculateRepsRankChanges() {
+        val previousRanks = loadPreviousRanks("reps")
+
+        leaderboardData.forEachIndexed { index, entry ->
+            val currentRank = index + 1
+            val previousRank = previousRanks[entry.userId] ?: currentRank
+            val rankChange = previousRank - currentRank
+
+            if (rankChange != 0) {
+                repsRankChangeMap[entry.userId] = rankChange
+            }
+        }
+        saveRankChanges("reps")
     }
 
     private fun sortLeaderboardData() {
@@ -163,104 +183,59 @@ class Leaderboard : AppCompatActivity() {
     }
 
     private fun updateLeaderboardUI(leaderboardData: List<LeaderboardEntry>) {
+        // Display the top 3 users without rank change indicators
+        if (leaderboardData.size >= 1) updateTop3UI(0, R.id.firstPlaceName, R.id.firstPlaceImage, R.id.firstPlacePoints)
+        if (leaderboardData.size >= 2) updateTop3UI(1, R.id.secondPlaceName, R.id.secondPlaceImage, R.id.secondPlacePoints)
+        if (leaderboardData.size >= 3) updateTop3UI(2, R.id.thirdPlaceName, R.id.thirdPlaceImage, R.id.thirdPlacePoints)
 
-        if (leaderboardData.isEmpty()) return
-
-        // Update top 3 users outside the scroll view
-        if (leaderboardData.size >= 1) {
-            val firstNameView = findViewById<TextView>(R.id.firstPlaceName)
-            val firstPFP = findViewById<CircleImageView>(R.id.firstPlaceImage)
-            val firstPointsView = findViewById<TextView>(R.id.firstPlacePoints)
-
-            firstNameView.text = leaderboardData[0].firstName
-            firstPointsView.text = if (currentFilter == "weight") {
-                "${leaderboardData[0].totalWeight} kg"
-            } else {
-                "${leaderboardData[0].totalReps} reps"
-            }
-            loadProfileImage(firstPFP, leaderboardData[0].profileUrl)
-        }
-
-        if (leaderboardData.size >= 2) {
-            val secondNameView = findViewById<TextView>(R.id.secondPlaceName)
-            val secondPFP = findViewById<CircleImageView>(R.id.secondPlaceImage)
-            val secondPointsView = findViewById<TextView>(R.id.secondPlacePoints)
-
-            secondNameView.text = leaderboardData[1].firstName
-            secondPointsView.text = if (currentFilter == "weight") {
-                "${leaderboardData[1].totalWeight} kg"
-            } else {
-                "${leaderboardData[1].totalReps} reps"
-            }
-            loadProfileImage(secondPFP, leaderboardData[1].profileUrl)
-        }
-
-        if (leaderboardData.size >= 3) {
-            val thirdNameView = findViewById<TextView>(R.id.thirdPlaceName)
-            val thirdPFP = findViewById<CircleImageView>(R.id.thirdPlaceImage)
-            val thirdPointsView = findViewById<TextView>(R.id.thirdPlacePoints)
-
-            thirdNameView.text = leaderboardData[2].firstName
-            thirdPointsView.text = if (currentFilter == "weight") {
-                "${leaderboardData[2].totalWeight} kg"
-            } else {
-                "${leaderboardData[2].totalReps} reps"
-            }
-            loadProfileImage(thirdPFP, leaderboardData[2].profileUrl)
-        }
-
-        // **Include all users, including top 3, in the scroll view**
-        // Remove or comment out the line that excludes the top 3 users
-        // val restOfLeaderboard = if (leaderboardData.size > 3) leaderboardData.subList(3, leaderboardData.size) else emptyList()
-
+        // ScrollView for the full leaderboard
         val leaderboardContainer = findViewById<LinearLayout>(R.id.leaderboardContainer)
         leaderboardContainer.removeAllViews()
 
-        // Use the full leaderboardData list
-        for (i in leaderboardData.indices) {
-            val entry = leaderboardData[i]
-            val leaderboardItem = layoutInflater.inflate(R.layout.leaderboard_item, null)
+        // Use the rank change map based on the current filter
+        val rankChangeMap = if (currentFilter == "weight") weightRankChangeMap else repsRankChangeMap
 
-            // Set rank, name, points, and profile image
+        leaderboardData.forEachIndexed { index, entry ->
+            val leaderboardItem = layoutInflater.inflate(R.layout.leaderboard_item, null)
             val rankView = leaderboardItem.findViewById<TextView>(R.id.rank)
             val nameView = leaderboardItem.findViewById<TextView>(R.id.name)
             val pointsView = leaderboardItem.findViewById<TextView>(R.id.points)
             val profileImageView = leaderboardItem.findViewById<CircleImageView>(R.id.profileImage)
+            val rankIndicator = leaderboardItem.findViewById<TextView>(R.id.rank_indicator)
 
-            rankView.text = "${i + 1}"
+            rankView.text = "${index + 1}"
             nameView.text = entry.firstName
-            pointsView.text = if (currentFilter == "weight") {
-                "${entry.totalWeight} kg"
-            } else {
-                "${entry.totalReps} reps"
-            }
+            pointsView.text = if (currentFilter == "weight") "${entry.totalWeight} kg" else "${entry.totalReps} reps"
             loadProfileImage(profileImageView, entry.profileUrl)
 
-            // Update rank indicator
-            val rankIndicator = leaderboardItem.findViewById<TextView>(R.id.rank_indicator)
-            if (entry.rankChange > 0) {
-                rankIndicator.text = "▲${entry.rankChange}"
-                rankIndicator.setTextColor(Color.GREEN)
-            } else if (entry.rankChange < 0) {
-                rankIndicator.text = "▼${-entry.rankChange}"
-                rankIndicator.setTextColor(Color.RED)
-            } else {
-                rankIndicator.text = "–"
-                rankIndicator.setTextColor(Color.GRAY)
+            val rankChange = rankChangeMap[entry.userId] ?: 0
+            when {
+                rankChange > 0 -> {
+                    rankIndicator.text = "▲$rankChange"
+                    rankIndicator.setTextColor(Color.GREEN)
+                }
+                rankChange < 0 -> {
+                    rankIndicator.text = "▼${-rankChange}"
+                    rankIndicator.setTextColor(Color.RED)
+                }
+                else -> {
+                    rankIndicator.text = "–"
+                    rankIndicator.setTextColor(Color.GRAY)
+                }
             }
-
-            // Set the background based on the rank
-            val backgroundDrawable = when (i) {
-                0 -> R.drawable.rounded_gold_background
-                1 -> R.drawable.rounded_silver_background
-                2 -> R.drawable.rounded_bronze_background
-                else -> R.drawable.rounded_default_background
-            }
-            leaderboardItem.background = resources.getDrawable(backgroundDrawable, null)
-
-            // Add the leaderboard item to the container
             leaderboardContainer.addView(leaderboardItem)
         }
+    }
+
+    private fun updateTop3UI(index: Int, nameId: Int, imageId: Int, pointsId: Int) {
+        val entry = leaderboardData[index]
+        val nameView = findViewById<TextView>(nameId)
+        val imageView = findViewById<CircleImageView>(imageId)
+        val pointsView = findViewById<TextView>(pointsId)
+
+        nameView.text = entry.firstName
+        pointsView.text = if (currentFilter == "weight") "${entry.totalWeight} kg" else "${entry.totalReps} reps"
+        loadProfileImage(imageView, entry.profileUrl)
     }
 
     private fun loadProfileImage(imageView: CircleImageView, profileUrl: String) {

@@ -138,6 +138,7 @@
                 android:layout_height="wrap_content"
                 android:textColor="#FFFFFF"
                 android:textSize="14sp" />
+
         </LinearLayout>
 
         <!-- Third Place User -->
