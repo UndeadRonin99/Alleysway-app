@@ -20,6 +20,7 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.techtitans.alleysway.models.LeaderboardEntry
 import de.hdodenhof.circleimageview.CircleImageView
+import java.util.Calendar
 
 class Leaderboard : AppCompatActivity() {
 
@@ -37,6 +38,7 @@ class Leaderboard : AppCompatActivity() {
         findViewById<ImageView>(R.id.btnBack).setOnClickListener { finish() }
 
         leaderboardData = mutableListOf() // Initialize leaderboard data
+        checkForDailyReset() // Check if rank indicators should reset
         loadRankChanges() // Load cumulative rank changes from previous sessions
         fetchLeaderboardData() // Initial data load
 
@@ -46,6 +48,32 @@ class Leaderboard : AppCompatActivity() {
             currentFilter = if (checkedId == R.id.radioTotalWeight) "weight" else "reps"
             fetchLeaderboardData() // Refetch and recalculate on filter change
         }
+    }
+
+    private fun checkForDailyReset() {
+        val sharedPreferences = getSharedPreferences("LeaderboardPrefs", Context.MODE_PRIVATE)
+        val lastResetTime = sharedPreferences.getLong("lastResetTime", 0)
+        val currentTime = System.currentTimeMillis()
+
+        val calendar = Calendar.getInstance()
+        calendar.timeInMillis = lastResetTime
+
+        // If last reset was before today, clear the ranking indicators
+        if (isNewDay(calendar)) {
+            weightRankChangeMap.clear()
+            repsRankChangeMap.clear()
+            saveRankChanges("weight")
+            saveRankChanges("reps")
+
+            // Update the last reset time to now
+            sharedPreferences.edit().putLong("lastResetTime", currentTime).apply()
+        }
+    }
+
+    private fun isNewDay(lastResetCalendar: Calendar): Boolean {
+        val currentCalendar = Calendar.getInstance()
+        return currentCalendar.get(Calendar.YEAR) > lastResetCalendar.get(Calendar.YEAR) ||
+                currentCalendar.get(Calendar.DAY_OF_YEAR) > lastResetCalendar.get(Calendar.DAY_OF_YEAR)
     }
 
     private fun fetchLeaderboardData() {
@@ -83,6 +111,7 @@ class Leaderboard : AppCompatActivity() {
             }
         })
     }
+
     private fun loadPreviousRanks(filter: String): Map<String, Int> {
         val sharedPreferences = getSharedPreferences("LeaderboardPrefs", Context.MODE_PRIVATE)
         val gson = Gson()
@@ -234,6 +263,7 @@ class Leaderboard : AppCompatActivity() {
             leaderboardContainer.addView(leaderboardItem)
         }
     }
+
     private fun updateTop3UI(index: Int, nameId: Int, imageId: Int, pointsId: Int) {
         val entry = leaderboardData[index]
         val nameView = findViewById<TextView>(nameId)
