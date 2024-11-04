@@ -10,10 +10,12 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
+import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import com.google.firebase.ktx.Firebase
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.techtitans.alleysway.models.LeaderboardEntry
@@ -25,6 +27,7 @@ class Leaderboard : AppCompatActivity() {
     private lateinit var leaderboardData: MutableList<LeaderboardEntry>
     private val weightRankChangeMap = mutableMapOf<String, Int>() // Rank changes for weight
     private val repsRankChangeMap = mutableMapOf<String, Int>()   // Rank changes for reps
+    private val loggedInUserId: String? = Firebase.auth.currentUser?.uid // Get the logged-in user's ID
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -70,7 +73,7 @@ class Leaderboard : AppCompatActivity() {
                 }
 
                 sortLeaderboardData()
-                calculateRankChanges() // Choose appropriate rank calculation based on currentFilter
+                calculateRankChanges()
                 updateLeaderboardUI(leaderboardData)
                 saveCurrentRanks()
             }
@@ -80,7 +83,6 @@ class Leaderboard : AppCompatActivity() {
             }
         })
     }
-
     private fun loadPreviousRanks(filter: String): Map<String, Int> {
         val sharedPreferences = getSharedPreferences("LeaderboardPrefs", Context.MODE_PRIVATE)
         val gson = Gson()
@@ -196,7 +198,13 @@ class Leaderboard : AppCompatActivity() {
         val rankChangeMap = if (currentFilter == "weight") weightRankChangeMap else repsRankChangeMap
 
         leaderboardData.forEachIndexed { index, entry ->
-            val leaderboardItem = layoutInflater.inflate(R.layout.leaderboard_item, null)
+            // Choose layout based on whether this entry is the logged-in user
+            val leaderboardItem = if (entry.userId == loggedInUserId) {
+                layoutInflater.inflate(R.layout.leaderboard_item2, null)
+            } else {
+                layoutInflater.inflate(R.layout.leaderboard_item, null)
+            }
+
             val rankView = leaderboardItem.findViewById<TextView>(R.id.rank)
             val nameView = leaderboardItem.findViewById<TextView>(R.id.name)
             val pointsView = leaderboardItem.findViewById<TextView>(R.id.points)
@@ -226,7 +234,6 @@ class Leaderboard : AppCompatActivity() {
             leaderboardContainer.addView(leaderboardItem)
         }
     }
-
     private fun updateTop3UI(index: Int, nameId: Int, imageId: Int, pointsId: Int) {
         val entry = leaderboardData[index]
         val nameView = findViewById<TextView>(nameId)
