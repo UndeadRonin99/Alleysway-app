@@ -48,53 +48,16 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <!-- Week Navigation Controls -->
-    <LinearLayout
-        android:id="@+id/week_navigation_layout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:orientation="horizontal"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/toolbar_text">
-
-        <ImageView
-            android:id="@+id/btn_previous_week"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="16dp"
-            android:contentDescription="Previous Week"
-            android:src="@drawable/image_arrow_up" />
-
-        <TextView
-            android:id="@+id/week_range_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="04 Aug - 07 Aug"
-            android:textColor="@android:color/white"
-            android:textSize="16sp"
-            android:textStyle="bold" />
-
-        <ImageView
-            android:id="@+id/btn_next_week"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:contentDescription="Next Week"
-            android:rotationY="180"
-            android:src="@drawable/image_arrow_up" />
-    </LinearLayout>
 
     <!-- Session Slots RecyclerView -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/session_slots_recycler"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginTop="16dp"
         android:background="@drawable/rounded_white"
         app:layout_constraintBottom_toTopOf="@id/book_now_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/week_navigation_layout" />
+        app:layout_constraintTop_toBottomOf="@+id/toolbar_text" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

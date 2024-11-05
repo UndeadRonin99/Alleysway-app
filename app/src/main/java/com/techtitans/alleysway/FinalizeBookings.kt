@@ -32,6 +32,7 @@ import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.techtitans.alleysway.adapter.SelectableTimeSlotAdapter
+import com.techtitans.alleysway.data.BookedSession
 import com.techtitans.alleysway.model.Day
 import com.techtitans.alleysway.model.TimeSlot
 import kotlinx.coroutines.CoroutineScope
@@ -42,7 +43,10 @@ import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.ZoneId
+import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
+import java.time.format.DateTimeFormatterBuilder
+import java.time.temporal.ChronoField
 
 
 class FinalizeBookings : AppCompatActivity() {
@@ -147,69 +151,95 @@ class FinalizeBookings : AppCompatActivity() {
     @RequiresApi(Build.VERSION_CODES.O)
     private fun createCalendarEvent(selectedSessions: List<TimeSlot>) {
         val account = GoogleSignIn.getLastSignedInAccount(this)
-        var UserName:String? = null
-        getFullName { fullName ->
-            if (fullName != null) {
-                Log.d("FinalizeBookings", "User's full name: $fullName")
-                UserName = fullName
-            } else {
-                Log.e("FinalizeBookings", "Failed to retrieve user's full name.")
-                Toast.makeText(this, "Could not retrieve full name.", Toast.LENGTH_SHORT).show()
-            }
-        }
-        if (account != null) {
-            val credential = GoogleAccountCredential.usingOAuth2(
-                this, listOf("https://www.googleapis.com/auth/calendar")
-            )
-            credential.selectedAccount = account.account
+        val user = Firebase.auth.currentUser
+        val userID = user?.uid
 
-            CoroutineScope(Dispatchers.IO).launch {
-                try {
-                    val service = Calendar.Builder(
-                        NetHttpTransport(),
-                        JacksonFactory.getDefaultInstance(),
-                        credential
-                    ).setApplicationName("Alleysway Gym").build()
+        getFullName { UserName ->
+            if (account != null && userID != null && UserName != null) {
+                val credential = GoogleAccountCredential.usingOAuth2(
+                    this, listOf("https://www.googleapis.com/auth/calendar")
+                )
+                credential.selectedAccount = account.account
 
-                    // Loop through selected sessions and create events
-                    for (session in selectedSessions) {
-                        val event = Event().apply {
-                            summary = "Training Session with $trainerName"
-                            description = "Booked by $UserName"
-                            start = EventDateTime().apply {
-                                dateTime = getDateTime(session.day, session.startTime)
-                                timeZone = "Africa/Johannesburg"
+                CoroutineScope(Dispatchers.IO).launch {
+                    try {
+                        val service = Calendar.Builder(
+                            NetHttpTransport(),
+                            JacksonFactory.getDefaultInstance(),
+                            credential
+                        ).setApplicationName("Alleysway Gym").build()
+
+                        // Loop through selected sessions and create events
+                        for (session in selectedSessions) {
+                            // Prepare date and time
+                            val startDateTimeLocal = getDateTime(session.day, session.startTime)
+                            val endDateTimeLocal = getDateTime(session.day, session.endTime)
+                            val zoneId = ZoneId.of("Africa/Johannesburg")
+                            val startDateTimeZoned = startDateTimeLocal.atZone(zoneId)
+                            val endDateTimeZoned = endDateTimeLocal.atZone(zoneId)
+
+                            // Create Google Calendar event
+                            val event = Event().apply {
+                                summary = "Training Session with $trainerName"
+                                description = "Booked by $UserName"
+                                start = EventDateTime().apply {
+                                    dateTime = com.google.api.client.util.DateTime(startDateTimeZoned.toInstant().toEpochMilli())
+                                    timeZone = "Africa/Johannesburg"
+                                }
+                                end = EventDateTime().apply {
+                                    dateTime = com.google.api.client.util.DateTime(endDateTimeZoned.toInstant().toEpochMilli())
+                                    timeZone = "Africa/Johannesburg"
+                                }
+                                attendees = listOf(EventAttendee().setEmail(trainerEmail))
                             }
-                            end = EventDateTime().apply {
-                                dateTime = getDateTime(session.day, session.endTime)
-                                timeZone = "Africa/Johannesburg"
-                            }
-                            attendees = listOf(EventAttendee().setEmail(trainerEmail))
+                            val eventResult = service.events().insert("primary", event).execute()
+                            Log.d("CalendarEvent", "Event created: ${eventResult.htmlLink}")
+
+                            // Save booked session to Firebase
+                            val isoFormatter = DateTimeFormatter.ISO_OFFSET_DATE_TIME
+                            val startDateTimeStr = startDateTimeZoned.format(isoFormatter)
+                            val endDateTimeStr = endDateTimeZoned.format(isoFormatter)
+
+                            val bookedSession = BookedSession(
+                                TrainerID = trainerID!!,
+                                ClientID = userID,
+                                Paid = false,
+                                TotalAmount = 0.0, // Update with actual amount if available
+                                StartDateTime = startDateTimeStr,
+                                EndDateTime = endDateTimeStr
+                            )
+
+                            // Save under trainer's sessions
+                            val trainerSessionRef = database.child("users").child(trainerID!!).child("sessions").child("SessionID")
+                            val newSessionRef = trainerSessionRef.push()
+                            newSessionRef.setValue(bookedSession)
+
+                            // Save under client's sessions
+                            val clientSessionRef = database.child("users").child(userID).child("sessions").child("SessionID")
+                            val newClientSessionRef = clientSessionRef.push()
+                            newClientSessionRef.setValue(bookedSession)
                         }
 
-                        val eventResult = service.events().insert("primary", event).execute()
-                        Log.d("CalendarEvent", "Event created: ${eventResult.htmlLink}")
-                    }
-
-                    withContext(Dispatchers.Main) {
-                        Toast.makeText(this@FinalizeBookings, "Events created successfully!", Toast.LENGTH_SHORT).show()
-                    }
-                } catch (e: UserRecoverableAuthIOException) {
-                    startActivityForResult(e.intent, REQUEST_AUTHORIZATION)
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                    withContext(Dispatchers.Main) {
-                        Toast.makeText(this@FinalizeBookings, "Failed to create events.", Toast.LENGTH_SHORT).show()
+                        withContext(Dispatchers.Main) {
+                            Toast.makeText(this@FinalizeBookings, "Events created successfully!", Toast.LENGTH_SHORT).show()
+                        }
+                    } catch (e: UserRecoverableAuthIOException) {
+                        startActivityForResult(e.intent, REQUEST_AUTHORIZATION)
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                        withContext(Dispatchers.Main) {
+                            Toast.makeText(this@FinalizeBookings, "Failed to create events.", Toast.LENGTH_SHORT).show()
+                        }
                     }
                 }
+            } else {
+                Toast.makeText(this, "User not signed in.", Toast.LENGTH_SHORT).show()
             }
-        } else {
-            Toast.makeText(this, "User not signed in.", Toast.LENGTH_SHORT).show()
         }
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    private fun getDateTime(dayOfWeekStr: String, time: String): com.google.api.client.util.DateTime {
+    private fun getDateTime(dayOfWeekStr: String, time: String): LocalDateTime {
         // Map day names to DayOfWeek enum values
         val dayOfWeekMap = mapOf(
             "Monday" to DayOfWeek.MONDAY,
@@ -238,11 +268,10 @@ class FinalizeBookings : AppCompatActivity() {
         val dateTimeString = "${targetDate} $time"
         val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")
         val localDateTime = LocalDateTime.parse(dateTimeString, formatter)
-        val zonedDateTime = localDateTime.atZone(zoneId)
-        return com.google.api.client.util.DateTime(zonedDateTime.toInstant().toEpochMilli())
+        return localDateTime
     }
 
-
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun fetchAdminTimeSlots() {
         if (trainerID == null) {
             Log.e("FinalizeBookings", "Trainer ID is null, cannot fetch timeslots")
@@ -251,11 +280,41 @@ class FinalizeBookings : AppCompatActivity() {
 
         val trainerRef = database.child("users").child(trainerID!!)
         trainerRef.addListenerForSingleValueEvent(object : ValueEventListener {
+            @RequiresApi(Build.VERSION_CODES.O)
             override fun onDataChange(snapshot: DataSnapshot) {
                 timeSlotsList.clear()
                 val role = snapshot.child("role").getValue(String::class.java)
                 if (role == "admin") {
                     val daysSnapshot = snapshot.child("Days")
+
+                    // Fetch booked sessions
+                    val sessionsSnapshot = snapshot.child("sessions").child("SessionID")
+                    val bookedSessions = mutableListOf<BookedSession>()
+
+                    // Define formatter for parsing dates
+                    val formatter = DateTimeFormatterBuilder()
+                        .appendPattern("yyyy-MM-dd'T'HH:mm:ss")
+                        .appendFraction(ChronoField.NANO_OF_SECOND, 1, 7, true)
+                        .toFormatter()
+
+                    val zoneId = ZoneId.of("Africa/Johannesburg")
+
+                    for (sessionSnapshot in sessionsSnapshot.children) {
+                        val bookedSession = sessionSnapshot.getValue(BookedSession::class.java)
+                        if (bookedSession != null) {
+                            try {
+                                val localDateTime = LocalDateTime.parse(bookedSession.StartDateTime, formatter)
+                                val startDateTime = localDateTime.atZone(zoneId)
+                                if (startDateTime.isAfter(ZonedDateTime.now(zoneId))) {
+                                    bookedSessions.add(bookedSession)
+                                }
+                            } catch (e: Exception) {
+                                Log.e("fetchAdminTimeSlots", "Error parsing date: ${e.message}")
+                            }
+                        }
+                    }
+
+                    // Process availability
                     for (daySnapshot in daysSnapshot.children) {
                         val day = daySnapshot.key ?: continue
                         val timeSlotsSnapshot = daySnapshot.child("TimeSlots")
@@ -264,7 +323,9 @@ class FinalizeBookings : AppCompatActivity() {
                             val startTime = timeSlotSnapshot.child("StartTime").getValue(String::class.java)
                             val endTime = timeSlotSnapshot.child("EndTime").getValue(String::class.java)
                             if (startTime != null && endTime != null) {
-                                splitTimeSlotIntoSessions(day, startTime, endTime, dayTimeSlots)
+                                val splitTimeSlots = splitTimeSlotIntoSessions(day, startTime, endTime)
+                                val availableTimeSlots = excludeBookedTimeSlots(splitTimeSlots, day, bookedSessions)
+                                dayTimeSlots.addAll(availableTimeSlots)
                             }
                         }
                         if (dayTimeSlots.isNotEmpty()) {
@@ -281,15 +342,61 @@ class FinalizeBookings : AppCompatActivity() {
         })
     }
 
-    private fun splitTimeSlotIntoSessions(day: String, startTime: String, endTime: String, dayTimeSlots: MutableList<TimeSlot>) {
+
+    private fun splitTimeSlotIntoSessions(day: String, startTime: String, endTime: String): List<TimeSlot> {
         val startHour = startTime.split(":")[0].toInt()
         val endHour = endTime.split(":")[0].toInt()
+        val timeSlots = mutableListOf<TimeSlot>()
 
         for (hour in startHour until endHour) {
             val sessionStartTime = String.format("%02d:00", hour)
             val sessionEndTime = String.format("%02d:00", hour + 1)
             val timeSlot = TimeSlot(day, sessionStartTime, sessionEndTime)
-            dayTimeSlots.add(timeSlot)
+            timeSlots.add(timeSlot)
         }
+        return timeSlots
     }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun excludeBookedTimeSlots(
+        timeSlots: List<TimeSlot>,
+        day: String,
+        bookedSessions: List<BookedSession>
+    ): List<TimeSlot> {
+        val availableTimeSlots = mutableListOf<TimeSlot>()
+        val formatter = DateTimeFormatterBuilder()
+            .appendPattern("yyyy-MM-dd'T'HH:mm:ss")
+            .appendFraction(ChronoField.NANO_OF_SECOND, 1, 7, true)
+            .toFormatter()
+
+        val zoneId = ZoneId.of("Africa/Johannesburg")
+
+        for (timeSlot in timeSlots) {
+            var isBooked = false
+            for (bookedSession in bookedSessions) {
+                try {
+                    val localDateTime = LocalDateTime.parse(bookedSession.StartDateTime, formatter)
+                    val startDateTime = localDateTime.atZone(zoneId)
+                    val sessionDayOfWeek = startDateTime.dayOfWeek.name
+                    if (sessionDayOfWeek.equals(day, ignoreCase = true)) {
+                        val bookedStartTime = startDateTime.format(DateTimeFormatter.ofPattern("HH:mm"))
+                        if (bookedStartTime == timeSlot.startTime) {
+                            isBooked = true
+                            break
+                        }
+                    }
+                } catch (e: Exception) {
+                    Log.e("excludeBookedTimeSlots", "Error parsing date: ${e.message}")
+                }
+            }
+            if (!isBooked) {
+                availableTimeSlots.add(timeSlot)
+            }
+        }
+        return availableTimeSlots
+    }
+
+
+
+
 }

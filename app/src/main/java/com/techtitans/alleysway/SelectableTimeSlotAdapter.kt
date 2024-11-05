@@ -10,6 +10,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.techtitans.alleysway.R
 import com.techtitans.alleysway.model.Day
 import com.techtitans.alleysway.model.TimeSlot
+import java.time.DayOfWeek
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 class SelectableTimeSlotAdapter(private val days: List<Day>) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -25,10 +28,12 @@ class SelectableTimeSlotAdapter(private val days: List<Day>) :
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return if (viewType == VIEW_TYPE_HEADER) {
-            val view = LayoutInflater.from(parent.context).inflate(R.layout.item_day_header, parent, false)
+            val view = LayoutInflater.from(parent.context)
+                .inflate(R.layout.item_day_header, parent, false)
             DayViewHolder(view)
         } else {
-            val view = LayoutInflater.from(parent.context).inflate(R.layout.item_timeslot, parent, false)
+            val view = LayoutInflater.from(parent.context)
+                .inflate(R.layout.item_timeslot, parent, false)
             TimeSlotViewHolder(view)
         }
     }
@@ -36,25 +41,37 @@ class SelectableTimeSlotAdapter(private val days: List<Day>) :
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val flatPosition = flattenPosition(position)
         if (holder is DayViewHolder && flatPosition is Pair<*, *>) {
-            holder.dayTextView.text = (flatPosition.first as Day).date
+            val day = flatPosition.first as Day
+            val date = getNextDateForDay(day.date)
+            val dateFormatter = DateTimeFormatter.ofPattern("EEEE, MMMM d, yyyy")
+            val dateString = date.format(dateFormatter)
+            holder.dayTextView.text = dateString
         } else if (holder is TimeSlotViewHolder && flatPosition is TimeSlot) {
             val timeSlot = flatPosition
             holder.timeTextView.text = timeSlot.startTime
 
             // Set visual state for selected or unselected
             if (selectedTimeSlots.contains(timeSlot)) {
-                holder.timeSlotCard.setCardBackgroundColor(ContextCompat.getColor(holder.itemView.context, R.color.orange))
+                holder.timeSlotCard.setCardBackgroundColor(
+                    ContextCompat.getColor(holder.itemView.context, R.color.orange)
+                )
             } else {
-                holder.timeSlotCard.setCardBackgroundColor(ContextCompat.getColor(holder.itemView.context, R.color.white))
+                holder.timeSlotCard.setCardBackgroundColor(
+                    ContextCompat.getColor(holder.itemView.context, R.color.white)
+                )
             }
 
             holder.itemView.setOnClickListener {
                 if (selectedTimeSlots.contains(timeSlot)) {
                     selectedTimeSlots.remove(timeSlot)
-                    holder.timeSlotCard.setCardBackgroundColor(ContextCompat.getColor(holder.itemView.context, R.color.white))
+                    holder.timeSlotCard.setCardBackgroundColor(
+                        ContextCompat.getColor(holder.itemView.context, R.color.white)
+                    )
                 } else {
                     selectedTimeSlots.add(timeSlot)
-                    holder.timeSlotCard.setCardBackgroundColor(ContextCompat.getColor(holder.itemView.context, R.color.orange))
+                    holder.timeSlotCard.setCardBackgroundColor(
+                        ContextCompat.getColor(holder.itemView.context, R.color.orange)
+                    )
                 }
             }
         }
@@ -79,6 +96,27 @@ class SelectableTimeSlotAdapter(private val days: List<Day>) :
         throw IndexOutOfBoundsException("Invalid position")
     }
 
+    private fun getNextDateForDay(dayName: String): LocalDate {
+        val dayOfWeekMap = mapOf(
+            "Monday" to DayOfWeek.MONDAY,
+            "Tuesday" to DayOfWeek.TUESDAY,
+            "Wednesday" to DayOfWeek.WEDNESDAY,
+            "Thursday" to DayOfWeek.THURSDAY,
+            "Friday" to DayOfWeek.FRIDAY,
+            "Saturday" to DayOfWeek.SATURDAY,
+            "Sunday" to DayOfWeek.SUNDAY
+        )
+        val targetDayOfWeek = dayOfWeekMap[dayName] ?: return LocalDate.now()
+        val today = LocalDate.now()
+        var daysUntilTarget = (targetDayOfWeek.value - today.dayOfWeek.value + 7) % 7
+
+        // Include today if the target day is today
+        if (daysUntilTarget == 0) {
+            daysUntilTarget = 7 // Set to 7 if you want to show next week's date
+        }
+        return today.plusDays(daysUntilTarget.toLong())
+    }
+
     class DayViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val dayTextView: TextView = itemView.findViewById(R.id.day_text_view)
     }
@@ -88,3 +126,4 @@ class SelectableTimeSlotAdapter(private val days: List<Day>) :
         val timeSlotCard: CardView = itemView.findViewById(R.id.time_slot_card)
     }
 }
+
