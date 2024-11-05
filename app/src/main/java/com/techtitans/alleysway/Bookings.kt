@@ -116,34 +116,25 @@ class Bookings : AppCompatActivity() {
     }
 
     private fun loadWeeklyData() {
-        databaseReference.addValueEventListener(object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                val tempHourlyData = mutableMapOf<String, List<BarEntry>>()
+        val popularTimesData = mapOf(
+            "MON" to listOf(1, 2, 2, 3, 3, 2, 1, 1, 2, 3, 4, 4, 2, 1, 1),
+            "TUE" to listOf(1, 2, 2, 3, 3, 2, 1, 1, 2, 3, 4, 4, 4, 3, 2),
+            "WED" to listOf(1, 2, 2, 3, 3, 2, 1, 1, 2, 3, 4, 4, 2, 1, 1),
+            "THU" to listOf(1, 2, 2, 3, 3, 2, 1, 1, 2, 3, 4, 4, 2, 1, 1),
+            "FRI" to listOf(1, 2, 2, 3, 3, 2, 1, 1, 2, 3, 4, 4, 0, 0, 0), // Fills missing hours with 0s
+            "SAT" to listOf(1, 1, 2, 3, 3, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0), // Fills missing hours with 0s
+            "SUN" to listOf(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0) // Closed
+        )
 
-                for (daySnapshot in snapshot.children) {
-                    val dateKey = daySnapshot.key ?: continue
-                    val dayOfWeek = getDayOfWeek(dateKey)
-                    val hourlyDataForDay = mutableListOf<BarEntry>()
+        hourlyAttendanceData = popularTimesData.mapValues { (_, hourlyData) ->
+            hourlyData.mapIndexed { index, value -> BarEntry((index + 6).toFloat(), value.toFloat()) }
+        }
 
-                    for (hourSnapshot in daySnapshot.children) {
-                        val hour = hourSnapshot.key?.toInt() ?: 0
-                        val count = hourSnapshot.getValue(Int::class.java) ?: 0
-                        hourlyDataForDay.add(BarEntry(hour.toFloat(), count.toFloat()))
-                    }
-                    noDays++
-                    tempHourlyData[dayOfWeek] = hourlyDataForDay
-                }
-
-                hourlyAttendanceData = tempHourlyData
-                val currentDay = getDayOfWeek(SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Calendar.getInstance().time))
-                loadHourlyDataForDay(currentDay)
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-                // Error handling
-            }
-        })
+        val currentDay = getCurrentDayOfWeek()
+        loadHourlyDataForDay(currentDay)
     }
+
+
 
     private fun calculateQuartiles(data: List<Float>): List<Float> {
         val sortedData = data.sorted()
@@ -261,7 +252,9 @@ class Bookings : AppCompatActivity() {
         // Enable dragging and horizontal scrolling
         barChart.isDragEnabled = true
         barChart.setScaleEnabled(false) // If you don't want scaling, keep it false
-        barChart.setExtraOffsets(10f, 0f, 10f, 0f) // Add space to the left and right of the chart
+
+        // Increase the bottom offset to raise the x-axis labels from the bottom
+        barChart.setExtraOffsets(10f, 0f, 10f, 20f) // Adjust the last value to control the bottom space
 
         val xAxis = barChart.xAxis
         xAxis.position = XAxis.XAxisPosition.BOTTOM
@@ -272,11 +265,20 @@ class Bookings : AppCompatActivity() {
         xAxis.spaceMin = 0.5f // Space on the left side
         xAxis.spaceMax = 0.5f // Space on the right side
 
+        // Optional: If you want to raise the labels further from the x-axis line itself
+        xAxis.yOffset = 5f // Adjust this if needed for more spacing above the x-axis line
+
+        // Ensure the y-axis starts at 0
+        barChart.axisLeft.apply {
+            axisMinimum = 0f  // Explicitly set the minimum value for the y-axis
+        }
         barChart.axisLeft.isEnabled = false
         barChart.axisRight.isEnabled = false
         barChart.legend.isEnabled = false
         barChart.setBackgroundColor(Color.parseColor("#27262C"))
     }
+
+
 
     private fun setupChartValueClickListener() {
         barChart.setOnChartValueSelectedListener(object : OnChartValueSelectedListener {
