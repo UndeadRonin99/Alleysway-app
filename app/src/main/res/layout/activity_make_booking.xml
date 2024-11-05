@@ -13,26 +13,30 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="25dp"
-        android:layout_marginTop="25dp"
+        android:layout_marginTop="24dp"
         android:contentDescription="Back"
         android:src="@drawable/image_arrow_up"
+        app:layout_constraintEnd_toStartOf="@+id/toolbar_text"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <!-- Bottom Navigation Bar -->
+
     <TextView
         android:id="@+id/toolbar_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="25dp"
+        android:layout_width="271dp"
+        android:layout_height="28dp"
+        android:layout_marginTop="28dp"
         android:text="Select a trainer to work with"
         android:textColor="@android:color/white"
         android:textSize="20sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.728"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <!-- Bottom Navigation Bar -->
     <ScrollView
         android:id="@+id/trainer_list_scroll"
         android:layout_width="0dp"

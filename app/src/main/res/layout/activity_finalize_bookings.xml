@@ -7,18 +7,22 @@
     tools:context=".FinalizeBookings">
 
     <!-- Toolbar -->
+
+    <!-- Book Now Button -->
+
     <ImageView
         android:id="@+id/back_arrow"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="25dp"
-        android:layout_marginTop="25dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="24dp"
         android:contentDescription="Back"
         android:src="@drawable/image_arrow_up"
+        app:layout_constraintEnd_toStartOf="@+id/toolbar_text"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <!-- Book Now Button -->
     <Button
         android:id="@+id/book_now_button"
         android:layout_width="wrap_content"
@@ -33,23 +37,26 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <!-- Toolbar Text -->
+
+    <!-- Week Navigation Controls -->
+
+    <!-- Session Slots RecyclerView -->
+
     <TextView
         android:id="@+id/toolbar_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="64dp"
+        android:layout_width="272dp"
+        android:layout_height="56dp"
+        android:layout_marginTop="24dp"
         android:text="Choose Date and Time to work with Nicholas Malan"
         android:textAlignment="center"
         android:textColor="@android:color/white"
         android:textSize="20sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.589"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <!-- Week Navigation Controls -->
-
-    <!-- Session Slots RecyclerView -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/session_slots_recycler"
         android:layout_width="0dp"
