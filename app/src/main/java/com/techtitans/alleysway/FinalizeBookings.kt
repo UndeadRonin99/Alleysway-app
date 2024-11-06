@@ -61,8 +61,8 @@ class FinalizeBookings : AppCompatActivity() {
     private var trainerID: String? = null
     private var trainerEmail: String? = null
     private var trainerName: String? = null
+    private var trainerRate: String? = null
     private lateinit var btnBookNow: Button
-
 
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -74,6 +74,7 @@ class FinalizeBookings : AppCompatActivity() {
         trainerName = intent.getStringExtra("trainerName")
         trainerID = intent.getStringExtra("trainerID")
         trainerEmail = intent.getStringExtra("trainerEmail")
+        trainerRate = intent.getStringExtra("rate")
 
         btnBack = findViewById(R.id.back_arrow)
         btnBack.setOnClickListener {
@@ -204,7 +205,7 @@ class FinalizeBookings : AppCompatActivity() {
                                 TrainerID = trainerID!!,
                                 ClientID = userID,
                                 Paid = false,
-                                TotalAmount = 0.0, // Update with actual amount if available
+                                TotalAmount = trainerRate!!.toDouble(), // Update with actual amount if available
                                 StartDateTime = startDateTimeStr,
                                 EndDateTime = endDateTimeStr
                             )
@@ -341,7 +342,6 @@ class FinalizeBookings : AppCompatActivity() {
             }
         })
     }
-
 
     private fun splitTimeSlotIntoSessions(day: String, startTime: String, endTime: String): List<TimeSlot> {
         val startHour = startTime.split(":")[0].toInt()
