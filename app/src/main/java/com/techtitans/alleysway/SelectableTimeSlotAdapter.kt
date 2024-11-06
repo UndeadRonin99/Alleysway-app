@@ -10,8 +10,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.techtitans.alleysway.R
 import com.techtitans.alleysway.model.Day
 import com.techtitans.alleysway.model.TimeSlot
-import java.time.DayOfWeek
-import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
 class SelectableTimeSlotAdapter(private val days: List<Day>) :
@@ -42,11 +40,11 @@ class SelectableTimeSlotAdapter(private val days: List<Day>) :
         val flatPosition = flattenPosition(position)
         if (holder is DayViewHolder && flatPosition is Pair<*, *>) {
             val day = flatPosition.first as Day
-            val date = getNextDateForDay(day.date)
             val dateFormatter = DateTimeFormatter.ofPattern("EEEE, MMMM d, yyyy")
-            val dateString = date.format(dateFormatter)
+            val dateString = day.date.format(dateFormatter)
             holder.dayTextView.text = dateString
-        } else if (holder is TimeSlotViewHolder && flatPosition is TimeSlot) {
+        }
+        else if (holder is TimeSlotViewHolder && flatPosition is TimeSlot) {
             val timeSlot = flatPosition
             holder.timeTextView.text = timeSlot.startTime
 
@@ -94,27 +92,6 @@ class SelectableTimeSlotAdapter(private val days: List<Day>) :
             counter += day.timeSlots.size
         }
         throw IndexOutOfBoundsException("Invalid position")
-    }
-
-    private fun getNextDateForDay(dayName: String): LocalDate {
-        val dayOfWeekMap = mapOf(
-            "Monday" to DayOfWeek.MONDAY,
-            "Tuesday" to DayOfWeek.TUESDAY,
-            "Wednesday" to DayOfWeek.WEDNESDAY,
-            "Thursday" to DayOfWeek.THURSDAY,
-            "Friday" to DayOfWeek.FRIDAY,
-            "Saturday" to DayOfWeek.SATURDAY,
-            "Sunday" to DayOfWeek.SUNDAY
-        )
-        val targetDayOfWeek = dayOfWeekMap[dayName] ?: return LocalDate.now()
-        val today = LocalDate.now()
-        var daysUntilTarget = (targetDayOfWeek.value - today.dayOfWeek.value + 7) % 7
-
-        // Include today if the target day is today
-        if (daysUntilTarget == 0) {
-            daysUntilTarget = 7 // Set to 7 if you want to show next week's date
-        }
-        return today.plusDays(daysUntilTarget.toLong())
     }
 
     class DayViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {

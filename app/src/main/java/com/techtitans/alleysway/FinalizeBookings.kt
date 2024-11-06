@@ -42,11 +42,10 @@ import kotlinx.coroutines.withContext
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.LocalTime
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
-import java.time.format.DateTimeFormatterBuilder
-import java.time.temporal.ChronoField
 
 
 class FinalizeBookings : AppCompatActivity() {
@@ -173,8 +172,12 @@ class FinalizeBookings : AppCompatActivity() {
                         // Loop through selected sessions and create events
                         for (session in selectedSessions) {
                             // Prepare date and time
-                            val startDateTimeLocal = getDateTime(session.day, session.startTime)
-                            val endDateTimeLocal = getDateTime(session.day, session.endTime)
+                            val date = session.date
+                            val startTime = session.startTime
+                            val endTime = session.endTime
+
+                            val startDateTimeLocal = LocalDateTime.of(date, LocalTime.parse(startTime, DateTimeFormatter.ofPattern("HH:mm")))
+                            val endDateTimeLocal = LocalDateTime.of(date, LocalTime.parse(endTime, DateTimeFormatter.ofPattern("HH:mm")))
                             val zoneId = ZoneId.of("Africa/Johannesburg")
                             val startDateTimeZoned = startDateTimeLocal.atZone(zoneId)
                             val endDateTimeZoned = endDateTimeLocal.atZone(zoneId)
@@ -202,12 +205,12 @@ class FinalizeBookings : AppCompatActivity() {
                             val endDateTimeStr = endDateTimeZoned.format(isoFormatter)
 
                             val bookedSession = BookedSession(
-                                TrainerID = trainerID!!,
-                                ClientID = userID,
-                                Paid = false,
-                                TotalAmount = trainerRate!!.toDouble(), // Update with actual amount if available
-                                StartDateTime = startDateTimeStr,
-                                EndDateTime = endDateTimeStr
+                                trainerID = trainerID!!,
+                                clientID = userID,
+                                paid = false,
+                                totalAmount = trainerRate!!.toDouble(),
+                                startDateTime = startDateTimeStr,
+                                endDateTime = endDateTimeStr
                             )
 
                             // Save under trainer's sessions
@@ -238,6 +241,7 @@ class FinalizeBookings : AppCompatActivity() {
             }
         }
     }
+
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun getDateTime(dayOfWeekStr: String, time: String): LocalDateTime {
@@ -293,10 +297,7 @@ class FinalizeBookings : AppCompatActivity() {
                     val bookedSessions = mutableListOf<BookedSession>()
 
                     // Define formatter for parsing dates
-                    val formatter = DateTimeFormatterBuilder()
-                        .appendPattern("yyyy-MM-dd'T'HH:mm:ss")
-                        .appendFraction(ChronoField.NANO_OF_SECOND, 1, 7, true)
-                        .toFormatter()
+                    val formatter = DateTimeFormatter.ISO_OFFSET_DATE_TIME
 
                     val zoneId = ZoneId.of("Africa/Johannesburg")
 
@@ -304,8 +305,7 @@ class FinalizeBookings : AppCompatActivity() {
                         val bookedSession = sessionSnapshot.getValue(BookedSession::class.java)
                         if (bookedSession != null) {
                             try {
-                                val localDateTime = LocalDateTime.parse(bookedSession.StartDateTime, formatter)
-                                val startDateTime = localDateTime.atZone(zoneId)
+                                val startDateTime = ZonedDateTime.parse(bookedSession.startDateTime, formatter)
                                 if (startDateTime.isAfter(ZonedDateTime.now(zoneId))) {
                                     bookedSessions.add(bookedSession)
                                 }
@@ -315,24 +315,33 @@ class FinalizeBookings : AppCompatActivity() {
                         }
                     }
 
-                    // Process availability
+                    // Process availability and calculate actual dates
+                    val dayList = mutableListOf<Day>()
+
                     for (daySnapshot in daysSnapshot.children) {
-                        val day = daySnapshot.key ?: continue
+                        val dayName = daySnapshot.key ?: continue
                         val timeSlotsSnapshot = daySnapshot.child("TimeSlots")
                         val dayTimeSlots = mutableListOf<TimeSlot>()
+
+                        // Calculate the actual date for this day
+                        val date = getNextDateForDay(dayName)
+
                         for (timeSlotSnapshot in timeSlotsSnapshot.children) {
                             val startTime = timeSlotSnapshot.child("StartTime").getValue(String::class.java)
                             val endTime = timeSlotSnapshot.child("EndTime").getValue(String::class.java)
                             if (startTime != null && endTime != null) {
-                                val splitTimeSlots = splitTimeSlotIntoSessions(day, startTime, endTime)
-                                val availableTimeSlots = excludeBookedTimeSlots(splitTimeSlots, day, bookedSessions)
+                                val splitTimeSlots = splitTimeSlotIntoSessions(date, startTime, endTime)
+                                val availableTimeSlots = excludeBookedTimeSlots(splitTimeSlots, bookedSessions)
                                 dayTimeSlots.addAll(availableTimeSlots)
                             }
                         }
                         if (dayTimeSlots.isNotEmpty()) {
-                            timeSlotsList.add(Day(day, dayTimeSlots))
+                            dayList.add(Day(date, dayTimeSlots))
                         }
                     }
+
+                    // Sort the days list by date
+                    timeSlotsList.addAll(dayList.sortedBy { it.date })
                 }
                 timeSlotAdapter.notifyDataSetChanged()
             }
@@ -343,7 +352,28 @@ class FinalizeBookings : AppCompatActivity() {
         })
     }
 
-    private fun splitTimeSlotIntoSessions(day: String, startTime: String, endTime: String): List<TimeSlot> {
+    private fun getNextDateForDay(dayName: String): LocalDate {
+        val dayOfWeekMap = mapOf(
+            "Monday" to DayOfWeek.MONDAY,
+            "Tuesday" to DayOfWeek.TUESDAY,
+            "Wednesday" to DayOfWeek.WEDNESDAY,
+            "Thursday" to DayOfWeek.THURSDAY,
+            "Friday" to DayOfWeek.FRIDAY,
+            "Saturday" to DayOfWeek.SATURDAY,
+            "Sunday" to DayOfWeek.SUNDAY
+        )
+        val targetDayOfWeek = dayOfWeekMap[dayName] ?: return LocalDate.now()
+        val today = LocalDate.now()
+        var daysUntilTarget = (targetDayOfWeek.value - today.dayOfWeek.value + 7) % 7
+
+        // Include today if the target day is today
+        if (daysUntilTarget == 0) {
+            daysUntilTarget = 7 // Set to 7 if you want to show next week's date
+        }
+        return today.plusDays(daysUntilTarget.toLong())
+    }
+
+    private fun splitTimeSlotIntoSessions(date: LocalDate, startTime: String, endTime: String): List<TimeSlot> {
         val startHour = startTime.split(":")[0].toInt()
         val endHour = endTime.split(":")[0].toInt()
         val timeSlots = mutableListOf<TimeSlot>()
@@ -351,39 +381,31 @@ class FinalizeBookings : AppCompatActivity() {
         for (hour in startHour until endHour) {
             val sessionStartTime = String.format("%02d:00", hour)
             val sessionEndTime = String.format("%02d:00", hour + 1)
-            val timeSlot = TimeSlot(day, sessionStartTime, sessionEndTime)
+            val timeSlot = TimeSlot(date, sessionStartTime, sessionEndTime)
             timeSlots.add(timeSlot)
         }
         return timeSlots
     }
 
+
     @RequiresApi(Build.VERSION_CODES.O)
     private fun excludeBookedTimeSlots(
         timeSlots: List<TimeSlot>,
-        day: String,
         bookedSessions: List<BookedSession>
     ): List<TimeSlot> {
         val availableTimeSlots = mutableListOf<TimeSlot>()
-        val formatter = DateTimeFormatterBuilder()
-            .appendPattern("yyyy-MM-dd'T'HH:mm:ss")
-            .appendFraction(ChronoField.NANO_OF_SECOND, 1, 7, true)
-            .toFormatter()
-
-        val zoneId = ZoneId.of("Africa/Johannesburg")
+        val formatter = DateTimeFormatter.ISO_OFFSET_DATE_TIME
 
         for (timeSlot in timeSlots) {
             var isBooked = false
             for (bookedSession in bookedSessions) {
                 try {
-                    val localDateTime = LocalDateTime.parse(bookedSession.StartDateTime, formatter)
-                    val startDateTime = localDateTime.atZone(zoneId)
-                    val sessionDayOfWeek = startDateTime.dayOfWeek.name
-                    if (sessionDayOfWeek.equals(day, ignoreCase = true)) {
-                        val bookedStartTime = startDateTime.format(DateTimeFormatter.ofPattern("HH:mm"))
-                        if (bookedStartTime == timeSlot.startTime) {
-                            isBooked = true
-                            break
-                        }
+                    val bookedStartDateTime = ZonedDateTime.parse(bookedSession.startDateTime, formatter)
+                    val bookedDate = bookedStartDateTime.toLocalDate()
+                    val bookedTime = bookedStartDateTime.format(DateTimeFormatter.ofPattern("HH:mm"))
+                    if (bookedDate == timeSlot.date && bookedTime == timeSlot.startTime) {
+                        isBooked = true
+                        break
                     }
                 } catch (e: Exception) {
                     Log.e("excludeBookedTimeSlots", "Error parsing date: ${e.message}")
@@ -395,8 +417,6 @@ class FinalizeBookings : AppCompatActivity() {
         }
         return availableTimeSlots
     }
-
-
 
 
 }

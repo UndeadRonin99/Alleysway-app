@@ -1,6 +1,9 @@
 package com.techtitans.alleysway.model
 
+import java.time.LocalDate
+
 data class Day(
-    val date: String,
+    val date: LocalDate,
     val timeSlots: List<TimeSlot>
 )
+
