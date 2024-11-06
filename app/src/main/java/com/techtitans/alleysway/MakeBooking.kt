@@ -44,11 +44,36 @@ class MakeBooking : AppCompatActivity() {
         btnBack.setOnClickListener {
             finish()
         }
+        val btnScan: ImageView = findViewById(R.id.btnCamera)
+        btnScan.setOnClickListener {
+            // Navigate to the Bookings activity
+            val intent = Intent(this, ScanQRCode::class.java)
+            startActivity(intent) }
+
+        val btnHome: ImageView = findViewById(R.id.btnHome)
+        btnHome.setOnClickListener {
+            // Navigate to the Bookings activity
+            val intent = Intent(this, HomePage::class.java)
+            startActivity(intent) }
+
+        val btnWorkout: ImageView = findViewById(R.id.btnWorkout)
+        btnWorkout.setOnClickListener {
+            // Navigate to the Bookings activity
+            val intent = Intent(this, Workouts::class.java)
+            startActivity(intent) }
+
+        val btnTracker: ImageView = findViewById(R.id.btnTracker)
+        btnTracker.setOnClickListener {
+            // Navigate to the Bookings activity
+            val intent = Intent(this, Tracker::class.java)
+            startActivity(intent) }
+
 
 
         // Fetch and display trainers
         fetchTrainers()
     }
+
 
     private fun fetchTrainers() {
         val usersRef = database.child("users")
