@@ -103,4 +103,3 @@ class SelectableTimeSlotAdapter(private val days: List<Day>) :
         val timeSlotCard: CardView = itemView.findViewById(R.id.time_slot_card)
     }
 }
-
