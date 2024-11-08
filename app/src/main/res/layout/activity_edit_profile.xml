@@ -12,8 +12,8 @@
 
     <TextView
         android:id="@+id/text_edit_profile"
-        android:layout_width="143dp"
-        android:layout_height="wrap_content"
+        android:layout_width="219dp"
+        android:layout_height="37dp"
         android:layout_marginTop="44dp"
         android:gravity="center_horizontal|center_vertical"
         android:includeFontPadding="false"
