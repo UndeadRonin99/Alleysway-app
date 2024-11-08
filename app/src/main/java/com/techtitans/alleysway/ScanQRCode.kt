@@ -1,5 +1,8 @@
 package com.techtitans.alleysway
 
+import android.app.AlarmManager
+import android.app.PendingIntent
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
@@ -46,6 +49,7 @@ class ScanQRCode : AppCompatActivity() {
                     updateAttendance()
                     updatePublicAttendance()
                     Toast.makeText(this, "Attendance logged", Toast.LENGTH_SHORT).show()
+                    scheduleDelayedNotification("You can now log a workout and don't forget to record your weight.") // You can customize the title as needed
                     this.finish()
                 } else {
                     Toast.makeText(this, "Invalid QR Code", Toast.LENGTH_SHORT).show()
@@ -109,5 +113,25 @@ class ScanQRCode : AppCompatActivity() {
             }
         })
     }
+
+    private fun scheduleDelayedNotification(Message: String) {
+        val delayInMillis = 15 * 1000L // 2 minutes in milliseconds
+
+        val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        val intent = Intent(this, NotificationReceiver::class.java).apply {
+            putExtra("MEAL_TITLE", Message)
+        }
+        val pendingIntent = PendingIntent.getBroadcast(
+            this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+
+        // Schedule the notification to trigger 2 minutes after the current time
+        alarmManager.setExact(
+            AlarmManager.RTC_WAKEUP,
+            System.currentTimeMillis() + delayInMillis,
+            pendingIntent
+        )
+    }
+
 
 }

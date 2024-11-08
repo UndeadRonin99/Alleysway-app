@@ -2,11 +2,11 @@ package com.techtitans.alleysway
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
@@ -35,6 +35,8 @@ class Workouts : AppCompatActivity() {
     private lateinit var monthHeaderRecyclerView: RecyclerView
     private lateinit var adapter: CalendarAdapter
     private val attendanceData = mutableMapOf<LocalDate, Int>()
+    private var isAttendanceMarked = false // Variable to check if today's attendance is marked
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -119,8 +121,8 @@ class Workouts : AppCompatActivity() {
     }
 
     private fun fetchAttendanceData(userId: String) {
-        val database = FirebaseDatabase.getInstance().reference
         val attendanceRef = database.child("users").child(userId).child("attendance")
+        val todayDate = LocalDate.now().toString() // Today's date in yyyy-MM-dd format
 
         attendanceRef.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
@@ -130,10 +132,13 @@ class Workouts : AppCompatActivity() {
                     if (dateStr != null && value == true) {
                         val date = LocalDate.parse(dateStr)
                         attendanceData[date] = attendanceData.getOrDefault(date, 0) + 1
+
+                        // Check if today's attendance is marked
+                        if (dateStr == todayDate) {
+                            isAttendanceMarked = true
+                        }
                     }
                 }
-                // After fetching data, set up the calendar
-                Log.d("AttendanceActivity", "Attendance Data: $attendanceData")
                 setupCalendar()
             }
 
@@ -206,8 +211,12 @@ class Workouts : AppCompatActivity() {
 
         // Log a Workout button
         btnLog.setOnClickListener {
-            val intent = Intent(this, log_workout::class.java)
-            startActivity(intent)
+            if(isAttendanceMarked){
+                val intent = Intent(this, log_workout::class.java)
+                startActivity(intent)
+            }else{
+                Toast.makeText(this, "Please scan attendance to log workout", Toast.LENGTH_SHORT).show()
+            }
         }
 
         // View Exercises button
