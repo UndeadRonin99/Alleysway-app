@@ -8,11 +8,7 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.MutableData
-import com.google.firebase.database.Transaction
+import com.google.firebase.database.*
 import com.google.zxing.integration.android.IntentIntegrator
 import com.google.zxing.integration.android.IntentResult
 import java.text.SimpleDateFormat
@@ -48,8 +44,8 @@ class ScanQRCode : AppCompatActivity() {
                 if (scannedData == expectedData) {
                     updateAttendance()
                     updatePublicAttendance()
-                    Toast.makeText(this, "Attendance logged", Toast.LENGTH_SHORT).show()
-                    scheduleDelayedNotification("You can now log a workout and don't forget to record your weight.") // You can customize the title as needed
+                    Toast.makeText(this, "Attendance Marked Successfully", Toast.LENGTH_SHORT).show()
+                    scheduleDelayedNotification("You can now log a workout and don't forget to record your weight.")
                     this.finish()
                 } else {
                     Toast.makeText(this, "Invalid QR Code", Toast.LENGTH_SHORT).show()
@@ -75,7 +71,7 @@ class ScanQRCode : AppCompatActivity() {
         // Mark attendance for the current date
         databaseReference.child(todayDate).setValue(true)
             .addOnSuccessListener {
-                Toast.makeText(this, "Attendance Marked Successfully", Toast.LENGTH_SHORT).show()
+                // Attendance marked successfully; no Toast here
             }
             .addOnFailureListener {
                 Toast.makeText(this, "Failed to Mark Attendance", Toast.LENGTH_SHORT).show()
@@ -83,7 +79,6 @@ class ScanQRCode : AppCompatActivity() {
     }
 
     private fun updatePublicAttendance() {
-
         // Reference to the attendance node for the user in Firebase
         val databaseReference = FirebaseDatabase.getInstance().getReference("attendance")
 
@@ -105,33 +100,30 @@ class ScanQRCode : AppCompatActivity() {
                 committed: Boolean,
                 currentData: DataSnapshot?
             ) {
-                if (committed) {
-                    Toast.makeText(this@ScanQRCode, "Attendance Marked Successfully", Toast.LENGTH_SHORT).show()
-                } else {
-                    Toast.makeText(this@ScanQRCode, "Failed to Mark Attendance", Toast.LENGTH_SHORT).show()
+                if (!committed) {
+                    Toast.makeText(this@ScanQRCode, "Failed to Update Public Attendance", Toast.LENGTH_SHORT).show()
                 }
+                // No Toast needed here if successful
             }
         })
     }
 
-    private fun scheduleDelayedNotification(Message: String) {
-        val delayInMillis = 15 * 1000L // 2 minutes in milliseconds
+    private fun scheduleDelayedNotification(message: String) {
+        val delayInMillis = 15 * 1000L // 15 seconds in milliseconds
 
         val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
         val intent = Intent(this, NotificationReceiver::class.java).apply {
-            putExtra("MEAL_TITLE", Message)
+            putExtra("MEAL_TITLE", message)
         }
         val pendingIntent = PendingIntent.getBroadcast(
             this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
 
-        // Schedule the notification to trigger 2 minutes after the current time
+        // Schedule the notification to trigger after the specified delay
         alarmManager.setExact(
             AlarmManager.RTC_WAKEUP,
             System.currentTimeMillis() + delayInMillis,
             pendingIntent
         )
     }
-
-
 }
