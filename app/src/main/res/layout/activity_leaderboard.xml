@@ -1,11 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/leaderboardLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#27262C"
-    tools:context=".LeaderBoard">
+    android:background="#27262C">
 
     <!-- Back Button -->
     <ImageView
@@ -13,29 +13,47 @@
         android:layout_width="47dp"
         android:layout_height="54dp"
         android:layout_marginStart="4dp"
+        android:layout_marginTop="16dp"
         android:rotation="180"
         android:src="@drawable/drawable_image_10"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/txtLeaderboard" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <!-- Leaderboard Title -->
+
+    <!-- Participation Switch -->
     <TextView
         android:id="@+id/txtLeaderboard"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="120dp"
+        android:layout_marginStart="76dp"
         android:layout_marginTop="16dp"
         android:text="Leaderboard"
         android:textColor="#FFFFFF"
         android:textSize="30sp"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="@id/btnBack"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <Switch
+        android:id="@+id/switchLeaderboardParticipation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Participate"
+        android:textColor="#FFFFFF"
+        android:thumbTint="#FFFFFF"
+        android:trackTint="#888888"
+        app:layout_constraintTop_toBottomOf="@id/txtLeaderboard"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="16dp" />
+
+    <!-- Filter RadioGroup -->
     <RadioGroup
         android:id="@+id/filterRadioGroup"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintTop_toBottomOf="@id/txtLeaderboard"
+        app:layout_constraintTop_toBottomOf="@id/switchLeaderboardParticipation"
         app:layout_constraintStart_toStartOf="parent"
         android:layout_marginTop="8dp"
         android:layout_marginStart="16dp">
@@ -51,33 +69,34 @@
 
         <RadioButton
             android:id="@+id/radioTotalReps"
-            android:layout_width="wrap_content"
+            android:layout_width="126dp"
             android:layout_height="wrap_content"
-            android:text="Total Reps"
-            android:textColor="#FFFFFF"
             android:layout_marginStart="16dp"
-            android:buttonTint="#FFFFFF" />
+            android:buttonTint="#FFFFFF"
+            android:text="Total Reps"
+            android:textColor="#FFFFFF" />
+
     </RadioGroup>
 
-    <!-- Top Three Users Container (outside scroll view) -->
+    <!-- Top Three Users Container -->
     <LinearLayout
         android:id="@+id/topThreeContainer"
-        android:layout_width="406dp"
-        android:layout_height="273dp"
-        android:gravity="center"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
         android:orientation="horizontal"
+        android:gravity="center"
         android:padding="16dp"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/filterRadioGroup"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/txtLeaderboard">
+        app:layout_constraintEnd_toEndOf="parent">
 
         <!-- Second Place User -->
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:gravity="center"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:gravity="center">
 
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/secondPlaceImage"
@@ -107,15 +126,15 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:gravity="center"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:gravity="center">
 
             <!-- Crown Icon -->
             <ImageView
                 android:layout_width="32dp"
                 android:layout_height="32dp"
-                android:layout_gravity="center_horizontal"
-                android:src="@drawable/ic_crown" />
+                android:src="@drawable/ic_crown"
+                android:layout_gravity="center_horizontal" />
 
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/firstPlaceImage"
@@ -146,8 +165,8 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:gravity="center"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:gravity="center">
 
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/thirdPlaceImage"
@@ -171,16 +190,17 @@
                 android:textColor="#FFFFFF"
                 android:textSize="14sp" />
         </LinearLayout>
+
     </LinearLayout>
 
     <!-- ScrollView for All Users -->
     <ScrollView
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginTop="8dp"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/topThreeContainer"
-        tools:ignore="SpeakableTextPresentCheck">
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
 
         <LinearLayout
             android:id="@+id/leaderboardContainer"
@@ -189,4 +209,5 @@
             android:orientation="vertical"
             android:padding="16dp" />
     </ScrollView>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

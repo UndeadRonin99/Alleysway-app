@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.RadioGroup
+import android.widget.Switch
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -21,6 +22,8 @@ import com.google.gson.reflect.TypeToken
 import com.techtitans.alleysway.models.LeaderboardEntry
 import de.hdodenhof.circleimageview.CircleImageView
 import java.util.Calendar
+import android.widget.*
+import com.google.firebase.database.*
 
 class Leaderboard : AppCompatActivity() {
 
@@ -29,6 +32,9 @@ class Leaderboard : AppCompatActivity() {
     private val weightRankChangeMap = mutableMapOf<String, Int>() // Rank changes for weight
     private val repsRankChangeMap = mutableMapOf<String, Int>()   // Rank changes for reps
     private val loggedInUserId: String? = Firebase.auth.currentUser?.uid // Get the logged-in user's ID
+
+    private lateinit var switchLeaderboardParticipation: Switch
+    private val userId = Firebase.auth.currentUser?.uid ?: ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,6 +46,11 @@ class Leaderboard : AppCompatActivity() {
         leaderboardData = mutableListOf() // Initialize leaderboard data
         checkForDailyReset() // Check if rank indicators should reset
         loadRankChanges() // Load cumulative rank changes from previous sessions
+
+        // Initialize the participation switch
+        switchLeaderboardParticipation = findViewById(R.id.switchLeaderboardParticipation)
+        setupParticipationSwitch()
+
         fetchLeaderboardData() // Initial data load
 
         // Handle filter selection
@@ -49,6 +60,31 @@ class Leaderboard : AppCompatActivity() {
             fetchLeaderboardData() // Refetch and recalculate on filter change
         }
     }
+    private fun setupParticipationSwitch() {
+        val databaseRef = FirebaseDatabase.getInstance().getReference("users/$userId/participateInLeaderboard")
+        databaseRef.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                var participates = snapshot.getValue(Boolean::class.java)
+                if (participates == null) {
+                    // If the field doesn't exist, set it to true in the database
+                    participates = true
+                    databaseRef.setValue(true)
+                }
+                switchLeaderboardParticipation.isChecked = participates
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Toast.makeText(this@Leaderboard, "Failed to load preference", Toast.LENGTH_SHORT).show()
+            }
+        })
+
+        // Listen for changes
+        switchLeaderboardParticipation.setOnCheckedChangeListener { _, isChecked ->
+            databaseRef.setValue(isChecked)
+            fetchLeaderboardData()
+        }
+    }
+
 
     private fun checkForDailyReset() {
         val sharedPreferences = getSharedPreferences("LeaderboardPrefs", Context.MODE_PRIVATE)
@@ -84,20 +120,37 @@ class Leaderboard : AppCompatActivity() {
 
                 for (userSnapshot in snapshot.children) {
                     val userId = userSnapshot.key ?: continue
-                    var totalWeight = 0.0
-                    var totalReps = 0
+
+                    // Get participation preference, default to true if not set
+                    val participates = userSnapshot.child("participateInLeaderboard").getValue(Boolean::class.java) ?: true
+
+                    // Skip users who have opted out
+                    if (!participates) continue
+
                     val firstName = userSnapshot.child("firstName").getValue(String::class.java) ?: "Unknown"
                     val profileUrl = userSnapshot.child("profileImageUrl").getValue(String::class.java) ?: ""
 
+                    var totalWeightValue = 0.0
+                    var totalRepsValue = 0
+
+                    // **Iterate over the user's workouts to calculate totalWeight and totalReps**
                     val workoutsSnapshot = userSnapshot.child("workouts")
                     for (workoutSnapshot in workoutsSnapshot.children) {
-                        val workoutWeight = workoutSnapshot.child("totalWeight").getValue(Double::class.java) ?: 0.0
-                        val workoutReps = workoutSnapshot.child("totalReps").getValue(Int::class.java) ?: 0
-                        totalWeight += workoutWeight
-                        totalReps += workoutReps
+                        val workoutWeight = when (val weightValue = workoutSnapshot.child("totalWeight").getValue()) {
+                            is Number -> weightValue.toDouble()
+                            else -> 0.0
+                        }
+
+                        val workoutReps = when (val repsValue = workoutSnapshot.child("totalReps").getValue()) {
+                            is Number -> repsValue.toInt()
+                            else -> 0
+                        }
+
+                        totalWeightValue += workoutWeight
+                        totalRepsValue += workoutReps
                     }
 
-                    leaderboardData.add(LeaderboardEntry(userId, firstName, totalWeight, totalReps, profileUrl))
+                    leaderboardData.add(LeaderboardEntry(userId, firstName, totalWeightValue, totalRepsValue, profileUrl))
                 }
 
                 sortLeaderboardData()
@@ -111,6 +164,9 @@ class Leaderboard : AppCompatActivity() {
             }
         })
     }
+
+
+
 
     private fun loadPreviousRanks(filter: String): Map<String, Int> {
         val sharedPreferences = getSharedPreferences("LeaderboardPrefs", Context.MODE_PRIVATE)
@@ -212,9 +268,24 @@ class Leaderboard : AppCompatActivity() {
             if (currentFilter == "weight") it.totalWeight else it.totalReps.toDouble()
         })
     }
-
     private fun updateLeaderboardUI(leaderboardData: List<LeaderboardEntry>) {
-        // Display the top 3 users without rank change indicators
+        // Clear existing views
+        findViewById<TextView>(R.id.firstPlaceName).text = ""
+        findViewById<TextView>(R.id.secondPlaceName).text = ""
+        findViewById<TextView>(R.id.thirdPlaceName).text = ""
+        findViewById<CircleImageView>(R.id.firstPlaceImage).setImageResource(R.drawable.placeholder_profile)
+        findViewById<CircleImageView>(R.id.secondPlaceImage).setImageResource(R.drawable.placeholder_profile)
+        findViewById<CircleImageView>(R.id.thirdPlaceImage).setImageResource(R.drawable.placeholder_profile)
+        findViewById<TextView>(R.id.firstPlacePoints).text = ""
+        findViewById<TextView>(R.id.secondPlacePoints).text = ""
+        findViewById<TextView>(R.id.thirdPlacePoints).text = ""
+
+        if (leaderboardData.isEmpty()) {
+            Toast.makeText(this, "No users are participating in the leaderboard.", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        // Update UI for top 3 users
         if (leaderboardData.size >= 1) updateTop3UI(0, R.id.firstPlaceName, R.id.firstPlaceImage, R.id.firstPlacePoints)
         if (leaderboardData.size >= 2) updateTop3UI(1, R.id.secondPlaceName, R.id.secondPlaceImage, R.id.secondPlacePoints)
         if (leaderboardData.size >= 3) updateTop3UI(2, R.id.thirdPlaceName, R.id.thirdPlaceImage, R.id.thirdPlacePoints)
@@ -241,7 +312,7 @@ class Leaderboard : AppCompatActivity() {
             val rankIndicator = leaderboardItem.findViewById<TextView>(R.id.rank_indicator)
 
             rankView.text = "${index + 1}"
-            nameView.text = entry.firstName
+            nameView.text = entry.firstName // **Change here**
             pointsView.text = if (currentFilter == "weight") "${entry.totalWeight} kg" else "${entry.totalReps} reps"
             loadProfileImage(profileImageView, entry.profileUrl)
 
@@ -270,10 +341,11 @@ class Leaderboard : AppCompatActivity() {
         val imageView = findViewById<CircleImageView>(imageId)
         val pointsView = findViewById<TextView>(pointsId)
 
-        nameView.text = entry.firstName
+        nameView.text = entry.firstName // **Change here**
         pointsView.text = if (currentFilter == "weight") "${entry.totalWeight} kg" else "${entry.totalReps} reps"
         loadProfileImage(imageView, entry.profileUrl)
     }
+
 
     private fun loadProfileImage(imageView: CircleImageView, profileUrl: String) {
         if (profileUrl.isNotEmpty()) {
