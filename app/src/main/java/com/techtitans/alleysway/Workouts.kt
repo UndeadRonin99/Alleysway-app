@@ -239,6 +239,12 @@ class Workouts : AppCompatActivity() {
                     var totalWeight = 0.0
                     var totalReps = 0
 
+                    // **Check if user is participating**
+                    val participates = userSnapshot.child("participateInLeaderboard").getValue(Boolean::class.java) ?: true
+
+                    // **Skip user if not participating**
+                    if (!participates) continue
+
                     // Fetch firstName
                     val firstNameValue = userSnapshot.child("firstName").value
                     val firstName = when (firstNameValue) {
@@ -301,46 +307,53 @@ class Workouts : AppCompatActivity() {
     }
 
     private fun updateTopThreeUI(leaderboardData: List<LeaderboardEntry>) {
+        // First Place
         if (leaderboardData.isNotEmpty()) {
-            // First Place
             val firstNameView = findViewById<TextView>(R.id.firstName)
             val firstPFP = findViewById<ImageView>(R.id.firstPFP)
             val firstTotalView = findViewById<TextView>(R.id.firstTotal)
 
             firstNameView.text = leaderboardData[0].firstName
-            firstTotalView.text = "${leaderboardData[0].totalWeight} kg" // Set total weight for first place
+            firstTotalView.text = "${leaderboardData[0].totalWeight} kg"
             Glide.with(this)
                 .load(leaderboardData[0].profileUrl)
-                .placeholder(R.drawable.placeholder_profile) // Set placeholder
+                .placeholder(R.drawable.placeholder_profile)
                 .into(firstPFP)
+        } else {
+            // Optionally clear or set default values if no user is in first place
+        }
 
-            // Second Place
-            if (leaderboardData.size > 1) {
-                val secondNameView = findViewById<TextView>(R.id.secondName)
-                val secondPFP = findViewById<ImageView>(R.id.secondPFP)
-                val secondTotalView = findViewById<TextView>(R.id.secondTotal)
+        // Second Place
+        if (leaderboardData.size > 1) {
+            val secondNameView = findViewById<TextView>(R.id.secondName)
+            val secondPFP = findViewById<ImageView>(R.id.secondPFP)
+            val secondTotalView = findViewById<TextView>(R.id.secondTotal)
 
-                secondNameView.text = leaderboardData[1].firstName
-                secondTotalView.text = "${leaderboardData[1].totalWeight} kg" // Set total weight for second place
-                Glide.with(this)
-                    .load(leaderboardData[1].profileUrl)
-                    .placeholder(R.drawable.placeholder_profile) // Set placeholder
-                    .into(secondPFP)
-            }
+            secondNameView.text = leaderboardData[1].firstName
+            secondTotalView.text = "${leaderboardData[1].totalWeight} kg"
+            Glide.with(this)
+                .load(leaderboardData[1].profileUrl)
+                .placeholder(R.drawable.placeholder_profile)
+                .into(secondPFP)
+        } else {
+            // Optionally clear or set default values if no user is in second place
+        }
 
-            // Third Place
-            if (leaderboardData.size > 2) {
-                val thirdNameView = findViewById<TextView>(R.id.thirdName)
-                val thirdPFP = findViewById<ImageView>(R.id.thirdPFP)
-                val thirdTotalView = findViewById<TextView>(R.id.thirdTotal)
+        // Third Place
+        if (leaderboardData.size > 2) {
+            val thirdNameView = findViewById<TextView>(R.id.thirdName)
+            val thirdPFP = findViewById<ImageView>(R.id.thirdPFP)
+            val thirdTotalView = findViewById<TextView>(R.id.thirdTotal)
 
-                thirdNameView.text = leaderboardData[2].firstName
-                thirdTotalView.text = "${leaderboardData[2].totalWeight} kg" // Set total weight for third place
-                Glide.with(this)
-                    .load(leaderboardData[2].profileUrl)
-                    .placeholder(R.drawable.placeholder_profile) // Set placeholder
-                    .into(thirdPFP)
-            }
+            thirdNameView.text = leaderboardData[2].firstName
+            thirdTotalView.text = "${leaderboardData[2].totalWeight} kg"
+            Glide.with(this)
+                .load(leaderboardData[2].profileUrl)
+                .placeholder(R.drawable.placeholder_profile)
+                .into(thirdPFP)
+        } else {
+            // Optionally clear or set default values if no user is in third place
         }
     }
+
 }
