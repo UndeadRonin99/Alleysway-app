@@ -29,7 +29,13 @@ data class BookedSession(
     var startDateTime: String = "",
 
     @get:PropertyName("EndDateTime") @set:PropertyName("EndDateTime")
-    var endDateTime: String = ""
+    var endDateTime: String = "",
+
+    @get:PropertyName("EventID") @set:PropertyName("EventID")
+    var eventID: String = "",
+
+    @get:PropertyName("SessionKey") @set:PropertyName("SessionKey")
+    var sessionKey: String = ""
 )
 
 

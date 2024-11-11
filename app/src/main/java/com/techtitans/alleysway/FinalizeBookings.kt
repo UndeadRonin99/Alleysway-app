@@ -46,6 +46,8 @@ import java.time.LocalTime
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
+import java.util.UUID  // Import UUID for generating unique IDs
+
 
 
 class FinalizeBookings : AppCompatActivity() {
@@ -199,6 +201,9 @@ class FinalizeBookings : AppCompatActivity() {
                             val eventResult = service.events().insert("primary", event).execute()
                             Log.d("CalendarEvent", "Event created: ${eventResult.htmlLink}")
 
+                            // Generate unique session ID
+                            val sessionId = UUID.randomUUID().toString()
+
                             // Save booked session to Firebase
                             val isoFormatter = DateTimeFormatter.ISO_OFFSET_DATE_TIME
                             val startDateTimeStr = startDateTimeZoned.format(isoFormatter)
@@ -210,18 +215,39 @@ class FinalizeBookings : AppCompatActivity() {
                                 paid = false,
                                 totalAmount = trainerRate!!.toDouble(),
                                 startDateTime = startDateTimeStr,
-                                endDateTime = endDateTimeStr
+                                endDateTime = endDateTimeStr,
+                                eventID = eventResult.id,
+                                sessionKey = sessionId  // Assign the session ID
                             )
 
+                            bookedSession.sessionKey = sessionId
+
                             // Save under trainer's sessions
-                            val trainerSessionRef = database.child("users").child(trainerID!!).child("sessions").child("SessionID")
-                            val newSessionRef = trainerSessionRef.push()
-                            newSessionRef.setValue(bookedSession)
+                            val trainerSessionRef = database.child("users").child(trainerID!!).child("sessions").child("SessionID").child(sessionId)
+                            trainerSessionRef.setValue(bookedSession)
 
                             // Save under client's sessions
-                            val clientSessionRef = database.child("users").child(userID).child("sessions").child("SessionID")
-                            val newClientSessionRef = clientSessionRef.push()
-                            newClientSessionRef.setValue(bookedSession)
+                            val clientSessionRef = database.child("users").child(userID).child("sessions").child("SessionID").child(sessionId)
+                            clientSessionRef.setValue(bookedSession)
+
+                            // Create a Message object
+                            val messageText = "I've booked a session with you on ${date.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))} at $startTime"
+                            val timestamp = System.currentTimeMillis()
+
+                            val message = Messages(
+                                senderId = userID,
+                                receiverId = trainerID!!,
+                                senderName = UserName,
+                                text = messageText,
+                                timestamp = timestamp
+                            )
+
+                            // Save the message for both client and trainer
+                            val clientMessageRef = database.child("user_messages").child(userID).child(trainerID!!).child("messages").push()
+                            clientMessageRef.setValue(message)
+
+                            val trainerMessageRef = database.child("user_messages").child(trainerID!!).child(userID).child("messages").push()
+                            trainerMessageRef.setValue(message)
                         }
 
                         withContext(Dispatchers.Main) {
@@ -241,6 +267,7 @@ class FinalizeBookings : AppCompatActivity() {
             }
         }
     }
+
 
 
     @RequiresApi(Build.VERSION_CODES.O)
