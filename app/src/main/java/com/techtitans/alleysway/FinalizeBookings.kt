@@ -291,6 +291,7 @@ class FinalizeBookings : AppCompatActivity() {
                 val role = snapshot.child("role").getValue(String::class.java)
                 if (role == "admin") {
                     val daysSnapshot = snapshot.child("Days")
+                    val dateSpecificAvailabilitySnapshot = snapshot.child("DateSpecificAvailability")
 
                     // Fetch booked sessions for this trainer
                     val sessionsSnapshot = snapshot.child("sessions").child("SessionID")
@@ -321,31 +322,89 @@ class FinalizeBookings : AppCompatActivity() {
 
                     Log.d("fetchAdminTimeSlots", "Total Booked Sessions: ${bookedSessions.size}")
 
-                    // Process availability and calculate actual dates for each day
+                    // Generate dates for the next 7 days
+                    val today = LocalDate.now(zoneId)
                     val dayList = mutableListOf<Day>()
 
-                    for (daySnapshot in daysSnapshot.children) {
-                        val dayName = daySnapshot.key ?: continue
-                        val timeSlotsSnapshot = daySnapshot.child("TimeSlots")
-                        val dayTimeSlots = mutableListOf<TimeSlot>()
+                    for (i in 0 until 7) {
+                        val date = today.plusDays(i.toLong())
+                        val dateStr = date.toString()
 
-                        // Get the actual date for this day (e.g., next Monday for "Monday")
-                        val date = getNextDateForDay(dayName)
+                        // Check if date-specific availability exists for this date
+                        val dateSpecificSnapshot = dateSpecificAvailabilitySnapshot.child(dateStr)
 
-                        for (timeSlotSnapshot in timeSlotsSnapshot.children) {
-                            val startTime = timeSlotSnapshot.child("StartTime").getValue(String::class.java)
-                            val endTime = timeSlotSnapshot.child("EndTime").getValue(String::class.java)
-                            if (startTime != null && endTime != null) {
-                                // Split the time slot into individual 1-hour sessions
-                                val splitTimeSlots = splitTimeSlotIntoSessions(date, startTime, endTime)
-                                // Filter out any booked time slots
-                                val availableTimeSlots = excludeBookedTimeSlots(splitTimeSlots, bookedSessions)
-                                dayTimeSlots.addAll(availableTimeSlots)
+                        if (dateSpecificSnapshot.exists()) {
+                            // Date-specific availability exists
+                            var isFullDayUnavailable = false
+                            val dayTimeSlots = mutableListOf<TimeSlot>()
+
+                            for (slotSnapshot in dateSpecificSnapshot.children) {
+                                val slotIsFullDayUnavailable = slotSnapshot.child("IsFullDayUnavailable").getValue(Boolean::class.java) ?: false
+                                if (slotIsFullDayUnavailable) {
+                                    isFullDayUnavailable = true
+                                    break // No need to process further, day is fully unavailable
+                                }
+
+                                val startTime = slotSnapshot.child("StartTime").getValue(String::class.java)
+                                val endTime = slotSnapshot.child("EndTime").getValue(String::class.java)
+
+                                if (startTime != null && endTime != null) {
+                                    // Split the time slot into individual 1-hour sessions
+                                    val splitTimeSlots = splitTimeSlotIntoSessions(date, startTime, endTime)
+                                    dayTimeSlots.addAll(splitTimeSlots)
+                                }
                             }
-                        }
-                        if (dayTimeSlots.isNotEmpty()) {
-                            dayList.add(Day(date, dayTimeSlots))
-                            Log.d("fetchAdminTimeSlots", "Day Added: $dayName with ${dayTimeSlots.size} available slots")
+
+                            if (isFullDayUnavailable) {
+                                // Day is fully unavailable, do not add any time slots
+                                Log.d("fetchAdminTimeSlots", "Date $dateStr is fully unavailable")
+                            } else if (dayTimeSlots.isNotEmpty()) {
+                                // Exclude any booked time slots
+                                val availableTimeSlots = excludeBookedTimeSlots(dayTimeSlots, bookedSessions)
+                                if (availableTimeSlots.isNotEmpty()) {
+                                    dayList.add(Day(date, availableTimeSlots))
+                                    Log.d("fetchAdminTimeSlots", "Date-specific availability for $dateStr added with ${availableTimeSlots.size} slots")
+                                } else {
+                                    Log.d("fetchAdminTimeSlots", "No available time slots for date $dateStr after excluding booked sessions")
+                                }
+                            } else {
+                                Log.d("fetchAdminTimeSlots", "No time slots found for date $dateStr")
+                            }
+                        } else {
+                            // No date-specific availability, use default availability
+                            val dayOfWeek = date.dayOfWeek
+                            val dayName = dayOfWeek.name.lowercase().replaceFirstChar { it.uppercase() }
+
+                            val daySnapshot = daysSnapshot.child(dayName)
+
+                            if (daySnapshot.exists()) {
+                                val timeSlotsSnapshot = daySnapshot.child("TimeSlots")
+                                val dayTimeSlots = mutableListOf<TimeSlot>()
+
+                                for (timeSlotSnapshot in timeSlotsSnapshot.children) {
+                                    val startTime = timeSlotSnapshot.child("StartTime").getValue(String::class.java)
+                                    val endTime = timeSlotSnapshot.child("EndTime").getValue(String::class.java)
+                                    if (startTime != null && endTime != null) {
+                                        // Split the time slot into individual 1-hour sessions
+                                        val splitTimeSlots = splitTimeSlotIntoSessions(date, startTime, endTime)
+                                        dayTimeSlots.addAll(splitTimeSlots)
+                                    }
+                                }
+                                if (dayTimeSlots.isNotEmpty()) {
+                                    // Exclude any booked time slots
+                                    val availableTimeSlots = excludeBookedTimeSlots(dayTimeSlots, bookedSessions)
+                                    if (availableTimeSlots.isNotEmpty()) {
+                                        dayList.add(Day(date, availableTimeSlots))
+                                        Log.d("fetchAdminTimeSlots", "Default availability for $dateStr added with ${availableTimeSlots.size} slots")
+                                    } else {
+                                        Log.d("fetchAdminTimeSlots", "No available time slots for date $dateStr after excluding booked sessions")
+                                    }
+                                } else {
+                                    Log.d("fetchAdminTimeSlots", "No default time slots for day $dayName")
+                                }
+                            } else {
+                                Log.d("fetchAdminTimeSlots", "No default availability for day $dayName")
+                            }
                         }
                     }
 
@@ -361,8 +420,6 @@ class FinalizeBookings : AppCompatActivity() {
             }
         })
     }
-
-
 
     private fun getNextDateForDay(dayName: String): LocalDate {
         val dayOfWeekMap = mapOf(
@@ -385,21 +442,23 @@ class FinalizeBookings : AppCompatActivity() {
         return today.plusDays(daysUntilTarget.toLong())
     }
 
-    private fun splitTimeSlotIntoSessions(date: LocalDate, startTime: String, endTime: String): List<TimeSlot> {
-        val startHour = startTime.split(":")[0].toInt()
-        val endHour = endTime.split(":")[0].toInt()
+    private fun splitTimeSlotIntoSessions(date: LocalDate, startTimeStr: String, endTimeStr: String): List<TimeSlot> {
         val timeSlots = mutableListOf<TimeSlot>()
 
-        for (hour in startHour until endHour) {
-            val sessionStartTime = String.format("%02d:00", hour)
-            val sessionEndTime = String.format("%02d:00", hour + 1)
-            val timeSlot = TimeSlot(date, sessionStartTime, sessionEndTime)
+        val startTime = LocalTime.parse(startTimeStr, DateTimeFormatter.ofPattern("HH:mm"))
+        val endTime = LocalTime.parse(endTimeStr, DateTimeFormatter.ofPattern("HH:mm"))
+
+        var currentTime = startTime
+
+        while (currentTime.isBefore(endTime)) {
+            val nextTime = if (currentTime.plusHours(1).isAfter(endTime)) endTime else currentTime.plusHours(1)
+            val timeSlot = TimeSlot(date, currentTime.format(DateTimeFormatter.ofPattern("HH:mm")), nextTime.format(DateTimeFormatter.ofPattern("HH:mm")))
             timeSlots.add(timeSlot)
+            currentTime = nextTime
         }
+
         return timeSlots
     }
-
-
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun excludeBookedTimeSlots(
