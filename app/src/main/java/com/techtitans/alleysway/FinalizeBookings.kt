@@ -279,7 +279,7 @@ class FinalizeBookings : AppCompatActivity() {
     @RequiresApi(Build.VERSION_CODES.O)
     private fun fetchAdminTimeSlots() {
         if (trainerID == null) {
-            Log.e("FinalizeBookings", "Trainer ID is null, cannot fetch timeslots")
+            Log.e("FinalizeBookings", "Trainer ID is null, cannot fetch time slots")
             return
         }
 
@@ -292,22 +292,26 @@ class FinalizeBookings : AppCompatActivity() {
                 if (role == "admin") {
                     val daysSnapshot = snapshot.child("Days")
 
-                    // Fetch booked sessions
+                    // Fetch booked sessions for this trainer
                     val sessionsSnapshot = snapshot.child("sessions").child("SessionID")
                     val bookedSessions = mutableListOf<BookedSession>()
 
-                    // Define formatter for parsing dates
-                    val formatter = DateTimeFormatter.ISO_OFFSET_DATE_TIME
-
+                    // Define formatter for parsing ISO date strings
+                    val formatter = DateTimeFormatter.ISO_DATE_TIME
                     val zoneId = ZoneId.of("Africa/Johannesburg")
 
                     for (sessionSnapshot in sessionsSnapshot.children) {
                         val bookedSession = sessionSnapshot.getValue(BookedSession::class.java)
                         if (bookedSession != null) {
                             try {
-                                val startDateTime = ZonedDateTime.parse(bookedSession.startDateTime, formatter)
-                                if (startDateTime.isAfter(ZonedDateTime.now(zoneId))) {
+                                // Parse the start time of the booked session
+                                val bookedStartLocalDateTime = LocalDateTime.parse(bookedSession.startDateTime, formatter)
+                                val bookedStartDateTime = bookedStartLocalDateTime.atZone(zoneId)
+
+                                // Only consider future sessions
+                                if (bookedStartDateTime.isAfter(ZonedDateTime.now(zoneId))) {
                                     bookedSessions.add(bookedSession)
+                                    Log.d("fetchAdminTimeSlots", "Booked Session Added: $bookedSession")
                                 }
                             } catch (e: Exception) {
                                 Log.e("fetchAdminTimeSlots", "Error parsing date: ${e.message}")
@@ -315,7 +319,9 @@ class FinalizeBookings : AppCompatActivity() {
                         }
                     }
 
-                    // Process availability and calculate actual dates
+                    Log.d("fetchAdminTimeSlots", "Total Booked Sessions: ${bookedSessions.size}")
+
+                    // Process availability and calculate actual dates for each day
                     val dayList = mutableListOf<Day>()
 
                     for (daySnapshot in daysSnapshot.children) {
@@ -323,34 +329,40 @@ class FinalizeBookings : AppCompatActivity() {
                         val timeSlotsSnapshot = daySnapshot.child("TimeSlots")
                         val dayTimeSlots = mutableListOf<TimeSlot>()
 
-                        // Calculate the actual date for this day
+                        // Get the actual date for this day (e.g., next Monday for "Monday")
                         val date = getNextDateForDay(dayName)
 
                         for (timeSlotSnapshot in timeSlotsSnapshot.children) {
                             val startTime = timeSlotSnapshot.child("StartTime").getValue(String::class.java)
                             val endTime = timeSlotSnapshot.child("EndTime").getValue(String::class.java)
                             if (startTime != null && endTime != null) {
+                                // Split the time slot into individual 1-hour sessions
                                 val splitTimeSlots = splitTimeSlotIntoSessions(date, startTime, endTime)
+                                // Filter out any booked time slots
                                 val availableTimeSlots = excludeBookedTimeSlots(splitTimeSlots, bookedSessions)
                                 dayTimeSlots.addAll(availableTimeSlots)
                             }
                         }
                         if (dayTimeSlots.isNotEmpty()) {
                             dayList.add(Day(date, dayTimeSlots))
+                            Log.d("fetchAdminTimeSlots", "Day Added: $dayName with ${dayTimeSlots.size} available slots")
                         }
                     }
 
-                    // Sort the days list by date
+                    // Sort the days list by date and add to the main time slots list
                     timeSlotsList.addAll(dayList.sortedBy { it.date })
+                    Log.d("fetchAdminTimeSlots", "Total Available Days: ${dayList.size}")
                 }
                 timeSlotAdapter.notifyDataSetChanged()
             }
 
             override fun onCancelled(error: DatabaseError) {
-                Log.e("FinalizeBookings", "Failed to fetch timeslots: ${error.message}")
+                Log.e("FinalizeBookings", "Failed to fetch time slots: ${error.message}")
             }
         })
     }
+
+
 
     private fun getNextDateForDay(dayName: String): LocalDate {
         val dayOfWeekMap = mapOf(
@@ -388,27 +400,33 @@ class FinalizeBookings : AppCompatActivity() {
     }
 
 
+
     @RequiresApi(Build.VERSION_CODES.O)
     private fun excludeBookedTimeSlots(
         timeSlots: List<TimeSlot>,
         bookedSessions: List<BookedSession>
     ): List<TimeSlot> {
         val availableTimeSlots = mutableListOf<TimeSlot>()
-        val formatter = DateTimeFormatter.ISO_OFFSET_DATE_TIME
+        val zoneId = ZoneId.of("Africa/Johannesburg")
 
         for (timeSlot in timeSlots) {
             var isBooked = false
             for (bookedSession in bookedSessions) {
-                try {
-                    val bookedStartDateTime = ZonedDateTime.parse(bookedSession.startDateTime, formatter)
-                    val bookedDate = bookedStartDateTime.toLocalDate()
-                    val bookedTime = bookedStartDateTime.format(DateTimeFormatter.ofPattern("HH:mm"))
-                    if (bookedDate == timeSlot.date && bookedTime == timeSlot.startTime) {
-                        isBooked = true
-                        break
-                    }
-                } catch (e: Exception) {
-                    Log.e("excludeBookedTimeSlots", "Error parsing date: ${e.message}")
+                val bookedStartDateTime = parseToZonedDateTime(bookedSession.startDateTime, zoneId)
+                val bookedEndDateTime = parseToZonedDateTime(bookedSession.endDateTime, zoneId)
+
+                if (bookedStartDateTime == null || bookedEndDateTime == null) {
+                    continue // Skip if parsing failed
+                }
+
+                // Create ZonedDateTime for the time slot
+                val slotStart = ZonedDateTime.of(timeSlot.date, LocalTime.parse(timeSlot.startTime), zoneId)
+                val slotEnd = ZonedDateTime.of(timeSlot.date, LocalTime.parse(timeSlot.endTime), zoneId)
+
+                // Check for overlap
+                if (slotStart.isBefore(bookedEndDateTime) && slotEnd.isAfter(bookedStartDateTime)) {
+                    isBooked = true
+                    break
                 }
             }
             if (!isBooked) {
@@ -417,6 +435,18 @@ class FinalizeBookings : AppCompatActivity() {
         }
         return availableTimeSlots
     }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun parseToZonedDateTime(dateTimeStr: String, zoneId: ZoneId): ZonedDateTime? {
+        return try {
+            val localDateTime = LocalDateTime.parse(dateTimeStr, DateTimeFormatter.ISO_DATE_TIME)
+            localDateTime.atZone(zoneId)
+        } catch (e: Exception) {
+            Log.e("parseToZonedDateTime", "Error parsing dateTimeStr: $dateTimeStr, Error: ${e.message}")
+            null
+        }
+    }
+
 
 
 }
