@@ -477,9 +477,13 @@ class FinalizeBookings : AppCompatActivity() {
 
         var currentTime = startTime
 
-        while (currentTime.isBefore(endTime)) {
-            val nextTime = if (currentTime.plusHours(1).isAfter(endTime)) endTime else currentTime.plusHours(1)
-            val timeSlot = TimeSlot(date, currentTime.format(DateTimeFormatter.ofPattern("HH:mm")), nextTime.format(DateTimeFormatter.ofPattern("HH:mm")))
+        while (currentTime.plusHours(1).isBefore(endTime) || currentTime.plusHours(1).equals(endTime)) {
+            val nextTime = currentTime.plusHours(1)
+            val timeSlot = TimeSlot(
+                date,
+                currentTime.format(DateTimeFormatter.ofPattern("HH:mm")),
+                nextTime.format(DateTimeFormatter.ofPattern("HH:mm"))
+            )
             timeSlots.add(timeSlot)
             currentTime = nextTime
         }
