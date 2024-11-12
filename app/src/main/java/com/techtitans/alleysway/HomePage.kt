@@ -42,7 +42,6 @@ class HomePage : AppCompatActivity() {
     private lateinit var imgProfile: ImageView
     private lateinit var txtName: TextView
     private lateinit var btnViewP: Button
-    private lateinit var btnUOM: Button
     private lateinit var btnDelAccount: Button
     private lateinit var btnFAQ: Button
     private lateinit var btnLogout: Button
@@ -127,7 +126,6 @@ class HomePage : AppCompatActivity() {
         imgProfile = findViewById(R.id.imgProfile)
         txtName = findViewById(R.id.txtName)
         btnViewP = findViewById(R.id.btnViewP)
-        btnUOM = findViewById(R.id.btnUOM)
         btnDelAccount = findViewById(R.id.btnDelAccount)
         btnFAQ = findViewById(R.id.btnFAQ)
         btnLogout = findViewById(R.id.btnLogout)
@@ -162,11 +160,6 @@ class HomePage : AppCompatActivity() {
             showDeleteAccountDialog()
         }
 
-        btnUOM.setOnClickListener {
-            // Handle Unit of Measurement button click
-            Toast.makeText(this, "Unit of Measurement clicked", Toast.LENGTH_SHORT).show()
-            // Implement UOM functionality
-        }
 
         btnViewP.setOnClickListener {
             // Handle view profile button click

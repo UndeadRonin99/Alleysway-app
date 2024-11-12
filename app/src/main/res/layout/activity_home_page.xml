@@ -342,23 +342,13 @@
                 app:srcCompat="@drawable/image_user_circle" />
 
             <ImageView
-                android:id="@+id/imageView17"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_marginStart="18dp"
-                android:layout_marginTop="49dp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/imageView8"
-                app:srcCompat="@drawable/image_inbox" />
-
-            <ImageView
                 android:id="@+id/imageView18"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:layout_marginStart="18dp"
                 android:layout_marginTop="43dp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/imageView17"
+                app:layout_constraintTop_toBottomOf="@+id/imageView8"
                 app:srcCompat="@drawable/image_prohibit" />
 
             <Button
@@ -373,21 +363,9 @@
                 android:textColor="#FFFFFF"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/imageView18"
-                app:layout_constraintTop_toBottomOf="@+id/btnUOM" />
-
-            <Button
-                android:id="@+id/btnUOM"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="31dp"
-                android:layout_marginEnd="8dp"
-                android:background="#27262C"
-                android:text="Unit of measurment"
-                android:textColor="#FFFFFF"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/imageView17"
                 app:layout_constraintTop_toBottomOf="@+id/btnViewP" />
+
+
 
             <Button
                 android:id="@+id/btnFAQ"
