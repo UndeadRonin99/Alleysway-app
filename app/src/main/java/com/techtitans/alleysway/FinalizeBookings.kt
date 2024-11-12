@@ -353,7 +353,7 @@ class FinalizeBookings : AppCompatActivity() {
                     val today = LocalDate.now(zoneId)
                     val dayList = mutableListOf<Day>()
 
-                    for (i in 0 until 7) {
+                    for (i in 1 until 8) {
                         val date = today.plusDays(i.toLong())
                         val dateStr = date.toString()
 

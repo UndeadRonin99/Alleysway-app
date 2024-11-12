@@ -8,14 +8,23 @@ import android.view.animation.TranslateAnimation
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 
 class faqPage : AppCompatActivity() {
+    private lateinit var btnBack : ImageView
 
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_faq_page)
+        enableEdgeToEdge()
+
+        btnBack = findViewById(R.id.imageViewBack)
+
+        btnBack.setOnClickListener {
+            finish()
+        }
 
         // Setup FAQ item toggling
         val faqItem1 = findViewById<LinearLayout>(R.id.faqItem1)
@@ -85,6 +94,20 @@ class faqPage : AppCompatActivity() {
             } else {
                 slideUp(answer5)  // Slide up to hide the answer
                 rotateArrow(arrow5, 90f, 0f)  // Rotate the arrow to point right
+            }
+        }
+
+        val faqItem6 = findViewById<LinearLayout>(R.id.faqItem6)
+        val answer6 = findViewById<TextView>(R.id.answer6)
+        val arrow6 = findViewById<ImageView>(R.id.arrow6)
+
+        faqItem6.setOnClickListener {
+            if (answer6.visibility == View.GONE) {
+                slideDown(answer6)  // Slide down to show the answer
+                rotateArrow(arrow6, 0f, 90f)  // Rotate the arrow to point down
+            } else {
+                slideUp(answer6)  // Slide up to hide the answer
+                rotateArrow(arrow6, 90f, 0f)  // Rotate the arrow to point right
             }
         }
 
