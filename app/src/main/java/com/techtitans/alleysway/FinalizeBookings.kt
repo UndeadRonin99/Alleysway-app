@@ -477,13 +477,21 @@ class FinalizeBookings : AppCompatActivity() {
 
         var currentTime = startTime
 
-        while (currentTime.plusHours(1).isBefore(endTime) || currentTime.plusHours(1).equals(endTime)) {
+        // Loop until `currentTime` is before `endTime`
+        while (currentTime.isBefore(endTime)) {
             val nextTime = currentTime.plusHours(1)
+
+            // Ensure the next time slot does not go beyond `endTime`
+            if (nextTime.isAfter(endTime)) {
+                break // Exit loop if the next slot exceeds endTime
+            }
+
             val timeSlot = TimeSlot(
                 date,
                 currentTime.format(DateTimeFormatter.ofPattern("HH:mm")),
                 nextTime.format(DateTimeFormatter.ofPattern("HH:mm"))
             )
+
             timeSlots.add(timeSlot)
             currentTime = nextTime
         }
@@ -536,7 +544,4 @@ class FinalizeBookings : AppCompatActivity() {
             null
         }
     }
-
-
-
 }
