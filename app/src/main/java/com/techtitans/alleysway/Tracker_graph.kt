@@ -67,6 +67,11 @@ class Tracker_graph : AppCompatActivity() {
             val intent = Intent(this, HomePage::class.java)
             startActivity(intent)
         }
+        val btnTracker: ImageView = findViewById(R.id.btnTracker)
+        btnTracker.setOnClickListener {
+            // Navigate to the Bookings activity
+            val intent = Intent(this, Tracker::class.java)
+            startActivity(intent) }
 
         // Initialize LineChart
         lineChart = findViewById(R.id.lineChart)
