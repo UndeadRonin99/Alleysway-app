@@ -1,5 +1,7 @@
+// Package declaration
 package com.techtitans.alleysway
 
+// Importing required classes
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.View
@@ -11,33 +13,34 @@ import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 
+// FAQ page activity definition
 class faqPage : AppCompatActivity() {
-    private lateinit var btnBack : ImageView
+    private lateinit var btnBack : ImageView // Lateinit for back button, initialized later
 
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_faq_page)
-        enableEdgeToEdge()
+        setContentView(R.layout.activity_faq_page) // Setting the layout for the FAQ page
+        enableEdgeToEdge() // Enabling edge-to-edge UI optimization
 
-        btnBack = findViewById(R.id.imageViewBack)
+        btnBack = findViewById(R.id.imageViewBack) // Linking back button with its view
 
         btnBack.setOnClickListener {
-            finish()
+            finish() // Finish activity and return to previous one when back button is clicked
         }
 
-        // Setup FAQ item toggling
+        // Setup for first FAQ item
         val faqItem1 = findViewById<LinearLayout>(R.id.faqItem1)
         val answer1 = findViewById<TextView>(R.id.answer1)
         val arrow1 = findViewById<ImageView>(R.id.arrow1)
 
         faqItem1.setOnClickListener {
-            if (answer1.visibility == View.GONE) {
-                slideDown(answer1)  // Slide down to show the answer
-                rotateArrow(arrow1, 0f, 90f)  // Rotate the arrow to point down
+            if (answer1.visibility == View.GONE) { // Check if answer is hidden
+                slideDown(answer1) // Animate to show answer
+                rotateArrow(arrow1, 0f, 90f) // Rotate arrow to indicate expansion
             } else {
-                slideUp(answer1)  // Slide up to hide the answer
-                rotateArrow(arrow1, 90f, 0f)  // Rotate the arrow to point right
+                slideUp(answer1) // Animate to hide answer
+                rotateArrow(arrow1, 90f, 0f) // Rotate arrow to indicate collapsing
             }
         }
 
@@ -47,11 +50,11 @@ class faqPage : AppCompatActivity() {
 
         faqItem2.setOnClickListener {
             if (answer2.visibility == View.GONE) {
-                slideDown(answer2)  // Slide down to show the answer
-                rotateArrow(arrow2, 0f, 90f)  // Rotate the arrow to point down
+                slideDown(answer2)
+                rotateArrow(arrow2, 0f, 90f)
             } else {
-                slideUp(answer2)  // Slide up to hide the answer
-                rotateArrow(arrow2, 90f, 0f)  // Rotate the arrow to point right
+                slideUp(answer2)
+                rotateArrow(arrow2, 90f, 0f)
             }
         }
 
@@ -61,11 +64,11 @@ class faqPage : AppCompatActivity() {
 
         faqItem3.setOnClickListener {
             if (answer3.visibility == View.GONE) {
-                slideDown(answer3)  // Slide down to show the answer
-                rotateArrow(arrow3, 0f, 90f)  // Rotate the arrow to point down
+                slideDown(answer3)
+                rotateArrow(arrow3, 0f, 90f)
             } else {
-                slideUp(answer3)  // Slide up to hide the answer
-                rotateArrow(arrow3, 90f, 0f)  // Rotate the arrow to point right
+                slideUp(answer3)
+                rotateArrow(arrow3, 90f, 0f)
             }
         }
 
@@ -75,11 +78,11 @@ class faqPage : AppCompatActivity() {
 
         faqItem4.setOnClickListener {
             if (answer4.visibility == View.GONE) {
-                slideDown(answer4)  // Slide down to show the answer
-                rotateArrow(arrow4, 0f, 90f)  // Rotate the arrow to point down
+                slideDown(answer4)
+                rotateArrow(arrow4, 0f, 90f)
             } else {
-                slideUp(answer4)  // Slide up to hide the answer
-                rotateArrow(arrow4, 90f, 0f)  // Rotate the arrow to point right
+                slideUp(answer4)
+                rotateArrow(arrow4, 90f, 0f)
             }
         }
 
@@ -89,11 +92,11 @@ class faqPage : AppCompatActivity() {
 
         faqItem5.setOnClickListener {
             if (answer5.visibility == View.GONE) {
-                slideDown(answer5)  // Slide down to show the answer
-                rotateArrow(arrow5, 0f, 90f)  // Rotate the arrow to point down
+                slideDown(answer5)
+                rotateArrow(arrow5, 0f, 90f)
             } else {
-                slideUp(answer5)  // Slide up to hide the answer
-                rotateArrow(arrow5, 90f, 0f)  // Rotate the arrow to point right
+                slideUp(answer5)
+                rotateArrow(arrow5, 90f, 0f)
             }
         }
 
@@ -103,42 +106,44 @@ class faqPage : AppCompatActivity() {
 
         faqItem6.setOnClickListener {
             if (answer6.visibility == View.GONE) {
-                slideDown(answer6)  // Slide down to show the answer
-                rotateArrow(arrow6, 0f, 90f)  // Rotate the arrow to point down
+                slideDown(answer6)
+                rotateArrow(arrow6, 0f, 90f)
             } else {
-                slideUp(answer6)  // Slide up to hide the answer
-                rotateArrow(arrow6, 90f, 0f)  // Rotate the arrow to point right
+                slideUp(answer6)
+                rotateArrow(arrow6, 90f, 0f)
             }
         }
-
-
     }
 
-    // Function to animate the arrow rotation
+    // Function to rotate an arrow icon, indicating the current state of FAQ item (collapsed or expanded)
     private fun rotateArrow(arrow: ImageView, fromDegrees: Float, toDegrees: Float) {
-        val rotate = android.view.animation.RotateAnimation(
+        val rotate = RotateAnimation(
             fromDegrees, toDegrees,
             Animation.RELATIVE_TO_SELF, 0.5f,
             Animation.RELATIVE_TO_SELF, 0.5f
         )
-        rotate.duration = 300
-        rotate.fillAfter = true
-        arrow.startAnimation(rotate)
+        rotate.duration = 300 // Set duration of the animation
+        rotate.fillAfter = true // Make sure rotation does not reset after animation
+        arrow.startAnimation(rotate) // Start the animation
     }
 
-    // Function to slide down (show) the answer
+    // Function to slide down a view, used here to reveal an answer to an FAQ item
     private fun slideDown(view: View) {
-        view.visibility = View.VISIBLE
-        val animate = TranslateAnimation(0f, 0f, -view.height.toFloat(), 0f)
-        animate.duration = 300
-        view.startAnimation(animate)
+        view.visibility = View.VISIBLE // Set visibility to VISIBLE
+        val animate = TranslateAnimation(
+            0f, 0f, -view.height.toFloat(), 0f
+        )
+        animate.duration = 300 // Animation duration
+        view.startAnimation(animate) // Start the animation
     }
 
-    // Function to slide up (hide) the answer
+    // Function to slide up a view, used here to hide an answer to an FAQ item
     private fun slideUp(view: View) {
-        val animate = TranslateAnimation(0f, 0f, 0f, -view.height.toFloat())
-        animate.duration = 300
-        view.startAnimation(animate)
-        view.visibility = View.GONE
+        val animate = TranslateAnimation(
+            0f, 0f, 0f, -view.height.toFloat()
+        )
+        animate.duration = 300 // Animation duration
+        view.startAnimation(animate) // Start the animation
+        view.visibility = View.GONE // Set visibility to GONE after animation completes
     }
 }
