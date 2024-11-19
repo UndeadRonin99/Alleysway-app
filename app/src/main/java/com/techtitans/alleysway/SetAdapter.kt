@@ -1,5 +1,7 @@
+// Package declaration
 package com.techtitans.alleysway
 
+// Import statements
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
@@ -10,28 +12,45 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.textfield.TextInputEditText
 
+/**
+ * RecyclerView Adapter for displaying and managing workout sets.
+ *
+ * @param sets List of SetData representing each set.
+ * @param onUpdateTotalWeight Callback to update total weight when sets change.
+ * @param isLogging Flag to determine if the adapter is in logging mode.
+ */
 class SetAdapter(
     private val sets: MutableList<SetData>,
     private val onUpdateTotalWeight: (() -> Unit)? = null,
     private val isLogging: Boolean = true
 ) : RecyclerView.Adapter<SetAdapter.SetViewHolder>() {
 
+    /**
+     * ViewHolder class for individual set items.
+     */
     inner class SetViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        // Common Views
+        // Common view
         val setNumber: TextView = itemView.findViewById(R.id.setNumber)
 
-        // Logging mode Views
+        // Logging mode views
         val repsEditText: TextInputEditText? = itemView.findViewById(R.id.repsEditText)
         val weightEditText: TextInputEditText? = itemView.findViewById(R.id.weightEditText)
         val deleteSetButton: ImageButton? = itemView.findViewById(R.id.deleteSetButton)
 
-        // Read-only mode Views
+        // Read-only mode views
         val repsTextView: TextView? = itemView.findViewById(R.id.repsTextView)
         val weightTextView: TextView? = itemView.findViewById(R.id.weightTextView)
 
+        // TextWatchers to monitor changes
         private var repsTextWatcher: TextWatcher? = null
         private var weightTextWatcher: TextWatcher? = null
 
+        /**
+         * Binds the SetData to the views based on the mode.
+         *
+         * @param setData Data for the current set.
+         * @param position Position of the set in the list.
+         */
         fun bind(setData: SetData, position: Int) {
             setNumber.text = "Set ${position + 1}"
 
@@ -40,9 +59,9 @@ class SetAdapter(
                 repsEditText?.removeTextChangedListener(repsTextWatcher)
                 weightEditText?.removeTextChangedListener(weightTextWatcher)
 
-                // Set the text to current values
-                repsEditText?.setText(setData.reps.takeIf { it != 0 }?.toString() ?: "")
-                weightEditText?.setText(setData.weight.takeIf { it != 0.0 }?.toString() ?: "")
+                // Set current values
+                repsEditText?.setText(if (setData.reps != 0) setData.reps.toString() else "")
+                weightEditText?.setText(if (setData.weight != 0.0) setData.weight.toString() else "")
 
                 // Initialize TextWatchers
                 repsTextWatcher = object : TextWatcher {
@@ -51,7 +70,6 @@ class SetAdapter(
                         setData.reps = reps
                         onUpdateTotalWeight?.invoke()
                     }
-
                     override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
                     override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
                 }
@@ -62,7 +80,6 @@ class SetAdapter(
                         setData.weight = weight
                         onUpdateTotalWeight?.invoke()
                     }
-
                     override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
                     override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
                 }
@@ -71,7 +88,7 @@ class SetAdapter(
                 repsEditText?.addTextChangedListener(repsTextWatcher)
                 weightEditText?.addTextChangedListener(weightTextWatcher)
 
-                // Handle delete set
+                // Handle delete set action
                 deleteSetButton?.setOnClickListener {
                     val currentPosition = adapterPosition
                     if (currentPosition != RecyclerView.NO_POSITION) {
@@ -82,17 +99,17 @@ class SetAdapter(
                     }
                 }
             } else {
-                // Read-only mode: Display the reps and weight
+                // Display reps and weight in read-only mode
                 repsTextView?.text = "Reps: ${setData.reps}"
                 weightTextView?.text = "Weight: ${setData.weight} kg"
-
-                // Hide the delete button in read-only mode
+                // Hide delete button
                 deleteSetButton?.visibility = View.GONE
             }
         }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SetViewHolder {
+        // Choose layout based on mode
         val layoutId = if (isLogging) R.layout.set_item else R.layout.item_set_read_only
         val view = LayoutInflater.from(parent.context).inflate(layoutId, parent, false)
         return SetViewHolder(view)
