@@ -1,5 +1,7 @@
+// Package declaration
 package com.techtitans.alleysway
 
+// Import statements
 import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
@@ -15,12 +17,15 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
+/**
+ * Activity for scanning QR codes to mark user attendance.
+ */
 class ScanQRCode : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_scan_qrcode)
 
-        // Initiate QR code scanning
+        // Initialize QR code scanner
         val integrator = IntentIntegrator(this)
         integrator.setPrompt("Scan the gym QR code to mark attendance")
         integrator.setCameraId(0)
@@ -30,26 +35,31 @@ class ScanQRCode : AppCompatActivity() {
         integrator.initiateScan()
     }
 
+    /**
+     * Handles the result of the QR code scan.
+     */
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         val result: IntentResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, data)
         if (result != null) {
             if (result.contents == null) {
+                // User cancelled the scan
                 Toast.makeText(this, "Scan Cancelled", Toast.LENGTH_LONG).show()
-                this.finish()
+                finish()
             } else {
                 val scannedData = result.contents
-                val expectedData = "https://yourapp.com/attendance_checkin"  // The data embedded in your QR code
+                val expectedData = "https://yourapp.com/attendance_checkin"  // Expected QR code data
 
-                // Verify if the scanned data is correct
                 if (scannedData == expectedData) {
+                    // Valid QR code scanned
                     updateAttendance()
                     updatePublicAttendance()
                     Toast.makeText(this, "Attendance Marked Successfully", Toast.LENGTH_SHORT).show()
                     scheduleDelayedNotification("You can now log a workout and don't forget to record your weight.")
-                    this.finish()
+                    finish()
                 } else {
+                    // Invalid QR code
                     Toast.makeText(this, "Invalid QR Code", Toast.LENGTH_SHORT).show()
-                    this.finish()
+                    finish()
                 }
             }
         } else {
@@ -57,36 +67,34 @@ class ScanQRCode : AppCompatActivity() {
         }
     }
 
+    /**
+     * Updates the user's attendance in Firebase.
+     */
     private fun updateAttendance() {
-        // Get the currently logged-in user's ID
         val auth = FirebaseAuth.getInstance()
         val userId = auth.currentUser?.uid ?: return
-
-        // Reference to the attendance node for the user in Firebase
         val databaseReference = FirebaseDatabase.getInstance().getReference("users").child(userId).child("attendance")
-
-        // Get today's date in the desired format
         val todayDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
 
-        // Mark attendance for the current date
+        // Mark attendance for today
         databaseReference.child(todayDate).setValue(true)
             .addOnSuccessListener {
-                // Attendance marked successfully; no Toast here
+                // Attendance marked successfully
             }
             .addOnFailureListener {
                 Toast.makeText(this, "Failed to Mark Attendance", Toast.LENGTH_SHORT).show()
             }
     }
 
+    /**
+     * Updates the public attendance count in Firebase.
+     */
     private fun updatePublicAttendance() {
-        // Reference to the attendance node for the user in Firebase
         val databaseReference = FirebaseDatabase.getInstance().getReference("attendance")
-
-        // Get today's date in the desired format
         val todayDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
-        val currentHour = SimpleDateFormat("HH", Locale.getDefault()).format(Date()) // Get the hour of check-in
+        val currentHour = SimpleDateFormat("HH", Locale.getDefault()).format(Date())
 
-        // Increment the counter for the current hour
+        // Increment attendance count for the current hour
         val hourlyAttendanceRef = databaseReference.child(todayDate).child(currentHour)
         hourlyAttendanceRef.runTransaction(object : Transaction.Handler {
             override fun doTransaction(currentData: MutableData): Transaction.Result {
@@ -103,13 +111,17 @@ class ScanQRCode : AppCompatActivity() {
                 if (!committed) {
                     Toast.makeText(this@ScanQRCode, "Failed to Update Public Attendance", Toast.LENGTH_SHORT).show()
                 }
-                // No Toast needed here if successful
             }
         })
     }
 
+    /**
+     * Schedules a delayed notification to remind the user to log their workout.
+     *
+     * @param message The message to display in the notification.
+     */
     private fun scheduleDelayedNotification(message: String) {
-        val delayInMillis = 15 * 1000L // 15 seconds in milliseconds
+        val delayInMillis = 15 * 1000L // 15 seconds
 
         val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
         val intent = Intent(this, NotificationReceiver::class.java).apply {
@@ -119,7 +131,7 @@ class ScanQRCode : AppCompatActivity() {
             this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
 
-        // Schedule the notification to trigger after the specified delay
+        // Schedule the notification
         alarmManager.setExact(
             AlarmManager.RTC_WAKEUP,
             System.currentTimeMillis() + delayInMillis,
