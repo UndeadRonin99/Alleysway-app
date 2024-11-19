@@ -1,5 +1,7 @@
+// Package declaration for the project
 package com.techtitans.alleysway
 
+// Necessary Android imports for components and Firebase services
 import android.app.Activity
 import android.app.AlertDialog
 import android.content.Intent
@@ -21,117 +23,118 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.UUID
 
+// Define log_workout activity class that inherits from AppCompatActivity
 class log_workout : AppCompatActivity() {
 
-    private lateinit var exerciseAdapter: WorkoutAdapter
-    private lateinit var totalWeight: TextView
-    private lateinit var saveWorkout: MaterialButton
-    private val exerciseList = mutableListOf<ExerciseData>() // stores exercise data for logging sets
+    // Lateinit vars for managing UI components and data
+    private lateinit var exerciseAdapter: WorkoutAdapter // Adapter for handling exercises in RecyclerView
+    private lateinit var totalWeight: TextView // TextView to display total weight
+    private lateinit var saveWorkout: MaterialButton // Button to trigger saving the workout
+    private val exerciseList = mutableListOf<ExerciseData>() // MutableList to store exercises during the workout
 
+    // onCreate method to setup the activity when it is created
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
+        enableEdgeToEdge() // Setup edge-to-edge experience
+        window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE) // Adjust the window when the keyboard is visible
 
-        setContentView(R.layout.activity_log_workout)
+        setContentView(R.layout.activity_log_workout) // Set the layout for this activity
 
+        // Initialize RecyclerView and its components
         val recyclerView: RecyclerView = findViewById(R.id.exerciseRecyclerView)
         recyclerView.layoutManager = LinearLayoutManager(this)
         totalWeight = findViewById(R.id.totalWeight)
         saveWorkout = findViewById(R.id.btnSaveWorkout)
 
-        // Initialize adapter for exercises
+        // Setup the exercise adapter with callbacks for adding and removing sets/exercises
         exerciseAdapter = WorkoutAdapter(
             exercises = exerciseList,
             onAddSet = { exercise ->
-                exercise.sets.add(SetData())
-                exerciseAdapter.notifyDataSetChanged()
-                updateTotalWeight()
+                exercise.sets.add(SetData()) // Add a new set
+                exerciseAdapter.notifyDataSetChanged() // Notify adapter to refresh the view
+                updateTotalWeight() // Update the total weight display
             },
             onDeleteExercise = { exercise ->
-                exerciseList.remove(exercise)
-                exerciseAdapter.notifyDataSetChanged()
-                updateTotalWeight()
+                exerciseList.remove(exercise) // Remove the exercise from the list
+                exerciseAdapter.notifyDataSetChanged() // Notify adapter to refresh the view
+                updateTotalWeight() // Update the total weight display
             },
-            onUpdateTotalWeight = { updateTotalWeight() },
-            isLogging = true
+            onUpdateTotalWeight = { updateTotalWeight() }, // Callback to update total weight
+            isLogging = true // Flag to specify this is a logging session
         )
 
-        recyclerView.adapter = exerciseAdapter
+        recyclerView.adapter = exerciseAdapter // Set adapter for the RecyclerView
 
+        // Setup button to add new exercises
         val addExerciseButton: MaterialButton = findViewById(R.id.addExerciseButton)
         addExerciseButton.setOnClickListener {
-            // Start Stronger_function_page_1 to select exercises
+            // Start Stronger_function_page_1 activity for result to select exercises
             val intent = Intent(this, Stronger_function_page_1::class.java)
             startActivityForResult(intent, REQUEST_CODE_ADD_EXERCISES)
         }
 
-        // Automatically start exercise selection if not started before
+        // Automatically start exercise selection if it has not started before
         if (!strongerFunctionStarted) {
             val intent = Intent(this, Stronger_function_page_1::class.java)
             startActivityForResult(intent, REQUEST_CODE_ADD_EXERCISES)
         }
 
+        // Setup save workout button with AlertDialog for workout naming
         saveWorkout.setOnClickListener {
-            // Create an AlertDialog.Builder
             val builder = AlertDialog.Builder(this)
-            builder.setTitle("Enter Workout Name")
+            builder.setTitle("Enter Workout Name") // Dialog title
 
-            // Set up the input
-            val input = EditText(this)
-            input.hint = "Workout Name"
+            val input = EditText(this) // EditText for input
+            input.hint = "Workout Name" // Set hint for EditText
+            builder.setView(input) // Add EditText to AlertDialog
 
-            // Specify the type of input expected
-            builder.setView(input)
-
-            // Set up the buttons
             builder.setPositiveButton("OK") { dialog, which ->
                 val workoutName = input.text.toString().trim()
                 if (workoutName.isEmpty()) {
-                    showToast("Please enter a workout name.")
+                    showToast("Please enter a workout name.") // Show toast if input is empty
                 } else {
                     val user = Firebase.auth.currentUser
                     if (user != null) {
-                        saveWorkoutToFirebase(user.uid, FirebaseDatabase.getInstance().reference, workoutName)
+                        saveWorkoutToFirebase(user.uid, FirebaseDatabase.getInstance().reference, workoutName) // Save workout to Firebase
                     }
-                    finish()
+                    finish() // Finish the activity
                 }
             }
             builder.setNegativeButton("Cancel") { dialog, which ->
-                dialog.cancel()
+                dialog.cancel() // Cancel the dialog
             }
 
-            builder.show()
+            builder.show() // Show the AlertDialog
         }
     }
 
-    // Function to save the workout to Firebase
+    // Function to save the workout data to Firebase
     private fun saveWorkoutToFirebase(userId: String, database: DatabaseReference, workoutName: String) {
-        // Create a unique ID for the workout
-        val workoutId = UUID.randomUUID().toString()
+        val workoutId = UUID.randomUUID().toString() // Generate a unique ID for the workout
 
-        // Calculate total weight and total reps
+        // Calculate total weight and reps across all exercises and sets
         var totalWeightValue = 0.0
         var totalRepsValue = 0
         exerciseList.forEach { exercise ->
             exercise.sets.forEach { set ->
-                totalWeightValue += set.reps * set.weight
-                totalRepsValue += set.reps
+                totalWeightValue += set.reps * set.weight // Calculate weight lifted per set
+                totalRepsValue += set.reps // Accumulate reps
             }
         }
 
+        // Format the current date
         val currentDate = Date()
         val dateFormat = SimpleDateFormat("dd-MM-yyyy")
         val formattedDate = dateFormat.format(currentDate)
-        val timestamp = System.currentTimeMillis() // Add this line to get the current timestamp
+        val timestamp = System.currentTimeMillis() // Get the current timestamp
 
-        // Create a workout map
+        // Prepare the workout data as a map for Firebase
         val workoutMap = hashMapOf<String, Any>(
             "name" to workoutName,
             "totalWeight" to totalWeightValue,
             "totalReps" to totalRepsValue,
             "date" to formattedDate,
-            "timestamp" to timestamp, // Include the timestamp here
+            "timestamp" to timestamp, // Add timestamp
             "workout" to exerciseList.associate { exercise ->
                 exercise.name to mapOf(
                     "sets" to exercise.sets.mapIndexed { index, set ->
@@ -144,57 +147,55 @@ class log_workout : AppCompatActivity() {
             }
         )
 
-        // Save workout under the user's profile
+        // Save workout to the user's profile in Firebase
         database.child("users").child(userId).child("workouts").child(workoutId)
             .setValue(workoutMap)
             .addOnSuccessListener {
-                // Successfully saved the workout
-                showToast("Workout saved successfully")
+                showToast("Workout saved successfully") // Show success message
             }
             .addOnFailureListener { e ->
-                // Failed to save the workout
-                showToast("Failed to save workout: ${e.message}")
+                showToast("Failed to save workout: ${e.message}") // Show failure message
             }
     }
-    // Helper function to show a toast message
+
+    // Helper function to display a toast message
     private fun showToast(message: String) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
 
-    // Receive exercises from Stronger_function_page_1
+    // Handle the result from Stronger_function_page_1 with selected exercises
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_CODE_ADD_EXERCISES && resultCode == Activity.RESULT_OK) {
             val newExercises = data?.getParcelableArrayListExtra<Exercise>(EXTRA_SELECTED_EXERCISES)
             if (newExercises != null) {
                 newExercises.forEach { exercise ->
-                    exerciseList.add(ExerciseData(exercise.name))
+                    exerciseList.add(ExerciseData(exercise.name)) // Add new exercise to the list
                 }
-                exerciseAdapter.notifyDataSetChanged()
+                exerciseAdapter.notifyDataSetChanged() // Refresh the adapter
             }
         }
     }
 
-    // Function to calculate and update the total weight and total reps
+    // Function to calculate and display the total weight and total reps for the workout
     private fun updateTotalWeight() {
         var totalWeightValue = 0.0
         var totalRepsValue = 0
 
-        // Iterate through all exercises and sets
         exerciseList.forEach { exercise ->
             exercise.sets.forEach { set ->
-                totalWeightValue += set.reps * set.weight  // Calculate total weight
-                totalRepsValue += set.reps                 // Sum up total reps
+                totalWeightValue += set.reps * set.weight  // Calculate total weight lifted
+                totalRepsValue += set.reps                 // Calculate total reps performed
             }
         }
 
-        // Update the totalWeight TextView with the calculated values
-        totalWeight.text = "Total Weight: ${totalWeightValue}kg   Total Reps: $totalRepsValue"
+        totalWeight.text = "Total Weight: ${totalWeightValue}kg   Total Reps: $totalRepsValue" // Display the total weight and reps
     }
 
+    // Static values and flags used in the class
     companion object {
-        const val EXTRA_SELECTED_EXERCISES = "extra_selected_exercises"
-        const val REQUEST_CODE_ADD_EXERCISES = 100
-        var strongerFunctionStarted = false // This tracks whether stronger_function has been started
+        const val EXTRA_SELECTED_EXERCISES = "extra_selected_exercises" // Constant for intent extra
+        const val REQUEST_CODE_ADD_EXERCISES = 100 // Request code for starting activity for result
+        var strongerFunctionStarted = false // Flag to track if the exercise selection activity has been started
     }
 }
