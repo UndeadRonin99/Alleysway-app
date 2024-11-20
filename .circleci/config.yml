@@ -6,34 +6,32 @@ jobs:
       - image: cimg/android:2023.08
     working_directory: ~/project
     environment:
-      # Set environment variables if needed
       GRADLE_OPTS: -Dorg.gradle.daemon=false
     steps:
       - checkout
 
-      # Restore Gradle cache
+      - run:
+          name: Set Gradle Wrapper Permissions
+          command: chmod +x ./gradlew
+
       - restore_cache:
           keys:
             - gradle-cache-{{ checksum "gradle.properties" }}
             - gradle-cache-
 
-      # Run Gradle build and tests
       - run:
           name: Run Unit Tests
           command: ./gradlew test
 
-      # Save Gradle cache
       - save_cache:
           paths:
             - ~/.gradle/caches
             - ~/.gradle/wrapper
           key: gradle-cache-{{ checksum "gradle.properties" }}
 
-      # Store test results
       - store_test_results:
           path: app/build/test-results
 
-      # Store code coverage reports (if any)
       - store_artifacts:
           path: app/build/reports
 
