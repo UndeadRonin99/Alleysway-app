@@ -1,42 +1,43 @@
-# This config was automatically generated from your source code
-# Stacks detected: deps:java:.,tool:gradle:
 version: 2.1
+
 jobs:
-  test-java:
+  build-and-test:
     docker:
-      - image: cimg/openjdk:17.0
+      - image: cimg/android:2023.08
+    working_directory: ~/project
+    environment:
+      # Set environment variables if needed
+      GRADLE_OPTS: -Dorg.gradle.daemon=false
     steps:
       - checkout
-      - run:
-          name: Calculate cache key
-          command: |-
-            find . -name 'pom.xml' -o -name 'gradlew*' -o -name '*.gradle*' | \
-                    sort | xargs cat > /tmp/CIRCLECI_CACHE_KEY
+
+      # Restore Gradle cache
       - restore_cache:
-          key: cache-{{ checksum "/tmp/CIRCLECI_CACHE_KEY" }}
+          keys:
+            - gradle-cache-{{ checksum "gradle.properties" }}
+            - gradle-cache-
+
+      # Run Gradle build and tests
       - run:
-          command: ./gradlew check
-      - store_test_results:
-          path: build/test-results
+          name: Run Unit Tests
+          command: ./gradlew test
+
+      # Save Gradle cache
       - save_cache:
-          key: cache-{{ checksum "/tmp/CIRCLECI_CACHE_KEY" }}
           paths:
             - ~/.gradle/caches
+            - ~/.gradle/wrapper
+          key: gradle-cache-{{ checksum "gradle.properties" }}
+
+      # Store test results
+      - store_test_results:
+          path: app/build/test-results
+
+      # Store code coverage reports (if any)
       - store_artifacts:
-          path: build/reports
-  deploy:
-    # This is an example deploy job, not actually used by the workflow
-    docker:
-      - image: cimg/base:stable
-    steps:
-      # Replace this with steps to deploy to users
-      - run:
-          name: deploy
-          command: '#e.g. ./deploy.sh'
+          path: app/build/reports
+
 workflows:
-  build-and-test:
+  build-and-test-workflow:
     jobs:
-      - test-java
-    # - deploy:
-    #     requires:
-    #       - test-java
+      - build-and-test
