@@ -91,6 +91,13 @@ dependencies {
 
 
     testImplementation(libs.junit)
+    testImplementation("junit:junit:4.13.2")
+    testImplementation("org.jetbrains.kotlin:kotlin-test-junit:1.8.0")
+    testImplementation ("org.mockito.kotlin:mockito-kotlin:4.0.0")
+    testImplementation("org.mockito:mockito-core:5.4.0")// Update to the latest version
+    testImplementation("org.mockito.kotlin:mockito-kotlin:4.1.0")// Latest version
+    testImplementation ("org.robolectric:robolectric:4.9")
+
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 
