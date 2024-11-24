@@ -12,7 +12,6 @@
 5. [Usage](#usage)
 6. [Technologies Used](#technologies-used)
 7. [Project Structure](#project-structure)
-8. [Contributing](#contributing)
 
 ---
 
@@ -121,17 +120,7 @@ The app leverages a user-friendly interface combined with robust data handling c
 
 - **`google-services.json`**: Firebase configuration file.
 
-- **`README.md`**: Documentation file.
+- **`README.md`**: Documentation explaining Alleysway app.
 
 ---
 
-## **Contributing**
-We welcome contributions from the community! To contribute:
-1. Fork the repository.
-2. Create a new branch:
-   git checkout -b feature/your-feature
-3. Commit your changes:
-   git commit -m "Add your feature"
-4. Push to the branch:
-   git push origin feature/your-feature
-5. Open a pull request on GitHub.
